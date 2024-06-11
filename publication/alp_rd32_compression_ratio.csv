@@ -1,0 +1,5 @@
+dataset,size,rowgroups_count,vectors_count
+Dino-Vitb16,28.78,844,84365
+GPT2,28.01,1216,121524
+Grammarly-lg,29.16,7648,764740
+WAV2VEC,28.01,922,92184

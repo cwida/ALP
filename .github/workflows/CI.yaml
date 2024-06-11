@@ -1,0 +1,210 @@
+name: CI
+run-name: ${{ github.actor }} is building
+
+on: push
+
+jobs:
+  check-format:
+    runs-on: [ self-hosted ]
+    steps:
+      - name: echo build
+        run: echo "todo"
+
+  build:
+    needs:
+      - check-format
+    if: github.actor == 'azimafroozeh'
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [ self-hosted, m1 , avx512 ]
+        BUILD_TYPE: [ Debug, Release ]
+        cxx: [ clang++ ]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: Make directory build
+        run: mkdir ${{github.workspace}}/build
+
+      - name: Configure CMake
+        run: cmake -S ${{github.workspace}} -B ${{github.workspace}}/build
+        env:
+          CXX: ${{ matrix.cxx }}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build -j 16
+
+  test:
+    needs:
+      - build
+    if: github.actor == 'azimafroozeh'
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [ self-hosted, m1, avx512 ]
+        BUILD_TYPE: [ Debug, Release ]
+        cxx: [ clang++ ]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: Make directory build
+        run: mkdir ${{github.workspace}}/build
+
+      - name: Configure CMake
+        run: cmake  -DALP_BUILD_TESTING=ON -S ${{github.workspace}} -B ${{github.workspace}}/build
+        env:
+          CXX: ${{ matrix.cxx }}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build -j 16
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -j 4 --rerun-failed --output-on-failure
+
+  example:
+    needs:
+      - test
+    if: github.actor == 'azimafroozeh'
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [ self-hosted, m1 ]
+        BUILD_TYPE: [ Release ]
+        cc: [ clang ]
+        cxx: [ clang++ ]
+    runs-on: ${{ matrix.platform }}
+
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: mkdir build
+        run: mkdir ${{github.workspace}}/build
+
+      - name: Configure CMake
+        run: cmake -DALP_BUILD_EXAMPLE=ON  -S ${{github.workspace}} -B ${{github.workspace}}/build
+        env:
+          CXX: ${{ matrix.cxx }}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build -j 16
+
+      - name: run simple_compress
+        run: ${{github.workspace}}/build/example/simple_compress
+
+      - name: run rd_compress
+        run: ${{github.workspace}}/build/example/rd_compress
+
+      - name: run adaptive_compress
+        run: ${{github.workspace}}/build/example/adaptive_compress
+
+  benchmark:
+    needs:
+      - test
+    if: github.actor == 'azimafroozeh'
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [ m1 ]
+        BUILD_TYPE: [ Release ]
+        cc: [ clang ]
+        cxx: [ clang++ ]
+    runs-on: ${{ matrix.platform }}
+
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: mkdir build
+        run: mkdir ${{github.workspace}}/build
+
+      - name: Configure CMake
+        run: cmake -DALP_BUILD_BENCHMARKING=ON -DALP_BUILD_TESTING=ON -DCMAKE_TOOLCHAIN_FILE=toolchain/m1.cmake -S ${{github.workspace}} -B ${{github.workspace}}/build
+        env:
+          CXX: ${{ matrix.cxx }}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build -j 16
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -j 4
+
+  #      - name: run bench_alp_cutter_decode
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_cutter_decode
+  #
+  #      - name: run bench_alp_cutter_encode
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_cutter_encode
+  #
+  #      - name: run bench_alp_encode
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_encode
+  #
+  #      - name: run bench_alp_without_sampling
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_without_sampling
+  #
+  #      - name: run bench_chimp
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_chimp
+  #
+  #      - name: run bench_chimp128
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_chimp128
+  #
+  #      - name: run bench_gorillas
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_gorillas
+  #
+  #      - name: run bench_patas
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_patas
+  #
+  #      - name: run bench_zstd
+  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_zstd
+
+  full_dataset:
+    needs:
+      - test
+    if: github.actor == 'azimafroozeh'
+    strategy:
+      fail-fast: true
+      matrix:
+        platform: [ m1 ]
+        BUILD_TYPE: [ Release ]
+        cc: [ clang ]
+        cxx: [ clang++ ]
+    runs-on: ${{ matrix.platform }}
+
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+
+      - name: mkdir build
+        run: mkdir ${{github.workspace}}/build
+
+      - name: Configure CMake
+        run: cmake -DALP_BUILD_BENCHMARKING=ON -DALP_BUILD_TESTING=ON -DALP_BUILD_BENCHMARKING_COMPRESSION_RATIO=ON -S ${{github.workspace}} -B ${{github.workspace}}/build
+        env:
+          CXX: ${{ matrix.cxx }}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build -j 16
+
+      - name: run alp
+        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp_compression_ratio
+
+      - name: run alp32
+        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp32_compression_ratio
+
+      - name: run zstd
+        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_zstd_compression_ratio
+
+
+
+

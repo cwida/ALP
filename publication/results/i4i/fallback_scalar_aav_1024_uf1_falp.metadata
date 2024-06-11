@@ -1,0 +1,27 @@
+2023-02-26T17:13:27+00:00
+Run on (2 X 3504.35 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x1)
+  L1 Instruction 32 KiB (x1)
+  L2 Unified 1280 KiB (x1)
+  L3 Unified 55296 KiB (x1)
+Load Average: 0.09, 0.19, 0.11
+cmake info: 
+    source_dir: /home/ubuntu/bench_ALP
+    cmake_osx_architectures
+    cmake_host_system_processor: x86_64
+    cmake_system_processor: x86_64
+    cmake_host_system_name: Linux
+    cmake_system_name: Linux
+    cmake_c_compiler: /usr/bin/clang
+    cmake_cxx_compiler: /usr/bin/clang++
+    cmake_cxx_compiler_id: Clang
+    cmake_cxx_compiler_version: 14.0.0
+    cmake_crosscompiling: TRUE
+    cmake_cxx_flags_debug: -g
+    cmake_cxx_flags_release: -O3 -DNDEBUG -std=c++17 -stdlib=libstdc++
+    cmake_build_type: Release
+    cmake_toolchain_file: i4i
+target info: 
+    target_name: fallback_scalar_aav_1024_uf1_falp
+    target_compile_options: -mavx512dq

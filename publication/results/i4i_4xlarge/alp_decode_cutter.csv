@@ -1,0 +1,4 @@
+benchmark_number,name,iterations,cycles_per_tuple
+0,air_sensor_f_encode,300000,1.68266
+25,poi_lat_encode,300000,1.74618
+26,poi_lon_encode,300000,1.70154

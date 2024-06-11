@@ -1,0 +1,27 @@
+2023-04-05T16:14:41+00:00
+Run on (2 X 2899.98 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x1)
+  L1 Instruction 32 KiB (x1)
+  L2 Unified 1280 KiB (x1)
+  L3 Unified 55296 KiB (x1)
+Load Average: 0.04, 0.01, 0.11
+cmake info: 
+    source_dir: /home/ubuntu/analyze
+    cmake_osx_architectures
+    cmake_host_system_processor: x86_64
+    cmake_system_processor: x86_64
+    cmake_host_system_name: Linux
+    cmake_system_name: Linux
+    cmake_c_compiler: /usr/bin/clang
+    cmake_cxx_compiler: /usr/bin/clang++
+    cmake_cxx_compiler_id: Clang
+    cmake_cxx_compiler_version: 14.0.0
+    cmake_crosscompiling: TRUE
+    cmake_cxx_flags_debug: -g
+    cmake_cxx_flags_release: -O3 -DNDEBUG -g
+    cmake_build_type: Release
+    cmake_toolchain_file: i4i
+target info: 
+    target_name: 
+    target_compile_options: 

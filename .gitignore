@@ -1,0 +1,124 @@
+thirdparty/*.tar*
+CMakeFiles/
+CMakeCache.txt
+CTestTestfile.cmake
+Makefile
+!include/zstd/Makefile
+cmake_install.cmake
+build/
+*-build/
+Testing/
+build-support/boost_*
+raw_binaries/
+test_*.cmake
+*_tests.cmake
+*_include.cmake
+bench_*.cmake
+bench_*.hpp
+libzstd.pc
+
+bench_alp_cutter_decode
+bench_alp_cutter_encode
+bench_alp_encode
+bench_alp_without_sampling
+bench_chimp
+bench_chimp128
+bench_gorillas
+bench_patas
+bench_zstd
+bench_zstd_compression_ratio
+bench_alp_compression_ratio
+bench_alp32_compression_ratio
+bench_chimp_compression_ratio
+bench_chimp128_compression_ratio
+bench_gorillas_compression_ratio
+bench_patas_compression_ratio
+
+test_alp_vectorized
+test_alp_sample
+test_alp32_vectorized
+test_chimp
+test_chimp128
+test_gorillas
+test_patas
+test_zstd
+
+arm64v8_neon_intrinsic_1024_uf1_falp_test
+arm64v8_sve_intrinsic_1024_uf1_falp_test
+fallback_scalar_aav_1024_uf1_falp_test
+fallback_scalar_nav_1024_uf1_falp_test
+
+simple_compress
+simple_compress32
+rd_compress
+rd_compress32
+adaptive_compress
+benchmarks/fcbench/fcbench
+
+DartConfiguration.tcl 
+
+.idea/
+.cmake/
+_deps/
+
+# Build directories created by Clion
+cmake-build-*/
+
+#########################################
+# Editor temporary/working/backup files #
+.#*
+*\#*\#
+[#]*#
+*~
+*$
+*.bak
+*flymake*
+*.kdev4
+*.log
+*.swp
+
+#########################################
+# ignore tmp directory
+tmp
+
+######################################### from the fls_benchamrks integration
+.vagrant/
+compile_commands.json
+*.pdf
+plot/*.log
+plot/*.tex
+.Rhistory
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
