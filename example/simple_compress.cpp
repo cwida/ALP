@@ -1,46 +1,45 @@
 #include "alp.hpp"
 #include "helper.hpp"
+#include <array>
 #include <cassert>
+#include <iostream>
 
+using namespace alp;
 int main() {
-	size_t tuples_count = (1024 * 100);
-	size_t out_buffer_size =
-	    (tuples_count * sizeof(double)) + 8096; // We leave some headroom in case of negative compression
-	size_t uncompressed_size = tuples_count * sizeof(double);
+	constexpr std::array<int, 3> n_tup_vec {1, 1025, 1024 * 100};
+	for (const auto n_tup : n_tup_vec) {
+		size_t buffer_sz   = n_tup * sizeof(double) + 8096; // We leave some headroom in case of negative compression
+		size_t original_sz = n_tup * sizeof(double);
 
-	double  in[tuples_count];
-	uint8_t out[out_buffer_size];
-	example::fill_random_data<double>(in, tuples_count, 2);
+		double  in[n_tup];
+		uint8_t out[buffer_sz];
+		example::fill_random_data<double>(in, n_tup, 2);
 
-	/*
-	 * Compress
-	 */
-	alp::AlpCompressor compressor = alp::AlpCompressor<double>();
-	printf("Compressing with ALP...\n");
-	compressor.compress(in, tuples_count, out);
-	size_t compressed_size   = compressor.get_size();
-	double compression_ratio = (double)uncompressed_size / compressed_size;
-	printf("Uncompressed size (in bytes): %zu\n", uncompressed_size);
-	printf("Compressed size (in bytes): %zu\n", compressed_size);
-	printf("Compression Ratio: %f\n\n", compression_ratio);
+		//  compress
+		auto compressor = AlpCompressor<double>();
+		compressor.compress(in, n_tup, out);
 
-	/*
-	 * Decompress
-	 */
-	size_t decompressed_buffer_size =
-	    alp::AlpApiUtils<double>::align_value<size_t, alp::config::VECTOR_SIZE>(tuples_count);
-	double               decompressed[decompressed_buffer_size];
-	alp::AlpDecompressor decompressor = alp::AlpDecompressor<double>();
-	printf("Decompressing with ALP...\n");
-	decompressor.decompress(out, tuples_count, decompressed);
+		// decompress
+		auto   decompressed_buffer_size = AlpApiUtils<double>::align_value<size_t, config::VECTOR_SIZE>(n_tup);
+		double decompressed[decompressed_buffer_size];
+		auto   decompressor = AlpDecompressor<double>();
+		decompressor.decompress(out, n_tup, decompressed);
 
-	/*
-	 * Validity Test
-	 */
-	for (size_t i = 0; i < tuples_count; i++) {
-		assert(in[i] == decompressed[i]);
+		// check the correctnes
+		for (size_t i = 0; i < n_tup; i++) {
+			assert(in[i] == decompressed[i]);
+		}
+
+		// print result
+		size_t compressed_size   = compressor.get_size();
+		double compression_ratio = static_cast<double>(original_sz) / static_cast<double>(compressed_size);
+
+		std::cout << "-- Compressing          " << n_tup << " random values with ALP" << std::endl;
+		std::cout << "-- Uncompressed size:   " << original_sz << " bytes" << std::endl;
+		std::cout << "-- Compressed   size:   " << compressed_size << " bytes" << std::endl;
+		std::cout << "-- Compression ratio:   " << compression_ratio << std::endl;
+		std::cout << "-----" << std::endl;
 	}
-	printf("OK\n");
 
 	return 0;
 }
