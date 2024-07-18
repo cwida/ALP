@@ -8,13 +8,20 @@ using namespace alp;
 int main() {
 	constexpr std::array<int, 3> n_tup_vec {1, 1025, 1024 * 100};
 	for (const auto n_tup : n_tup_vec) {
-		size_t buffer_sz   = n_tup * sizeof(double) + 8096; // We leave some headroom in case of negative compression
+		size_t n_vec = ceil(n_tup / config::VECTOR_SIZE);
+		// extra size needed if all values are exceptions.
+		size_t if_all_exceptions_size =
+		    n_vec * config::VECTOR_SIZE * sizeof(double) + sizeof(exp_p_t) + n_vec * sizeof(exp_c_t);
+
+		size_t buffer_sz =
+		    n_tup * sizeof(double) + if_all_exceptions_size; // We leave some headroom in case of negative compression
 		size_t original_sz = n_tup * sizeof(double);
 
 		double  in[n_tup];
 		uint8_t out[buffer_sz];
 		example::fill_random_data<double>(in, n_tup, 2);
 
+		if (n_tup == 1) { in[0] = 204.92; }
 		//  compress
 		auto compressor = AlpCompressor<double>();
 		compressor.compress(in, n_tup, out);
