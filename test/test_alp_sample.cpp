@@ -89,8 +89,8 @@ public:
 	}
 
 	void test_column(const alp_bench::Column& column) {
-		std::ifstream file(column.sample_csv_file_path, std::ios::in);
-		if (!file) throw std::runtime_error(column.sample_csv_file_path + " : " + strerror(errno));
+		std::ifstream file(column.csv_file_path, std::ios::in);
+		if (!file) throw std::runtime_error(column.csv_file_path + " : " + strerror(errno));
 
 		alp::state stt;
 		size_t     tuples_count {VECTOR_SIZE};
