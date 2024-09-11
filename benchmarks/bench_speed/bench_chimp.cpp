@@ -132,7 +132,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	leading_zero_unpacked = new (std::align_val_t {64}) uint8_t[1024];
 
 	for (auto& dataset : alp_bench::alp_dataset) {
-		std::ifstream ifile(dataset.sample_csv_file_path, std::ios::in);
+		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 
 		// check to see that the file was opened correctly:
 		if (!ifile.is_open()) {

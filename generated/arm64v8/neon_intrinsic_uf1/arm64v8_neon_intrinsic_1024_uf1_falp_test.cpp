@@ -51,7 +51,7 @@ TEST_F(arm64v8_neon_intrinsic_1024_uf1_falp, fused)
 {
 	for (auto & dataset : alp_bench::alp_dataset)
 	{
-		std:: ifstream         ifile(dataset.sample_csv_file_path, std::ios:: in );
+		std:: ifstream         ifile(dataset.csv_file_path, std::ios:: in );
 		ASSERT_EQ(ifile.fail(), false);
 		   alp::state stt;
 		if (dataset.suitable_for_cutting) { continue; }
@@ -86,7 +86,7 @@ TEST_F(arm64v8_neon_intrinsic_1024_uf1_falp, unfused)
 {
 	for (auto & dataset : alp_bench::alp_dataset)
 	{
-		std:: ifstream         ifile(dataset.sample_csv_file_path, std::ios:: in );
+		std:: ifstream         ifile(dataset.csv_file_path, std::ios:: in );
 		ASSERT_EQ(ifile.fail(), false);
 		   alp::state stt;
 		if (dataset.suitable_for_cutting) { continue; }

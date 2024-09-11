@@ -84,7 +84,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	glue_arr         = new (std::align_val_t {64}) double[VECTOR_SIZE];
 
 	for (auto& dataset : alp_bench::alp_dataset) {
-		std::ifstream ifile(dataset.sample_csv_file_path, std::ios::in);
+		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		if (!dataset.suitable_for_cutting) { continue; }
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
 

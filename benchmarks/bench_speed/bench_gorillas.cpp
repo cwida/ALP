@@ -106,7 +106,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	flags     = new (std::align_val_t {64}) alp_bench::GorillasConstants::Flags[1024];
 
 	for (auto& dataset : alp_bench::alp_dataset) {
-		std::ifstream ifile(dataset.sample_csv_file_path, std::ios::in);
+		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
 
 		// check to see that the file was opened correctly:
