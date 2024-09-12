@@ -21,9 +21,20 @@ To *quickly* test ALP we recommend following [our examples](#quickstart) in the 
 ALP details can be found in the [publication](https://dl.acm.org/doi/pdf/10.1145/3626717).
 
 ### Used By
-<p align="left">
+<table>
+  <tr>
+    <td>
+      <p align="left">
         <img src="https://raw.githubusercontent.com/duckdb/duckdb/main/logo/DuckDB_Logo-horizontal.png" alt="DuckDB" height="50">
-</p>
+      </p>
+    </td>
+    <td>
+      <p align="left">
+        <a href="https://github.com/cwida/FastLanes">FastLanes</a>
+      </p>
+    </td>
+  </tr>
+</table>
 
 ### Contents
 - [ALP in a Nutshell](#alp-in-a-nutshell)
