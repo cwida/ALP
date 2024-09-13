@@ -100,7 +100,8 @@ jobs:
       - name: run adaptive_compress
         run: ${{github.workspace}}/build/example/adaptive_compress
 
-  benchmark:
+  # -DCMAKE_TOOLCHAIN_FILE=toolchain/m1.cmake
+  build_benchmark:
     needs:
       - test
     strategy:
@@ -121,7 +122,7 @@ jobs:
         run: mkdir ${{github.workspace}}/build
 
       - name: Configure CMake
-        run: cmake -DALP_BUILD_BENCHMARKING=ON -DALP_BUILD_TESTING=ON -DCMAKE_TOOLCHAIN_FILE=toolchain/m1.cmake -S ${{github.workspace}} -B ${{github.workspace}}/build
+        run: cmake -DALP_BUILD_BENCHMARKING=ON -DALP_BUILD_TESTING=ON -S ${{github.workspace}} -B ${{github.workspace}}/build
         env:
           CXX: ${{ matrix.cxx }}
 
@@ -159,7 +160,7 @@ jobs:
   #      - name: run bench_zstd
   #        run: ${{github.workspace}}/build/benchmarks/bench/bench_zstd
 
-  full_dataset:
+  build_full_dataset:
     needs:
       - test
     strategy:
@@ -188,14 +189,14 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build -j 16
 
-      - name: run alp
-        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp_compression_ratio
-
-      - name: run alp32
-        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp32_compression_ratio
-
-      - name: run zstd
-        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_zstd_compression_ratio
+#      - name: run alp
+#        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp_compression_ratio
+#
+#      - name: run alp32
+#        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp32_compression_ratio
+#
+#      - name: run zstd
+#        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_zstd_compression_ratio
 
 
 
