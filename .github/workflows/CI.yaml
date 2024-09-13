@@ -5,7 +5,7 @@ on: push
 
 jobs:
   check-format:
-    runs-on: [ self-hosted ]
+    runs-on: [ ubuntu-latest ]
     steps:
       - name: echo build
         run: echo "todo"
@@ -13,7 +13,6 @@ jobs:
   build:
     needs:
       - check-format
-    if: github.actor == 'azimafroozeh'
     strategy:
       fail-fast: true
       matrix:
@@ -40,7 +39,6 @@ jobs:
   test:
     needs:
       - build
-    if: github.actor == 'azimafroozeh'
     strategy:
       fail-fast: true
       matrix:
@@ -71,7 +69,6 @@ jobs:
   example:
     needs:
       - test
-    if: github.actor == 'azimafroozeh'
     strategy:
       fail-fast: true
       matrix:
@@ -109,7 +106,6 @@ jobs:
   benchmark:
     needs:
       - test
-    if: github.actor == 'azimafroozeh'
     strategy:
       fail-fast: true
       matrix:
@@ -169,7 +165,6 @@ jobs:
   full_dataset:
     needs:
       - test
-    if: github.actor == 'azimafroozeh'
     strategy:
       fail-fast: true
       matrix:
