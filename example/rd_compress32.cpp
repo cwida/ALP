@@ -27,7 +27,7 @@ int main() {
 	/*
 	 * Decompress
 	 */
-	size_t decompressed_buffer_size =
+	auto decompressed_buffer_size =
 	    alp::AlpApiUtils<float>::align_value<size_t, alp::config::VECTOR_SIZE>(tuples_count);
 	float                decompressed[decompressed_buffer_size];
 	alp::AlpDecompressor decompressor = alp::AlpDecompressor<float>();

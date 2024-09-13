@@ -2,6 +2,8 @@
 #include "bench_alp.hpp"
 #include "data.hpp"
 
+// NOLINTBEGIN
+
 using namespace alp::config;
 
 /* Bench ALP encode. */
@@ -166,3 +168,5 @@ int main() {
 	        .add_extra_info(benchmark::CmakeInfo::getCmakeInfo());
 	benchmark_all(benchmark);
 }
+
+// NOLINTEND

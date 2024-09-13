@@ -3,6 +3,8 @@
 #include "test/mapper.hpp"
 #include "zstd.h"
 
+// NOLINTBEGIN
+
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
 bench_decode_zstd(alp_bench::Column& dataset, void* enc_arr, size_t enc_size, void* dec_arr) {
 
@@ -106,3 +108,5 @@ int main() {
 	        .add_extra_info(benchmark::CmakeInfo::getCmakeInfo());
 	benchmark_all(benchmark);
 }
+
+// NOLINTEND

@@ -4,6 +4,8 @@
 #include "test/mapper.hpp"
 #include "gtest/gtest.h"
 
+// NOLINTBEGIN
+
 class patas_test : public ::testing::Test {
 public:
 	uint8_t*  data_arr;
@@ -137,3 +139,5 @@ TEST_F(patas_test, test_patas_on_whole_datasets) {
 		      << std::endl;
 	}
 }
+
+// NOLINTEND

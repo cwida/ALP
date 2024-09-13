@@ -22,11 +22,11 @@ include(CTest)
 # Clang Tidy : ---------------------------------------------------------------------------------------------------------
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 if (NOT CLANG_TIDY_EXE)
-    message(FATAL_ERROR "-- FLS: clang-tidy not found.")
+    message(FATAL_ERROR "-- ALP: clang-tidy not found.")
 else ()
     set(CMAKE_CXX_CLANG_TIDY
             ${CLANG_TIDY_EXE};
-            -header-filter=include;
+            -header-filter=include/alp;
             -warnings-as-errors=*;)
 
 endif ()
@@ -44,7 +44,7 @@ add_subdirectory(src)
 # Example : ------------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_EXAMPLE)
     message("---------------------------------------------------------------------------------------------------------")
-    message("- Example:")
+    message("-- ALP: Example:")
     include_directories(${CMAKE_SOURCE_DIR}/data/include)
     include_directories(${CMAKE_SOURCE_DIR}/example/include)
 
@@ -54,7 +54,7 @@ endif ()
 # Test : ---------------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_TESTING)
     message("---------------------------------------------------------------------------------------------------------")
-    message("- Testing:")
+    message("-- ALP: Testing:")
 
     # Gtest: -----------------------------------------------------------------------------------------------------------
     include(GoogleTest)
@@ -82,7 +82,7 @@ endif ()
 # Generated : ----------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_GENERATED)
     message("---------------------------------------------------------------------------------------------------------")
-    message("- Generated:")
+    message("-- ALP: Generated:")
 
     add_subdirectory(generated)
 endif ()
@@ -90,7 +90,7 @@ endif ()
 # Benchmark : ----------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_BENCHMARKING)
     message("---------------------------------------------------------------------------------------------------------")
-    message("- Benchmarking:")
+    message("-- ALP: Benchmarking:")
 
     include_directories(${CMAKE_SOURCE_DIR}/benchmarks/include)
     include_directories(${CMAKE_SOURCE_DIR}/data/include)

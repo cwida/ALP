@@ -2,6 +2,8 @@
 #include "bench_alp.hpp"
 #include "data.hpp"
 
+// NOLINTBEGIN
+
 using namespace alp::config;
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_encode(const double*      dbl_arr,
@@ -175,3 +177,5 @@ int main() {
 	        .add_extra_info(benchmark::CmakeInfo::getCmakeInfo());
 	benchmark_all(benchmark);
 }
+
+// NOLINTEND
