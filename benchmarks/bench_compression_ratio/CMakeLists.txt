@@ -1,5 +1,5 @@
 if (NOT DEFINED ENV{ALP_DATASET_DIR_PATH})
-    message(FATAL_ERROR "You must set ALP_DATASET_DIR_PATH environment variable")
+    message(WARNING "You must set ALP_DATASET_DIR_PATH environment variable")
 endif ()
 
 add_executable(bench_alp_compression_ratio alp.cpp)
