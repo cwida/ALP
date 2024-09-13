@@ -17,12 +17,12 @@ struct FloatingToExact {};
 
 template <>
 struct FloatingToExact<double> {
-	typedef uint64_t type;
+	using type = uint64_t;
 };
 
 template <>
 struct FloatingToExact<float> {
-	typedef uint32_t type;
+	using type = uint32_t;
 };
 
 inline constexpr uint8_t SAMPLING_EARLY_EXIT_THRESHOLD    = 2;

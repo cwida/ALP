@@ -39,7 +39,7 @@ struct AlpApiUtils {
 	                                       int64_t*  encoded_integers,
 	                                       state&    stt) {
 
-		static auto* tmp_index = new (std::align_val_t {64}) uint64_t[1024];
+		static auto* TMP_INDEX = new (std::align_val_t {64}) uint64_t[1024];
 
 		// We fill a vector with 0s since these values will never be exceptions
 		for (size_t i = stt.vector_size; i < config::VECTOR_SIZE; i++) {
@@ -50,7 +50,7 @@ struct AlpApiUtils {
 		T a_non_exception_value = 0.0;
 		// We lookup the first non exception value from the true vector values
 		for (size_t i {0}; i < stt.vector_size; i++) {
-			if (i != tmp_index[i]) {
+			if (i != TMP_INDEX[i]) {
 				a_non_exception_value = input_vector[i];
 				break;
 			}

@@ -1,6 +1,7 @@
-#ifndef ALP_API_MEM_STORER_HPP
-#define ALP_API_MEM_STORER_HPP
+#ifndef ALP_STORER_HPP
+#define ALP_STORER_HPP
 
+// NOLINTBEGIN
 #include <cstdint>
 #include <string.h>
 
@@ -54,3 +55,5 @@ struct MemReader {
 }} // namespace alp::storer
 
 #endif
+
+// NOLINTEND

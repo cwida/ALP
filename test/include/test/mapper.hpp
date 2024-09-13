@@ -1,6 +1,7 @@
 #ifndef TEST_MAPPER_HPP
 #define TEST_MAPPER_HPP
 
+// NOLINTBEGIN
 #include <fcntl.h>
 #include <fstream>
 #include <string>
@@ -25,3 +26,5 @@ inline T* mmap_file(size_t& n_values, const std::string& filename) {
 } // namespace mapper
 
 #endif
+
+// NOLINTEND

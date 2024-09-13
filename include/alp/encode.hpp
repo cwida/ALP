@@ -264,8 +264,8 @@ struct AlpEncode {
 	                                   int64_t*             encoded_integers,
 	                                   const factor_idx_t   factor_idx,
 	                                   const exponent_idx_t exponent_idx) {
-		alignas(64) static double   encoded_dbl_arr[1024];
-		alignas(64) static double   dbl_arr_without_specials[1024];
+		alignas(64) static double   ENCODED_DBL_ARR[1024];
+		alignas(64) static double   DBL_ARR_WITHOUT_SPECIALS[1024];
 		alignas(64) static uint64_t INDEX_ARR[1024];
 
 		exp_p_t  current_exceptions_count {0};
@@ -280,21 +280,21 @@ struct AlpEncode {
 			    || tmp_input[i] == Constants<double>::NEGATIVE_ZERO;
 
 			if (is_special) {
-				dbl_arr_without_specials[i] = ENCODING_UPPER_LIMIT;
+				DBL_ARR_WITHOUT_SPECIALS[i] = ENCODING_UPPER_LIMIT;
 			} else {
-				dbl_arr_without_specials[i] = input_vector[i];
+				DBL_ARR_WITHOUT_SPECIALS[i] = input_vector[i];
 			}
 		}
 
 #pragma clang loop vectorize_width(64)
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto const actual_value = dbl_arr_without_specials[i];
+			auto const actual_value = DBL_ARR_WITHOUT_SPECIALS[i];
 
 			// Attempt conversion
 			const int64_t encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
 			encoded_integers[i]         = encoded_value;
 			const double decoded_value  = AlpDecode<T>::decode_value(encoded_value, factor_idx, exponent_idx);
-			encoded_dbl_arr[i]          = decoded_value;
+			ENCODED_DBL_ARR[i]          = decoded_value;
 		}
 
 #ifdef __AVX512F__
@@ -308,8 +308,8 @@ struct AlpEncode {
 		}
 #else
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto l                    = encoded_dbl_arr[i];
-			auto r                    = dbl_arr_without_specials[i];
+			auto l                    = ENCODED_DBL_ARR[i];
+			auto r                    = DBL_ARR_WITHOUT_SPECIALS[i];
 			auto is_exception         = (l != r);
 			INDEX_ARR[exceptions_idx] = i;
 			exceptions_idx += is_exception;
@@ -344,8 +344,8 @@ struct AlpEncode {
 	                                   int64_t*             encoded_integers,
 	                                   const factor_idx_t   factor_idx,
 	                                   const exponent_idx_t exponent_idx) {
-		alignas(64) static float    encoded_dbl_arr[1024];
-		alignas(64) static float    dbl_arr_without_specials[1024];
+		alignas(64) static float    ENCODED_DBL_ARR[1024];
+		alignas(64) static float    DBL_ARR_WITHOUT_SPECIALS[1024];
 		alignas(64) static uint64_t INDEX_ARR[1024];
 
 		exp_p_t  current_exceptions_count {0};
@@ -360,21 +360,21 @@ struct AlpEncode {
 			    || tmp_input[i] == Constants<float>::NEGATIVE_ZERO;
 
 			if (is_special) {
-				dbl_arr_without_specials[i] = ENCODING_UPPER_LIMIT;
+				DBL_ARR_WITHOUT_SPECIALS[i] = ENCODING_UPPER_LIMIT;
 			} else {
-				dbl_arr_without_specials[i] = input_vector[i];
+				DBL_ARR_WITHOUT_SPECIALS[i] = input_vector[i];
 			}
 		}
 
 #pragma clang loop vectorize_width(64)
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto const actual_value = dbl_arr_without_specials[i];
+			auto const actual_value = DBL_ARR_WITHOUT_SPECIALS[i];
 
 			// Attempt conversion
 			const int64_t encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
 			encoded_integers[i]         = encoded_value;
 			const float decoded_value   = AlpDecode<T>::decode_value(encoded_value, factor_idx, exponent_idx);
-			encoded_dbl_arr[i]          = decoded_value;
+			ENCODED_DBL_ARR[i]          = decoded_value;
 		}
 
 #ifdef __AVX512F__
@@ -388,8 +388,8 @@ struct AlpEncode {
 		}
 #else
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto l                    = encoded_dbl_arr[i];
-			auto r                    = dbl_arr_without_specials[i];
+			auto l                    = ENCODED_DBL_ARR[i];
+			auto r                    = DBL_ARR_WITHOUT_SPECIALS[i];
 			auto is_exception         = (l != r);
 			INDEX_ARR[exceptions_idx] = i;
 			exceptions_idx += is_exception;

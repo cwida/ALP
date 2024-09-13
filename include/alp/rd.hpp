@@ -1,5 +1,5 @@
-#ifndef ALP_CUTTER_HPP
-#define ALP_CUTTER_HPP
+#ifndef ALP_RD_HPP
+#define ALP_RD_HPP
 
 #include "alp/common.hpp"
 #include "alp/constants.hpp"
@@ -108,7 +108,7 @@ struct AlpRD {
 	                          EXACT_TYPE* right_parts,
 	                          uint16_t*   left_parts,
 	                          state&      stt) {
-		const EXACT_TYPE* in = reinterpret_cast<const EXACT_TYPE*>(dbl_arr);
+		const auto* in = reinterpret_cast<const EXACT_TYPE*>(dbl_arr);
 
 		// Cutting the floating point values
 		for (size_t i {0}; i < config::VECTOR_SIZE; ++i) {
@@ -152,9 +152,9 @@ struct AlpRD {
 	                          uint16_t*   exceptions_count,
 	                          state&      stt) {
 
-		EXACT_TYPE* out         = reinterpret_cast<EXACT_TYPE*>(a_out);
-		auto*       right_parts = unffor_right_arr;
-		auto*       left_parts  = unffor_left_arr;
+		auto* out         = reinterpret_cast<EXACT_TYPE*>(a_out);
+		auto* right_parts = unffor_right_arr;
+		auto* left_parts  = unffor_left_arr;
 
 		// Decoding
 		for (size_t i = 0; i < config::VECTOR_SIZE; i++) {
@@ -180,4 +180,4 @@ struct AlpRD {
 };
 
 } // namespace alp
-#endif // BENCH_ALP_CUTTER_H
+#endif // ALP_RD_HPP

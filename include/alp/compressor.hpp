@@ -1,6 +1,8 @@
 #ifndef ALP_COMPRESSOR_HPP
 #define ALP_COMPRESSOR_HPP
 
+// NOLINTBEGIN
+
 #include "alp/encode.hpp"
 #include "alp/rd.hpp"
 #include "alp/state.hpp"
@@ -210,3 +212,5 @@ struct AlpCompressor {
 } // namespace alp
 
 #endif
+
+// NOLINTEND

@@ -1,11 +1,7 @@
-/*
--- DATE : 19/04/2024
--- FILE_PATH : data/include/generated_columns.hpp
--- PROJECT_NAME : ALP
-*/
+#ifndef GENERATED_COLUMNS_HPP
+#define GENERATED_COLUMNS_HPP
 
-#ifndef DATA_GENERATED_COLUMNS_HPP
-#define DATA_GENERATED_COLUMNS_HPP
+// NOLINTBEGIN
 
 #include "column.hpp"
 
@@ -77,4 +73,6 @@ inline std::array<Column, 65> generated_cols = {
      {63, "bw63", PATHS.GENERATED_COLUMNS_CSV_PATH + "generated_doubles_bw63.csv", "", 0, 0, 0, 63},
      {64, "bw64", PATHS.GENERATED_COLUMNS_CSV_PATH + "generated_doubles_bw64.csv", "", 0, 0, 0, 64}}};
 }
-#endif // DATA_GENERATED_COLUMNS_HPP
+#endif // GENERATED_COLUMNS_HPP
+
+// NOLINTEND

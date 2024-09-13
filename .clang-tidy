@@ -40,7 +40,11 @@ misc-throw-by-value-catch-by-reference,
 google-global-names-in-headers,
 llvm-header-guard,
 misc-definitions-in-headers,
-readability-container-size-empty'
+readability-container-size-empty,
+clang-analyzer-core.NonNullParamChecker,
+clang-analyzer-core.BitwiseShift,
+'
+
 WarningsAsErrors: '*'
 AnalyzeTemporaryDtors: false
 FormatStyle: none
@@ -53,6 +57,9 @@ ExtraArgs:
   - '-Wno-unused-command-line-argument' # similar issue
 
 CheckOptions:
+  # https://stackoverflow.com/questions/68475958/clang-tidy-emits-warning-when-compiling-with-c20-enabled
+  - key: readability-identifier-naming.TypeTemplateParameterIgnoredRegexp
+    value: expr-type
   - key: readability-identifier-naming.ClassCase
     value: aNy_CasE
   - key: readability-identifier-naming.EnumCase
@@ -99,3 +106,4 @@ CheckOptions:
     value: "m_"
   - key: readability-identifier-naming.PrivateMethodCase
     value: lower_case
+

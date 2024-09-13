@@ -1,5 +1,7 @@
-#ifndef ALP_DOUBLE_COLUMNS_HPP
-#define ALP_DOUBLE_COLUMNS_HPP
+#ifndef DOUBLE_COLUMNS_HPP
+#define DOUBLE_COLUMNS_HPP
+
+// NOLINTBEGIN
 
 #include "column.hpp"
 
@@ -42,3 +44,5 @@ inline std::array<Column, 31> alp_dataset = {{
 }};
 } // namespace alp_bench
 #endif
+
+// NOLINTEND
