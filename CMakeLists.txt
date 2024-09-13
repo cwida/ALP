@@ -18,6 +18,20 @@ include(CheckCXXCompilerFlag)
 include(CMakePrintHelpers)
 include(CTest)
 
+
+# Clang Tidy : ---------------------------------------------------------------------------------------------------------
+find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+if (NOT CLANG_TIDY_EXE)
+    message(FATAL_ERROR "-- FLS: clang-tidy not found.")
+else ()
+    set(CMAKE_CXX_CLANG_TIDY
+            ${CLANG_TIDY_EXE};
+            -header-filter=include;
+            -warnings-as-errors=*;)
+
+endif ()
+
+
 # CMAKE_SOURCE_DIR: ----------------------------------------------------------------------------------------------------
 add_compile_definitions(CMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 
@@ -51,6 +65,12 @@ if (ALP_BUILD_TESTING)
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
+
+    # Silence clang-tidy warnings from googletest
+    set_target_properties(gtest PROPERTIES CXX_CLANG_TIDY "")
+    set_target_properties(gtest_main PROPERTIES CXX_CLANG_TIDY "")
+    set_target_properties(gmock PROPERTIES CXX_CLANG_TIDY "")
+    set_target_properties(gmock_main PROPERTIES CXX_CLANG_TIDY "")
 
     enable_testing()
 

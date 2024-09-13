@@ -1,6 +1,8 @@
 #ifndef COLUMN_HPP
 #define COLUMN_HPP
 
+// NOLINTBEGIN
+
 #include <array>
 #include <cstdint>
 #include <string>
@@ -38,3 +40,5 @@ inline paths PATHS;
 } // namespace alp_bench
 
 #endif
+
+// NOLINTEND

@@ -1,5 +1,7 @@
-#ifndef ALP_EDGE_CASE_HPP
-#define ALP_EDGE_CASE_HPP
+#ifndef EDGE_CASE_HPP
+#define EDGE_CASE_HPP
+
+// NOLINTBEGIN
 
 #include "column.hpp"
 
@@ -11,3 +13,5 @@ inline std::array<Column, 1> edge_case = {{
 }};
 } // namespace alp_bench
 #endif
+
+// NOLINTEND

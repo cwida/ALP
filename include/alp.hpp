@@ -1,5 +1,5 @@
-#ifndef ALP_ALP_HPP
-#define ALP_ALP_HPP
+#ifndef ALP_HPP
+#define ALP_HPP
 
 #include "alp/compressor.hpp"
 #include "alp/config.hpp"
@@ -15,4 +15,4 @@
 #include "fastlanes/ffor.hpp"
 #include "fastlanes/unffor.hpp"
 
-#endif // ALP_ALP_HPP
+#endif // ALP_HPP

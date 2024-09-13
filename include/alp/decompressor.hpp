@@ -1,6 +1,8 @@
 #ifndef ALP_DECOMPRESSOR_HPP
 #define ALP_DECOMPRESSOR_HPP
 
+// NOLINTBEGIN
+
 #include "alp/decode.hpp"
 #include "alp/storer.hpp"
 #include "alp/utils.hpp"
@@ -152,3 +154,5 @@ struct AlpDecompressor {
 } // namespace alp
 
 #endif
+
+// NOLINTEND

@@ -1,6 +1,7 @@
-#ifndef ALP_FLOAT_COLUMNS_HPP
-#define ALP_FLOAT_COLUMNS_HPP
+#ifndef FLOAT_COLUMNS_HPP
+#define FLOAT_COLUMNS_HPP
 
+// NOLINTBEGIN
 #include "column.hpp"
 
 namespace alp_bench {
@@ -17,3 +18,5 @@ inline std::array<Column, 4> sp_datasets = {{
 }};
 } // namespace alp_bench
 #endif
+
+// NOLINTEND

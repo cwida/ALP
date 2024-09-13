@@ -1,11 +1,7 @@
-/*
--- DATE : 17/04/2024
--- FILE_PATH : benchmarks/bench_full_dataset/result.hpp
--- PROJECT_NAME : ALP
-*/
+#ifndef ALP_RESULT_HPP
+#define ALP_RESULT_HPP
 
-#ifndef BENCHMARKS_RESULT_HPP
-#define BENCHMARKS_RESULT_HPP
+// NOLINTBEGIN
 
 #include <iomanip>
 #include <sstream>
@@ -46,4 +42,6 @@ inline std::unordered_map<std::string, std::string> results = {
 
 } // namespace alp_bench
 
-#endif // BENCHMARKS_RESULT_HPP
+#endif // ALP_RESULT_HPP
+
+// NOLINTEND

@@ -1,9 +1,3 @@
-/*
--- DATE : 18/04/2024
--- FILE_PATH : include/alp/falp.hpp
--- PROJECT_NAME : ALP
-*/
-
 #ifndef ALP_FALP_HPP
 #define ALP_FALP_HPP
 
@@ -108,4 +102,4 @@ void falp(const uint64_t* __restrict in,
 } // namespace arm64v8
 }} // namespace generated::falp
 
-#endif // FALP_HPP
+#endif // ALP_FALP_HPP
