@@ -94,9 +94,6 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build -j 16
 
-      - name: run simple_compress
-        run: ${{github.workspace}}/build/example/simple_compress
-
       - name: run rd_compress
         run: ${{github.workspace}}/build/example/rd_compress
 
