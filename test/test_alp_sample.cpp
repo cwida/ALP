@@ -3,6 +3,8 @@
 #include "test/mapper.hpp"
 #include "gtest/gtest.h"
 
+// NOLINTBEGIN
+
 using namespace alp::config;
 
 /// ALP encoded size per vector  = bit_width + factor-idx + exponent-idx + ffor base;
@@ -186,3 +188,5 @@ TEST_F(alp_test, test_alp_on_edge_case) {
 		test_column(col);
 	}
 }
+
+// NOLINTEND

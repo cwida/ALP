@@ -1,5 +1,7 @@
-#ifndef EXAMPLE_HELPER_HPP
-#define EXAMPLE_HELPER_HPP
+#ifndef HELPER_HPP
+#define HELPER_HPP
+
+// NOLINTBEGIN
 
 #include <cstddef>
 #include <cstdint>
@@ -22,4 +24,6 @@ inline void fill_random_data(T* in, size_t tuples_to_generate, uint8_t precision
 
 } // namespace example
 
-#endif // EXAMPLE_HELPER_HPP
+#endif
+
+// NOLINTEND

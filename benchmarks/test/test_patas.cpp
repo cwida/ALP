@@ -3,6 +3,8 @@
 #include "gtest/gtest.h"
 #include <fstream>
 
+// NOLINTBEGIN
+
 class patas_test : public ::testing::Test {
 public:
 	uint8_t*  data_arr;
@@ -103,3 +105,5 @@ TEST_F(patas_test, one_vec) {
 		ifile.close();
 	}
 }
+
+// NOLINTEND

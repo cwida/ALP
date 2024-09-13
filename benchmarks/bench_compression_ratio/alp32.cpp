@@ -5,6 +5,8 @@
 #include "gtest/gtest.h"
 #include <unordered_map>
 
+// NOLINTBEGIN
+
 using namespace alp::config;
 /*
  * ALP overhead per vector in a hypothetic file format = bit_width + factor-idx + exponent-idx + ffor base;
@@ -210,3 +212,6 @@ TEST_F(alp32_test, test_alprd32_on_whole_datasets) {
 		}
 	}
 }
+
+
+// NOLINTEND

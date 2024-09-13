@@ -4,6 +4,8 @@
 #include "test/mapper.hpp"
 #include "gtest/gtest.h"
 
+// NOLINTBEGIN
+
 class zstd_test : public ::testing::Test {
 public:
 	double* dbl_arr;
@@ -88,3 +90,5 @@ TEST_F(zstd_test, test_zstd_on_whole_datasets) {
 		ofile << std::fixed << std::setprecision(2) << dataset.name << "," << compression_ratio << std::endl;
 	}
 }
+
+// NOLINTEND

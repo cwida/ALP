@@ -4,6 +4,8 @@
 #include "test/mapper.hpp"
 #include "gtest/gtest.h"
 
+// NOLINTBEGIN
+
 class chimp128_test : public ::testing::Test {
 public:
 	uint8_t*                                             data_arr;
@@ -184,3 +186,5 @@ TEST_F(chimp128_test, test_chimp128_on_whole_datasets) {
 		      << std::endl;
 	}
 }
+
+// NOLINTEND

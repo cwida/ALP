@@ -4,6 +4,8 @@
 #include <cassert>
 #include <iostream>
 
+// NOLINTBEGIN
+
 using namespace alp;
 int main() {
 	constexpr std::array<int, 3> n_tup_vec {1, 1025, 1024 * 100};
@@ -50,3 +52,5 @@ int main() {
 
 	return 0;
 }
+
+// NOLINTEND

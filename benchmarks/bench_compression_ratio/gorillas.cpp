@@ -4,6 +4,8 @@
 #include "test/mapper.hpp"
 #include "gtest/gtest.h"
 
+// NOLINTBEGIN
+
 class gorillas_test : public ::testing::Test {
 public:
 	double*                                              dbl_arr;
@@ -131,3 +133,5 @@ TEST_F(gorillas_test, test_gorillas_on_whole_datasets) {
 		      << std::endl;
 	}
 }
+
+// NOLINTEND
