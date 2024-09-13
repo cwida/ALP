@@ -1,6 +1,3 @@
-add_executable(simple_compress simple_compress.cpp)
-target_link_libraries(simple_compress PRIVATE ALP)
-
 add_executable(simple_compress32 simple_compress32.cpp)
 target_link_libraries(simple_compress32 PRIVATE ALP)
 
