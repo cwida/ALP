@@ -27,23 +27,23 @@ namespace alp {
 
 // Default template, not defined intentionally
 template <typename T>
-struct alp_inner_t;
+struct inner_t;
 
 // Specialization for float -> uint32_t
 template <>
-struct alp_inner_t<float> {
-	using type = uint32_t;
+struct inner_t<float> {
+	using ut = uint32_t;
 };
 
 // Specialization for double -> uint64_t
 template <>
-struct alp_inner_t<double> {
-	using type = uint64_t;
+struct inner_t<double> {
+	using ut = uint64_t;
 };
 
 template <typename PT>
 struct state {
-	using inner_t = typename alp_inner_t<PT>::type;
+	using inner_t = typename inner_t<PT>::ut;
 	Scheme   scheme {Scheme::ALP};
 	uint16_t vector_size {config::VECTOR_SIZE};
 	uint16_t exceptions_count {0};
@@ -70,8 +70,8 @@ struct state {
 
 template <typename PT>
 struct encoder {
-	using inner_t                                = typename alp_inner_t<PT>::type;
-	static constexpr uint8_t EXACT_TYPE_BIT_SIZE = sizeof(inner_t) * 8;
+	using UT                                     = typename inner_t<PT>::ut;
+	static constexpr uint8_t EXACT_TYPE_BIT_SIZE = sizeof(UT) * 8;
 
 	/*
 	 * Check for special values which are impossible for ALP to encode
