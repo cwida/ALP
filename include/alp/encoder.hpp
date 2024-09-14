@@ -84,6 +84,7 @@ struct encoder {
 
 	template <typename UT>
 	static uint8_t count_bits(UT x) {
+		if (x == 0) { return 0; }
 		if constexpr (std::is_same_v<UT, uint64_t>) {
 			return 64 - __builtin_clzll(x);
 		} else {
