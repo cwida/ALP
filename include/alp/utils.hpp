@@ -8,7 +8,7 @@
 
 namespace alp {
 
-template <class T>
+template <class PT>
 struct AlpApiUtils {
 
 	static size_t get_rowgroup_count(size_t values_count) {
@@ -32,12 +32,12 @@ struct AlpApiUtils {
 		return ((n + (val - 1)) / val) * val;
 	}
 
-	static void fill_incomplete_alp_vector(T*        input_vector,
-	                                       T*        exceptions,
-	                                       uint16_t* exceptions_positions,
-	                                       uint16_t* exceptions_count,
-	                                       int64_t*  encoded_integers,
-	                                       state&    stt) {
+	static void fill_incomplete_alp_vector(PT*        input_vector,
+	                                       PT*        exceptions,
+	                                       uint16_t*  exceptions_positions,
+	                                       uint16_t*  exceptions_count,
+	                                       int64_t*   encoded_integers,
+	                                       state<PT>& stt) {
 
 		static auto* TMP_INDEX = new (std::align_val_t {64}) uint64_t[1024];
 
@@ -46,8 +46,8 @@ struct AlpApiUtils {
 			input_vector[i] = 0.0;
 		}
 		// We encode the vector filled with the dummy values
-		encoder<T>::encode(input_vector, exceptions, exceptions_positions, exceptions_count, encoded_integers, stt);
-		T a_non_exception_value = 0.0;
+		encoder<PT>::encode(input_vector, exceptions, exceptions_positions, exceptions_count, encoded_integers, stt);
+		PT a_non_exception_value = 0.0;
 		// We lookup the first non exception value from the true vector values
 		for (size_t i {0}; i < stt.vector_size; i++) {
 			if (i != TMP_INDEX[i]) {
@@ -61,9 +61,9 @@ struct AlpApiUtils {
 		}
 	}
 
-	static void fill_incomplete_alprd_vector(T* input_vector, const state& stt) {
+	static void fill_incomplete_alprd_vector(PT* input_vector, const state<PT>& stt) {
 		// We just fill the vector with the first value
-		const T first_vector_value = input_vector[0];
+		const PT first_vector_value = input_vector[0];
 		for (size_t i = stt.vector_size; i < config::VECTOR_SIZE; i++) {
 			input_vector[i] = first_vector_value;
 		}

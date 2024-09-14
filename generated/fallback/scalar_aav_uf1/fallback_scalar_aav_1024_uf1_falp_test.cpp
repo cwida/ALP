@@ -47,7 +47,7 @@ TEST_F(fallback_scalar_aav_1024_uf1_falp, fused) {
 	for (auto& dataset : alp_bench::alp_dataset) {
 		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		ASSERT_EQ(ifile.fail(), false);
-		alp::state stt;
+		alp::state<double> stt;
 		if (dataset.suitable_for_cutting) { continue; }
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
 		double num = 0.0;
@@ -83,7 +83,7 @@ TEST_F(fallback_scalar_aav_1024_uf1_falp, unfused) {
 	for (auto& dataset : alp_bench::alp_dataset) {
 		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		ASSERT_EQ(ifile.fail(), false);
-		alp::state stt;
+		alp::state<double> stt;
 		if (dataset.suitable_for_cutting) { continue; }
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
 		double num = 0.0;

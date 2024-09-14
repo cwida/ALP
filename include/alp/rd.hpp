@@ -9,10 +9,10 @@
 
 namespace alp {
 
-template <class T>
-struct AlpRD {
+template <class PT>
+struct rd_encoder {
 
-	using EXACT_TYPE                            = typename FloatingToExact<T>::type;
+	using EXACT_TYPE                            = typename FloatingToExact<PT>::type;
 	static constexpr uint8_t EXACT_TYPE_BITSIZE = sizeof(EXACT_TYPE) * 8;
 
 	//! Estimate the bits per value of ALPRD within a sample
@@ -26,7 +26,7 @@ struct AlpRD {
 	}
 
 	template <bool PERSIST_DICT>
-	static double build_left_parts_dictionary(const T* in_p, bw_t right_bit_width, state& stt) {
+	static double build_left_parts_dictionary(const PT* in_p, bw_t right_bit_width, state<PT>& stt) {
 		std::unordered_map<EXACT_TYPE, int32_t> left_parts_hash;
 		std::vector<std::pair<int, uint64_t>>   left_parts_sorted_repetitions;
 
@@ -81,7 +81,7 @@ struct AlpRD {
 		return estimated_size;
 	}
 
-	static inline void find_best_dictionary(T* smp_arr, state& stt) {
+	static inline void find_best_dictionary(PT* smp_arr, state<PT>& stt) {
 		bw_t   right_bit_width {0};
 		double best_dict_size = std::numeric_limits<double>::max();
 
@@ -101,13 +101,13 @@ struct AlpRD {
 	/*
 	 * ALP RD Encode
 	 */
-	static inline void encode(const T*    dbl_arr,
+	static inline void encode(const PT*   dbl_arr,
 	                          uint16_t*   exceptions,
 	                          uint16_t*   exception_positions,
 	                          uint16_t*   exceptions_count_p,
 	                          EXACT_TYPE* right_parts,
 	                          uint16_t*   left_parts,
-	                          state&      stt) {
+	                          state<PT>&  stt) {
 		const auto* in = reinterpret_cast<const EXACT_TYPE*>(dbl_arr);
 
 		// Cutting the floating point values
@@ -144,13 +144,13 @@ struct AlpRD {
 	/*
 	 * ALP RD Decode
 	 */
-	static inline void decode(T*          a_out,
+	static inline void decode(PT*         a_out,
 	                          EXACT_TYPE* unffor_right_arr,
 	                          uint16_t*   unffor_left_arr,
 	                          uint16_t*   exceptions,
 	                          uint16_t*   exceptions_positions,
 	                          uint16_t*   exceptions_count,
-	                          state&      stt) {
+	                          state<PT>&  stt) {
 
 		auto* out         = reinterpret_cast<EXACT_TYPE*>(a_out);
 		auto* right_parts = unffor_right_arr;
@@ -172,9 +172,10 @@ struct AlpRD {
 		}
 	}
 
-	static inline void init(T* data_column, size_t column_offset, size_t tuples_count, T* sample_arr, state& stt) {
-		stt.scheme           = SCHEME::ALP_RD;
-		stt.sampled_values_n = sampler::first_level_sample<T>(data_column, column_offset, tuples_count, sample_arr);
+	static inline void
+	init(PT* data_column, size_t column_offset, size_t tuples_count, PT* sample_arr, state<PT>& stt) {
+		stt.scheme           = Scheme::ALP_RD;
+		stt.sampled_values_n = sampler::first_level_sample<PT>(data_column, column_offset, tuples_count, sample_arr);
 		find_best_dictionary(sample_arr, stt);
 	}
 };
