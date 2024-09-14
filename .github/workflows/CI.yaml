@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        platform: [ ubuntu-latest ]
+        platform: [ ubuntu-latest, macos-latest ]
         BUILD_TYPE: [ Debug, Release ]
         cxx: [ clang++ ]
     runs-on: ${{ matrix.platform }}
@@ -137,7 +137,6 @@ jobs:
         cc: [ clang ]
         cxx: [ clang++ ]
     runs-on: ${{ matrix.platform }}
-
 
     steps:
       - uses: actions/checkout@v4
