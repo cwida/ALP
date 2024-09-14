@@ -33,17 +33,21 @@ struct inner_t;
 template <>
 struct inner_t<float> {
 	using ut = uint32_t;
+	using st = int32_t;
 };
 
 // Specialization for double -> uint64_t
 template <>
 struct inner_t<double> {
 	using ut = uint64_t;
+	using st = int64_t;
 };
 
 template <typename PT>
 struct state {
-	using inner_t = typename inner_t<PT>::ut;
+	using UT = typename inner_t<PT>::ut;
+	using ST = typename inner_t<PT>::ut;
+
 	Scheme   scheme {Scheme::ALP};
 	uint16_t vector_size {config::VECTOR_SIZE};
 	uint16_t exceptions_count {0};
@@ -55,12 +59,12 @@ struct state {
 	uint8_t                          exp {};
 	uint8_t                          fac {};
 	bw_t                             bit_width {};
-	int64_t                          for_base {};
+	ST                               for_base {};
 
 	// ALP RD
 	bw_t                                   right_bit_width {0};
 	bw_t                                   left_bit_width {0};
-	inner_t                                right_for_base {0}; // Always 0
+	UT                                     right_for_base {0}; // Always 0
 	uint16_t                               left_for_base {0};  // Always 0
 	uint16_t                               left_parts_dict[config::MAX_RD_DICTIONARY_SIZE] {};
 	uint8_t                                actual_dictionary_size {};
@@ -70,7 +74,9 @@ struct state {
 
 template <typename PT>
 struct encoder {
-	using UT                                     = typename inner_t<PT>::ut;
+	using UT = typename inner_t<PT>::ut;
+	using ST = typename inner_t<PT>::st;
+
 	static constexpr uint8_t EXACT_TYPE_BIT_SIZE = sizeof(UT) * 8;
 
 	/*
@@ -84,19 +90,19 @@ struct encoder {
 
 	//! Scalar encoding a single value with ALP
 	template <bool SAFE = true>
-	static int64_t encode_value(const PT value, const factor_idx_t factor_idx, const exponent_idx_t exponent_idx) {
+	static ST encode_value(const PT value, const factor_idx_t factor_idx, const exponent_idx_t exponent_idx) {
 		PT tmp_encoded_value = value * Constants<PT>::EXP_ARR[exponent_idx] * Constants<PT>::FRAC_ARR[factor_idx];
 		if constexpr (SAFE) {
 			if (is_impossible_to_encode(tmp_encoded_value)) { return ENCODING_UPPER_LIMIT; }
 		}
 		tmp_encoded_value = tmp_encoded_value + Constants<PT>::MAGIC_NUMBER - Constants<PT>::MAGIC_NUMBER;
-		return static_cast<int64_t>(tmp_encoded_value);
+		return static_cast<ST>(tmp_encoded_value);
 	}
 
 	//! Analyze FFOR to obtain bitwidth and frame-of-reference value
-	static inline void analyze_ffor(const int64_t* input_vector, bw_t& bit_width, int64_t* base_for) {
-		auto min = std::numeric_limits<int64_t>::max();
-		auto max = std::numeric_limits<int64_t>::min();
+	static inline void analyze_ffor(const ST* input_vector, bw_t& bit_width, ST* base_for) {
+		auto min = std::numeric_limits<ST>::max();
+		auto max = std::numeric_limits<ST>::min();
 
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
 			if (input_vector[i] < min) { min = input_vector[i]; }
@@ -152,13 +158,13 @@ struct encoder {
 					uint16_t non_exceptions_count       = {0};
 					uint32_t estimated_bits_per_value   = {0};
 					uint64_t estimated_compression_size = {0};
-					int64_t  max_encoded_value          = {std::numeric_limits<int64_t>::min()};
-					int64_t  min_encoded_value          = {std::numeric_limits<int64_t>::max()};
+					ST       max_encoded_value          = {std::numeric_limits<ST>::min()};
+					ST       min_encoded_value          = {std::numeric_limits<ST>::max()};
 
 					for (size_t i = 0; i < samples_size; i++) {
-						const PT      actual_value  = smp_arr[smp_offset + i];
-						const int64_t encoded_value = encode_value(actual_value, factor_idx, exp_ref);
-						const PT      decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exp_ref);
+						const PT actual_value  = smp_arr[smp_offset + i];
+						const ST encoded_value = encode_value(actual_value, factor_idx, exp_ref);
+						const PT decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exp_ref);
 						if (decoded_value == actual_value) {
 							non_exceptions_count++;
 							if (encoded_value > max_encoded_value) { max_encoded_value = encoded_value; }
@@ -252,13 +258,13 @@ struct encoder {
 			uint32_t  exception_count {0};
 			uint32_t  estimated_bits_per_value {0};
 			uint64_t  estimated_compression_size {0};
-			int64_t   max_encoded_value {std::numeric_limits<int64_t>::min()};
-			int64_t   min_encoded_value {std::numeric_limits<int64_t>::max()};
+			ST        max_encoded_value {std::numeric_limits<ST>::min()};
+			ST        min_encoded_value {std::numeric_limits<ST>::max()};
 
 			for (size_t sample_idx = 0; sample_idx < input_vector_size; sample_idx += sample_increments) {
-				const PT      actual_value  = input_vector[sample_idx];
-				const int64_t encoded_value = encode_value(actual_value, factor_idx, exp_idx);
-				const PT      decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exp_idx);
+				const PT actual_value  = input_vector[sample_idx];
+				const ST encoded_value = encode_value(actual_value, factor_idx, exp_idx);
+				const PT decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exp_idx);
 				if (decoded_value == actual_value) {
 					if (encoded_value > max_encoded_value) { max_encoded_value = encoded_value; }
 					if (encoded_value < min_encoded_value) { min_encoded_value = encoded_value; }
@@ -302,7 +308,7 @@ struct encoder {
 	                                   double*              exceptions,
 	                                   exp_p_t*             exceptions_positions,
 	                                   exp_c_t*             exceptions_count,
-	                                   int64_t*             encoded_integers,
+	                                   ST*                  encoded_integers,
 	                                   const factor_idx_t   factor_idx,
 	                                   const exponent_idx_t exponent_idx) {
 		alignas(64) static double   ENCODED_DBL_ARR[1024];
@@ -332,10 +338,10 @@ struct encoder {
 			auto const actual_value = DBL_ARR_WITHOUT_SPECIALS[i];
 
 			// Attempt conversion
-			const int64_t encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
-			encoded_integers[i]         = encoded_value;
-			const double decoded_value  = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
-			ENCODED_DBL_ARR[i]          = decoded_value;
+			const ST encoded_value     = encode_value<false>(actual_value, factor_idx, exponent_idx);
+			encoded_integers[i]        = encoded_value;
+			const double decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
+			ENCODED_DBL_ARR[i]         = decoded_value;
 		}
 
 #ifdef __AVX512F__
@@ -357,7 +363,7 @@ struct encoder {
 		}
 #endif
 
-		int64_t a_non_exception_value = 0;
+		ST a_non_exception_value = 0;
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
 			if (i != INDEX_ARR[i]) {
 				a_non_exception_value = encoded_integers[i];
@@ -382,7 +388,7 @@ struct encoder {
 	                                   float*               exceptions,
 	                                   exp_p_t*             exceptions_positions,
 	                                   exp_c_t*             exceptions_count,
-	                                   int64_t*             encoded_integers,
+	                                   ST*                  encoded_integers,
 	                                   const factor_idx_t   factor_idx,
 	                                   const exponent_idx_t exponent_idx) {
 		alignas(64) static float    ENCODED_DBL_ARR[1024];
@@ -412,10 +418,10 @@ struct encoder {
 			auto const actual_value = DBL_ARR_WITHOUT_SPECIALS[i];
 
 			// Attempt conversion
-			const int64_t encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
-			encoded_integers[i]         = encoded_value;
-			const float decoded_value   = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
-			ENCODED_DBL_ARR[i]          = decoded_value;
+			const ST encoded_value    = encode_value<false>(actual_value, factor_idx, exponent_idx);
+			encoded_integers[i]       = encoded_value;
+			const float decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
+			ENCODED_DBL_ARR[i]        = decoded_value;
 		}
 
 #ifdef __AVX512F__
@@ -437,7 +443,7 @@ struct encoder {
 		}
 #endif
 
-		int64_t a_non_exception_value = 0;
+		ST a_non_exception_value = 0;
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
 			if (i != INDEX_ARR[i]) {
 				a_non_exception_value = encoded_integers[i];
@@ -461,7 +467,7 @@ struct encoder {
 	                          PT*        exceptions,
 	                          uint16_t*  exceptions_positions,
 	                          uint16_t*  exceptions_count,
-	                          int64_t*   encoded_integers,
+	                          ST*        encoded_integers,
 	                          state<PT>& stt) {
 
 		if (stt.k_combinations > 1) { // Only if more than 1 found top combinations we sample and search
