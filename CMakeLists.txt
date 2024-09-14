@@ -6,7 +6,6 @@ project(ALP)
 add_compile_options(-fPIC)
 
 # Options : ------------------------------------------------------------------------------------------------------------
-option(ALP_BUILD_EXAMPLE "Build Example" OFF)
 option(ALP_BUILD_TESTING "Build Test" OFF)
 option(ALP_BUILD_BENCHMARKING "Build Benchmark" OFF)
 option(ALP_BUILD_BENCHMARKING_COMPRESSION_RATIO "Build Benchmarking compression ratio" OFF)
@@ -40,16 +39,6 @@ include_directories(include)
 
 # Src: -------------------------------------------------------------------------------------------------------
 add_subdirectory(src)
-
-# Example : ------------------------------------------------------------------------------------------------------------
-if (ALP_BUILD_EXAMPLE)
-    message("---------------------------------------------------------------------------------------------------------")
-    message("-- ALP: Example:")
-    include_directories(${CMAKE_SOURCE_DIR}/data/include)
-    include_directories(${CMAKE_SOURCE_DIR}/example/include)
-
-    add_subdirectory(${CMAKE_SOURCE_DIR}/example)
-endif ()
 
 # Test : ---------------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_TESTING)

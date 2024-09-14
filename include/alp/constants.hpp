@@ -12,19 +12,6 @@ enum class Scheme : uint8_t {
 	ALP,
 };
 
-template <class T>
-struct FloatingToExact {};
-
-template <>
-struct FloatingToExact<double> {
-	using type = uint64_t;
-};
-
-template <>
-struct FloatingToExact<float> {
-	using type = uint32_t;
-};
-
 inline constexpr uint8_t SAMPLING_EARLY_EXIT_THRESHOLD    = 2;
 inline constexpr double  ENCODING_UPPER_LIMIT             = 9223372036854774784;
 inline constexpr double  ENCODING_LOWER_LIMIT             = -9223372036854774784;

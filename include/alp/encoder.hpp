@@ -70,9 +70,8 @@ struct state {
 
 template <typename PT>
 struct encoder {
-
-	using EXACT_TYPE                            = typename FloatingToExact<PT>::type;
-	static constexpr uint8_t EXACT_TYPE_BITSIZE = sizeof(EXACT_TYPE) * 8;
+	using inner_t                                = typename alp_inner_t<PT>::type;
+	static constexpr uint8_t EXACT_TYPE_BIT_SIZE = sizeof(inner_t) * 8;
 
 	/*
 	 * Check for special values which are impossible for ALP to encode
