@@ -65,10 +65,10 @@ public:
 	uint16_t* rd_exc_arr {};
 	uint16_t* pos_arr {};
 	uint16_t* exc_c_arr {};
-	int64_t*  ffor_arr {};
+	int64_t*  ffor_buf {};
 	int64_t*  unffor_arr {};
-	int64_t*  base_arr {};
-	int64_t*  encoded_arr {};
+	int64_t*  base_buf {};
+	int64_t*  encoded_buf {};
 	double*   decoded_buf {};
 	double*   sample_buf {};
 	uint64_t* ffor_right_buf {};
@@ -86,12 +86,12 @@ public:
 		exc_arr          = new double[VECTOR_SIZE];
 		rd_exc_arr       = new uint16_t[VECTOR_SIZE];
 		pos_arr          = new uint16_t[VECTOR_SIZE];
-		encoded_arr      = new int64_t[VECTOR_SIZE];
+		encoded_buf      = new int64_t[VECTOR_SIZE];
 		decoded_buf      = new double[VECTOR_SIZE];
 		exc_c_arr        = new uint16_t[VECTOR_SIZE];
-		ffor_arr         = new int64_t[VECTOR_SIZE];
+		ffor_buf         = new int64_t[VECTOR_SIZE];
 		unffor_arr       = new int64_t[VECTOR_SIZE];
-		base_arr         = new int64_t[VECTOR_SIZE];
+		base_buf         = new int64_t[VECTOR_SIZE];
 		sample_buf       = new double[VECTOR_SIZE];
 		right_buf        = new uint64_t[VECTOR_SIZE];
 		left_arr         = new uint16_t[VECTOR_SIZE];
@@ -107,12 +107,12 @@ public:
 		delete[] exc_arr;
 		delete[] rd_exc_arr;
 		delete[] pos_arr;
-		delete[] encoded_arr;
+		delete[] encoded_buf;
 		delete[] decoded_buf;
 		delete[] exc_c_arr;
-		delete[] ffor_arr;
+		delete[] ffor_buf;
 		delete[] unffor_arr;
-		delete[] base_arr;
+		delete[] base_buf;
 		delete[] sample_buf;
 		delete[] right_buf;
 		delete[] left_arr;
@@ -165,13 +165,13 @@ TEST_F(alp_test, test_alp_on_whole_datasets) {
 				rowgroup_counter = 0;
 				alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
 			}
-			alp::encoder<double>::encode(intput_buf, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
-			alp::encoder<double>::analyze_ffor(encoded_arr, bit_width, base_arr);
-			ffor::ffor(encoded_arr, ffor_arr, bit_width, base_arr);
+			alp::encoder<double>::encode(intput_buf, exc_arr, pos_arr, exc_c_arr, encoded_buf, stt);
+			alp::encoder<double>::analyze_ffor(encoded_buf, bit_width, base_buf);
+			ffor::ffor(encoded_buf, ffor_buf, bit_width, base_buf);
 
-			unffor::unffor(ffor_arr, unffor_arr, bit_width, base_arr);
-			alp::AlpDecode<double>::decode(unffor_arr, stt.fac, stt.exp, decoded_buf);
-			alp::AlpDecode<double>::patch_exceptions(decoded_buf, exc_arr, pos_arr, exc_c_arr);
+			unffor::unffor(ffor_buf, unffor_arr, bit_width, base_buf);
+			alp::decoder<double>::decode(unffor_arr, stt.fac, stt.exp, decoded_buf);
+			alp::decoder<double>::patch_exceptions(decoded_buf, exc_arr, pos_arr, exc_c_arr);
 
 			for (size_t j = 0; j < VECTOR_SIZE; j++) {
 				auto l = intput_buf[j];
