@@ -60,7 +60,7 @@ double get_average_exception_count(std::vector<alp_bench::VectorMetadata>& vecto
 
 class alp_test : public ::testing::Test {
 public:
-	double*   dbl_arr {};
+	double*   intput_buf {};
 	double*   exc_arr {};
 	uint16_t* rd_exc_arr {};
 	uint16_t* pos_arr {};
@@ -69,56 +69,54 @@ public:
 	int64_t*  unffor_arr {};
 	int64_t*  base_arr {};
 	int64_t*  encoded_arr {};
-	double*   dec_dbl_arr {};
-	double*   smp_arr {};
-	uint64_t* ffor_right_arr {};
+	double*   decoded_buf {};
+	double*   sample_buf {};
+	uint64_t* ffor_right_buf {};
 	uint16_t* ffor_left_arr {};
-	uint64_t* right_arr {};
+	uint64_t* right_buf {};
 	uint16_t* left_arr {};
-	uint64_t* unffor_right_arr {};
+	uint64_t* unffor_right_buf {};
 	uint16_t* unffor_left_arr {};
-	double*   glue_arr {};
-
-	alp::state state;
+	double*   glue_buf {};
 
 	uint8_t bit_width {};
 
 	void SetUp() override {
-		dbl_arr          = new double[VECTOR_SIZE];
+		intput_buf       = new double[VECTOR_SIZE];
 		exc_arr          = new double[VECTOR_SIZE];
 		rd_exc_arr       = new uint16_t[VECTOR_SIZE];
 		pos_arr          = new uint16_t[VECTOR_SIZE];
 		encoded_arr      = new int64_t[VECTOR_SIZE];
-		dec_dbl_arr      = new double[VECTOR_SIZE];
+		decoded_buf      = new double[VECTOR_SIZE];
 		exc_c_arr        = new uint16_t[VECTOR_SIZE];
 		ffor_arr         = new int64_t[VECTOR_SIZE];
 		unffor_arr       = new int64_t[VECTOR_SIZE];
 		base_arr         = new int64_t[VECTOR_SIZE];
-		smp_arr          = new double[VECTOR_SIZE];
-		right_arr        = new uint64_t[VECTOR_SIZE];
+		sample_buf       = new double[VECTOR_SIZE];
+		right_buf        = new uint64_t[VECTOR_SIZE];
 		left_arr         = new uint16_t[VECTOR_SIZE];
-		ffor_right_arr   = new uint64_t[VECTOR_SIZE];
+		ffor_right_buf   = new uint64_t[VECTOR_SIZE];
 		ffor_left_arr    = new uint16_t[VECTOR_SIZE];
-		unffor_right_arr = new uint64_t[VECTOR_SIZE];
+		unffor_right_buf = new uint64_t[VECTOR_SIZE];
 		unffor_left_arr  = new uint16_t[VECTOR_SIZE];
-		glue_arr         = new double[VECTOR_SIZE];
+		glue_buf         = new double[VECTOR_SIZE];
 	}
 
 	~alp_test() override {
-		delete[] dbl_arr;
+		delete[] intput_buf;
 		delete[] exc_arr;
 		delete[] rd_exc_arr;
 		delete[] pos_arr;
 		delete[] encoded_arr;
-		delete[] dec_dbl_arr;
+		delete[] decoded_buf;
 		delete[] exc_c_arr;
 		delete[] ffor_arr;
 		delete[] unffor_arr;
 		delete[] base_arr;
-		delete[] smp_arr;
-		delete[] right_arr;
+		delete[] sample_buf;
+		delete[] right_buf;
 		delete[] left_arr;
-		delete[] unffor_right_arr;
+		delete[] unffor_right_buf;
 		delete[] unffor_left_arr;
 	}
 };
@@ -144,42 +142,42 @@ TEST_F(alp_test, test_alp_on_whole_datasets) {
 
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
 		size_t                                 tuples_count;
-		auto*      data_column = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
-		double     value_to_encode {0.0};
-		size_t     vector_idx {0};
-		size_t     rowgroup_counter {0};
-		size_t     rowgroup_offset {0};
-		alp::state stt;
-		size_t     rowgroups_count = std::ceil(static_cast<double>(tuples_count) / ROWGROUP_SIZE);
-		size_t     vectors_count   = tuples_count / VECTOR_SIZE;
+		auto*              data_column = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
+		double             value_to_encode {0.0};
+		size_t             vector_idx {0};
+		size_t             rowgroup_counter {0};
+		size_t             rowgroup_offset {0};
+		alp::state<double> stt;
+		size_t             rowgroups_count = std::ceil(static_cast<double>(tuples_count) / ROWGROUP_SIZE);
+		size_t             vectors_count   = tuples_count / VECTOR_SIZE;
 		/* Init */
-		alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
+		alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
 		/* Encode - Decode - Validate. */
 		for (size_t i = 0; i < tuples_count; i++) {
-			value_to_encode     = data_column[i];
-			dbl_arr[vector_idx] = value_to_encode;
-			vector_idx          = vector_idx + 1;
-			rowgroup_offset     = rowgroup_offset + 1;
-			rowgroup_counter    = rowgroup_counter + 1;
+			value_to_encode        = data_column[i];
+			intput_buf[vector_idx] = value_to_encode;
+			vector_idx             = vector_idx + 1;
+			rowgroup_offset        = rowgroup_offset + 1;
+			rowgroup_counter       = rowgroup_counter + 1;
 
 			if (vector_idx != VECTOR_SIZE) { continue; }
 			if (rowgroup_counter == ROWGROUP_SIZE) {
 				rowgroup_counter = 0;
-				alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
+				alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
 			}
-			alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
+			alp::encoder<double>::encode(intput_buf, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
 			alp::encoder<double>::analyze_ffor(encoded_arr, bit_width, base_arr);
 			ffor::ffor(encoded_arr, ffor_arr, bit_width, base_arr);
 
 			unffor::unffor(ffor_arr, unffor_arr, bit_width, base_arr);
-			alp::AlpDecode<double>::decode(unffor_arr, stt.fac, stt.exp, dec_dbl_arr);
-			alp::AlpDecode<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
+			alp::AlpDecode<double>::decode(unffor_arr, stt.fac, stt.exp, decoded_buf);
+			alp::AlpDecode<double>::patch_exceptions(decoded_buf, exc_arr, pos_arr, exc_c_arr);
 
 			for (size_t j = 0; j < VECTOR_SIZE; j++) {
-				auto l = dbl_arr[j];
-				auto r = dec_dbl_arr[j];
+				auto l = intput_buf[j];
+				auto r = decoded_buf[j];
 				if (l != r) { std::cerr << j << ", " << rowgroup_offset << ", " << dataset.name << "\n"; }
-				ASSERT_EQ(dbl_arr[j], dec_dbl_arr[j]);
+				ASSERT_EQ(intput_buf[j], decoded_buf[j]);
 			}
 			compression_metadata.push_back({bit_width, exc_c_arr[0]});
 			vector_idx = 0;
@@ -210,29 +208,29 @@ TEST_F(alp_test, test_alprd_on_whole_datasets) {
 
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
 		size_t                                 tuples_count;
-		auto*      data_column     = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
-		double     value_to_encode = 0.0;
-		size_t     vector_idx {0};
-		size_t     rowgroup_counter {0};
-		size_t     rowgroup_offset {0};
-		alp::state stt;
-		size_t     rowgroups_count {1};
-		size_t     vectors_count {1};
+		auto*              data_column     = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
+		double             value_to_encode = 0.0;
+		size_t             vector_idx {0};
+		size_t             rowgroup_counter {0};
+		size_t             rowgroup_offset {0};
+		alp::state<double> stt;
+		size_t             rowgroups_count {1};
+		size_t             vectors_count {1};
 
 		/* Init */
-		alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
+		alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
 
-		ASSERT_EQ(stt.scheme, alp::SCHEME::ALP_RD);
+		ASSERT_EQ(stt.scheme, alp::Scheme::ALP_RD);
 
-		alp::AlpRD<double>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
+		alp::rd_encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
 
 		/* Encode - Decode - Validate. */
 		for (size_t i = 0; i < tuples_count; i++) {
-			value_to_encode     = data_column[i];
-			dbl_arr[vector_idx] = value_to_encode;
-			vector_idx          = vector_idx + 1;
-			rowgroup_offset     = rowgroup_offset + 1;
-			rowgroup_counter    = rowgroup_counter + 1;
+			value_to_encode        = data_column[i];
+			intput_buf[vector_idx] = value_to_encode;
+			vector_idx             = vector_idx + 1;
+			rowgroup_offset        = rowgroup_offset + 1;
+			rowgroup_counter       = rowgroup_counter + 1;
 
 			if (vector_idx != VECTOR_SIZE) { continue; }
 
@@ -242,23 +240,23 @@ TEST_F(alp_test, test_alprd_on_whole_datasets) {
 			}
 
 			// Encode
-			alp::AlpRD<double>::encode(dbl_arr, rd_exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
-			ffor::ffor(right_arr, ffor_right_arr, stt.right_bit_width, &stt.right_for_base);
+			alp::rd_encoder<double>::encode(intput_buf, rd_exc_arr, pos_arr, exc_c_arr, right_buf, left_arr, stt);
+			ffor::ffor(right_buf, ffor_right_buf, stt.right_bit_width, &stt.right_for_base);
 			ffor::ffor(left_arr, ffor_left_arr, stt.left_bit_width, &stt.left_for_base);
 
 			// Decode
-			unffor::unffor(ffor_right_arr, unffor_right_arr, stt.right_bit_width, &stt.right_for_base);
+			unffor::unffor(ffor_right_buf, unffor_right_buf, stt.right_bit_width, &stt.right_for_base);
 			unffor::unffor(ffor_left_arr, unffor_left_arr, stt.left_bit_width, &stt.left_for_base);
-			alp::AlpRD<double>::decode(
-			    glue_arr, unffor_right_arr, unffor_left_arr, rd_exc_arr, pos_arr, exc_c_arr, stt);
+			alp::rd_encoder<double>::decode(
+			    glue_buf, unffor_right_buf, unffor_left_arr, rd_exc_arr, pos_arr, exc_c_arr, stt);
 
-			auto* dbl_glue_arr = reinterpret_cast<double*>(glue_arr);
+			auto* dbl_glue_arr = reinterpret_cast<double*>(glue_buf);
 			for (size_t j = 0; j < VECTOR_SIZE; ++j) {
-				auto l = dbl_arr[j];
+				auto l = intput_buf[j];
 				auto r = dbl_glue_arr[j];
 				if (l != r) { std::cerr << j << ", " << dataset.name << "\n"; }
 
-				ASSERT_EQ(dbl_arr[j], dbl_glue_arr[j]);
+				ASSERT_EQ(intput_buf[j], dbl_glue_arr[j]);
 			}
 
 			alp_bench::VectorMetadata vector_metadata;

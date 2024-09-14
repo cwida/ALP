@@ -3,16 +3,16 @@
 #include "data.hpp"
 
 /* Bench ALP encode. */
-static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const double*      dbl_arr,
-                                                                         double*            exc_arr,
-                                                                         uint16_t*          pos_arr,
-                                                                         uint16_t*          exc_c_arr,
-                                                                         int64_t*           encoded_arr,
-                                                                         uint8_t&           bw,
-                                                                         int64_t*           ffor_arr,
-                                                                         int64_t*           base_arr,
-                                                                         alp::state&        stt,
-                                                                         alp_bench::Column& dataset) {
+static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const double*       dbl_arr,
+                                                                         double*             exc_arr,
+                                                                         uint16_t*           pos_arr,
+                                                                         uint16_t*           exc_c_arr,
+                                                                         int64_t*            encoded_arr,
+                                                                         uint8_t&            bw,
+                                                                         int64_t*            ffor_arr,
+                                                                         int64_t*            base_arr,
+                                                                         alp::state<double>& stt,
+                                                                         alp_bench::Column&  dataset) {
 
 	int benchmark_number = dataset.id;
 
@@ -81,8 +81,8 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 
 		size_t n_values = 1024;
 
-		size_t     global_c {0};
-		alp::state stt;
+		size_t             global_c {0};
+		alp::state<double> stt;
 		alp::encoder<double>::init(dbl_arr, global_c, n_values, rg_smp_arr, stt); // 32 runs of 1 value
 
 		// benchmark alp encode

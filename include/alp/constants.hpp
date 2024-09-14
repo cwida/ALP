@@ -7,7 +7,7 @@
 
 namespace alp {
 
-enum class SCHEME : uint8_t {
+enum class Scheme : uint8_t {
 	ALP_RD,
 	ALP,
 };

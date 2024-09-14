@@ -79,7 +79,7 @@ public:
 	uint16_t* unffor_left_arr {};
 	float*    glue_arr {};
 
-	alp::state state;
+	alp::state<double> state;
 
 	uint8_t bit_width {};
 
@@ -138,21 +138,21 @@ TEST_F(alp32_test, test_alprd32_on_whole_datasets) {
 
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
 		size_t                                 tuples_count;
-		auto*      data_column     = mapper::mmap_file<float>(tuples_count, dataset.binary_file_path);
-		float      value_to_encode = 0.0;
-		size_t     vector_idx {0};
-		size_t     rowgroup_counter {0};
-		size_t     rowgroup_offset {0};
-		alp::state stt;
-		size_t     rowgroups_count {1};
-		size_t     vectors_count {1};
+		auto*             data_column     = mapper::mmap_file<float>(tuples_count, dataset.binary_file_path);
+		float             value_to_encode = 0.0;
+		size_t            vector_idx {0};
+		size_t            rowgroup_counter {0};
+		size_t            rowgroup_offset {0};
+		alp::state<float> stt;
+		size_t            rowgroups_count {1};
+		size_t            vectors_count {1};
 
 		/* Init */
 		alp::encoder<float>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
 
-		ASSERT_EQ(stt.scheme, alp::SCHEME::ALP_RD);
+		ASSERT_EQ(stt.scheme, alp::Scheme::ALP_RD);
 
-		alp::AlpRD<float>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
+		alp::rd_encoder<float>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
 
 		/* Encode - Decode - Validate. */
 		for (size_t i = 0; i < tuples_count; i++) {
@@ -170,15 +170,16 @@ TEST_F(alp32_test, test_alprd32_on_whole_datasets) {
 			}
 
 			// Encode
-			alp::AlpRD<float>::encode(dbl_arr, rd_exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
+			alp::rd_encoder<float>::encode(dbl_arr, rd_exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
 			uint32_t right_for_base = 0;
-			ffor::ffor(right_arr, ffor_right_arr, stt.right_bit_width, &right_for_base);
-			ffor::ffor(left_arr, ffor_left_arr, stt.left_bit_width, &stt.left_for_base);
+			ffor::   ffor(right_arr, ffor_right_arr, stt.right_bit_width, &right_for_base);
+			ffor::   ffor(left_arr, ffor_left_arr, stt.left_bit_width, &stt.left_for_base);
 
 			// Decode
 			unffor::unffor(ffor_right_arr, unffor_right_arr, stt.right_bit_width, &right_for_base);
 			unffor::unffor(ffor_left_arr, unffor_left_arr, stt.left_bit_width, &stt.left_for_base);
-			alp::AlpRD<float>::decode(glue_arr, unffor_right_arr, unffor_left_arr, rd_exc_arr, pos_arr, exc_c_arr, stt);
+			alp::rd_encoder<float>::decode(
+			    glue_arr, unffor_right_arr, unffor_left_arr, rd_exc_arr, pos_arr, exc_c_arr, stt);
 
 			auto* dbl_glue_arr = reinterpret_cast<float*>(glue_arr);
 			for (size_t j = 0; j < VECTOR_SIZE; ++j) {
@@ -212,6 +213,5 @@ TEST_F(alp32_test, test_alprd32_on_whole_datasets) {
 		}
 	}
 }
-
 
 // NOLINTEND

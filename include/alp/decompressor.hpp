@@ -13,17 +13,17 @@ namespace alp {
 /*
  * API Decompressor
  */
-template <class T>
+template <class PT>
 struct AlpDecompressor {
 
-	using EXACT_TYPE = typename FloatingToExact<T>::type;
+	using EXACT_TYPE = typename FloatingToExact<PT>::type;
 
-	state             stt;
+	state<PT>         stt;
 	storer::MemReader reader;
 
 	size_t out_offset = 0;
 
-	T        exceptions[config::VECTOR_SIZE];
+	PT       exceptions[config::VECTOR_SIZE];
 	int64_t  encoded_integers[config::VECTOR_SIZE];
 	int64_t  alp_encoded_array[config::VECTOR_SIZE];
 	uint16_t exceptions_rd[config::VECTOR_SIZE];
@@ -47,8 +47,8 @@ struct AlpDecompressor {
 	void load_rd_metadata() {
 		reader.read(&stt.right_bit_width, sizeof(stt.right_bit_width));
 		reader.read(&stt.left_bit_width, sizeof(stt.left_bit_width));
-		left_bp_size  = AlpApiUtils<T>::get_size_after_bitpacking(stt.left_bit_width);
-		right_bp_size = AlpApiUtils<T>::get_size_after_bitpacking(stt.right_bit_width);
+		left_bp_size  = AlpApiUtils<PT>::get_size_after_bitpacking(stt.left_bit_width);
+		right_bp_size = AlpApiUtils<PT>::get_size_after_bitpacking(stt.right_bit_width);
 
 		reader.read(&stt.actual_dictionary_size, sizeof(stt.actual_dictionary_size));
 		uint8_t actual_dictionary_size_bytes = stt.actual_dictionary_size * DICTIONARY_ELEMENT_SIZE_BYTES;
@@ -74,55 +74,55 @@ struct AlpDecompressor {
 		reader.read(&stt.bit_width, sizeof(stt.bit_width));
 
 		if (stt.bit_width > 0) {
-			alp_bp_size = AlpApiUtils<T>::get_size_after_bitpacking(stt.bit_width);
+			alp_bp_size = AlpApiUtils<PT>::get_size_after_bitpacking(stt.bit_width);
 			reader.read(alp_encoded_array, alp_bp_size);
 		}
 
 		if (stt.exceptions_count > 0) {
-			reader.read(exceptions, Constants<T>::EXCEPTION_SIZE_BYTES * stt.exceptions_count);
+			reader.read(exceptions, Constants<PT>::EXCEPTION_SIZE_BYTES * stt.exceptions_count);
 			reader.read(exceptions_position, EXCEPTION_POSITION_SIZE_BYTES * stt.exceptions_count);
 		}
 	}
 
-	void decompress_vector(T* out) {
-		if (stt.scheme == SCHEME::ALP_RD) {
+	void decompress_vector(PT* out) {
+		if (stt.scheme == Scheme::ALP_RD) {
 			unffor::unffor(right_parts_encoded, right_parts, stt.right_bit_width, &right_for_base);
 			unffor::unffor(left_parts_encoded, left_parts, stt.left_bit_width, &stt.left_for_base);
-			AlpRD<T>::decode((out + out_offset),
-			                 right_parts,
-			                 left_parts,
-			                 exceptions_rd,
-			                 exceptions_position,
-			                 &stt.exceptions_count,
-			                 stt);
+			rd_encoder<PT>::decode((out + out_offset),
+			                       right_parts,
+			                       left_parts,
+			                       exceptions_rd,
+			                       exceptions_position,
+			                       &stt.exceptions_count,
+			                       stt);
 		} else {
 			unffor::unffor(alp_encoded_array, encoded_integers, stt.bit_width, &stt.for_base);
-			AlpDecode<T>::decode(encoded_integers, stt.fac, stt.exp, (out + out_offset));
-			AlpDecode<T>::patch_exceptions((out + out_offset), exceptions, exceptions_position, &stt.exceptions_count);
+			AlpDecode<PT>::decode(encoded_integers, stt.fac, stt.exp, (out + out_offset));
+			AlpDecode<PT>::patch_exceptions((out + out_offset), exceptions, exceptions_position, &stt.exceptions_count);
 		}
 	}
 
 	void load_vector() {
-		if (stt.scheme == SCHEME::ALP_RD) {
+		if (stt.scheme == Scheme::ALP_RD) {
 			load_alprd_vector();
 		} else {
 			load_alp_vector();
 		}
 	}
 
-	SCHEME load_rowgroup_metadata() {
+	Scheme load_rowgroup_metadata() {
 		uint8_t scheme_id;
 		reader.read(&scheme_id, sizeof(scheme_id));
 
-		SCHEME used_scheme = SCHEME(scheme_id);
-		if (used_scheme == SCHEME::ALP_RD) { load_rd_metadata(); }
+		Scheme used_scheme = Scheme(scheme_id);
+		if (used_scheme == Scheme::ALP_RD) { load_rd_metadata(); }
 
 		return used_scheme;
 	}
 
-	void decompress(uint8_t* in, size_t values_count, T* out) {
+	void decompress(uint8_t* in, size_t values_count, PT* out) {
 		reader                    = storer::MemReader(in);
-		size_t rouwgroup_count    = AlpApiUtils<T>::get_rowgroup_count(values_count);
+		size_t rouwgroup_count    = AlpApiUtils<PT>::get_rowgroup_count(values_count);
 		size_t left_to_decompress = values_count;
 		for (size_t current_rowgroup = 0; current_rowgroup < rouwgroup_count; current_rowgroup++) {
 			/*
@@ -131,7 +131,7 @@ struct AlpDecompressor {
 			stt.scheme = load_rowgroup_metadata();
 
 			size_t values_left_in_rowgroup = std::min(config::ROWGROUP_SIZE, left_to_decompress);
-			size_t vectors_in_rowgroup     = AlpApiUtils<T>::get_complete_vector_count(values_left_in_rowgroup);
+			size_t vectors_in_rowgroup     = AlpApiUtils<PT>::get_complete_vector_count(values_left_in_rowgroup);
 
 			for (size_t vector_idx = 0; vector_idx < vectors_in_rowgroup; vector_idx++) {
 				/*

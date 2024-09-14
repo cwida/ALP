@@ -7,23 +7,23 @@
 using namespace alp::config;
 
 /* Bench ALP encode. */
-static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const double*      dbl_arr,
-                                                                         uint16_t*          exc_arr,
-                                                                         uint16_t*          pos_arr,
-                                                                         uint16_t*          exc_c_arr,
-                                                                         int64_t*           encoded_arr,
-                                                                         uint8_t&           bw,
-                                                                         int64_t*           ffor_arr,
-                                                                         int64_t*           base_arr,
-                                                                         alp::state&        stt,
-                                                                         alp_bench::Column& dataset,
-                                                                         uint64_t*          ffor_right_arr,
-                                                                         uint16_t*          ffor_left_arr,
-                                                                         uint64_t*          right_arr,
-                                                                         uint16_t*          left_arr,
-                                                                         uint64_t*          unffor_right_arr,
-                                                                         uint16_t*          unffor_left_arr,
-                                                                         double*            glue_arr) {
+static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const double*       dbl_arr,
+                                                                         uint16_t*           exc_arr,
+                                                                         uint16_t*           pos_arr,
+                                                                         uint16_t*           exc_c_arr,
+                                                                         int64_t*            encoded_arr,
+                                                                         uint8_t&            bw,
+                                                                         int64_t*            ffor_arr,
+                                                                         int64_t*            base_arr,
+                                                                         alp::state<double>& stt,
+                                                                         alp_bench::Column&  dataset,
+                                                                         uint64_t*           ffor_right_arr,
+                                                                         uint16_t*           ffor_left_arr,
+                                                                         uint64_t*           right_arr,
+                                                                         uint16_t*           left_arr,
+                                                                         uint64_t*           unffor_right_arr,
+                                                                         uint16_t*           unffor_left_arr,
+                                                                         double*             glue_arr) {
 
 	int benchmark_number = dataset.id;
 
@@ -39,7 +39,7 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const d
 	for (uint64_t i = 0; i < iterations; ++i) {
 		unffor::unffor(ffor_right_arr, unffor_right_arr, stt.right_bit_width, &stt.right_for_base);
 		unffor::unffor(ffor_left_arr, unffor_left_arr, stt.left_bit_width, &stt.left_for_base);
-		alp::AlpRD<double>::decode(glue_arr, unffor_right_arr, unffor_left_arr, exc_arr, pos_arr, exc_c_arr, stt);
+		alp::rd_encoder<double>::decode(glue_arr, unffor_right_arr, unffor_left_arr, exc_arr, pos_arr, exc_c_arr, stt);
 	}
 
 	cycles = benchmark::cycleclock::Now() - cycles;
@@ -106,12 +106,12 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 
 		size_t n_values = 1024;
 
-		size_t     global_c {0};
-		alp::state stt;
+		size_t             global_c {0};
+		alp::state<double> stt;
 
-		alp::AlpRD<double>::init(dbl_arr, global_c, n_values, rg_smp_arr, stt);
+		alp::rd_encoder<double>::init(dbl_arr, global_c, n_values, rg_smp_arr, stt);
 
-		alp::AlpRD<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
+		alp::rd_encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
 		ffor::ffor(right_arr, ffor_right_arr, stt.right_bit_width, &stt.right_for_base);
 		ffor::ffor(left_arr, ffor_left_arr, stt.left_bit_width, &stt.left_for_base);
 

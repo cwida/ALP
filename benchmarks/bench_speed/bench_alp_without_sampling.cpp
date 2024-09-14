@@ -6,17 +6,17 @@
 
 using namespace alp::config;
 
-static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_encode(const double*      dbl_arr,
-                                                                                    double*            exc_arr,
-                                                                                    uint16_t*          pos_arr,
-                                                                                    uint16_t*          exc_c_arr,
-                                                                                    uint64_t*          bitmap,
-                                                                                    int64_t*           encoded_arr,
-                                                                                    uint8_t&           bw,
-                                                                                    int64_t*           ffor_arr,
-                                                                                    int64_t*           base_arr,
-                                                                                    alp::state&        stt,
-                                                                                    alp_bench::Column& dataset) {
+static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_encode(const double*       dbl_arr,
+                                                                                    double*             exc_arr,
+                                                                                    uint16_t*           pos_arr,
+                                                                                    uint16_t*           exc_c_arr,
+                                                                                    uint64_t*           bitmap,
+                                                                                    int64_t*            encoded_arr,
+                                                                                    uint8_t&            bw,
+                                                                                    int64_t*            ffor_arr,
+                                                                                    int64_t*            base_arr,
+                                                                                    alp::state<double>& stt,
+                                                                                    alp_bench::Column&  dataset) {
 
 	int benchmark_number = dataset.id;
 
@@ -120,8 +120,8 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 			c += 1;
 		}
 
-		size_t     global_c {0};
-		alp::state stt;
+		size_t             global_c {0};
+		alp::state<double> stt;
 
 		benchmark.Run(bench_alp_encode_simdized(dbl_arr,
 		                                        exc_arr,

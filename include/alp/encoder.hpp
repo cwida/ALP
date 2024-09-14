@@ -5,7 +5,6 @@
 #include "alp/constants.hpp"
 #include "alp/decode.hpp"
 #include "alp/sampler.hpp"
-#include "alp/state.hpp"
 #include "common.hpp"
 #include <cfloat>
 #include <cmath>
@@ -25,6 +24,49 @@
  * ALP Encoding
  */
 namespace alp {
+
+// Default template, not defined intentionally
+template <typename T>
+struct alp_inner_t;
+
+// Specialization for float -> uint32_t
+template <>
+struct alp_inner_t<float> {
+	using type = uint32_t;
+};
+
+// Specialization for double -> uint64_t
+template <>
+struct alp_inner_t<double> {
+	using type = uint64_t;
+};
+
+template <typename PT>
+struct state {
+	using inner_t = typename alp_inner_t<PT>::type;
+	Scheme   scheme {Scheme::ALP};
+	uint16_t vector_size {config::VECTOR_SIZE};
+	uint16_t exceptions_count {0};
+	size_t   sampled_values_n {0};
+
+	// ALP
+	uint16_t                         k_combinations {5};
+	std::vector<std::pair<int, int>> best_k_combinations;
+	uint8_t                          exp {};
+	uint8_t                          fac {};
+	bw_t                             bit_width {};
+	int64_t                          for_base {};
+
+	// ALP RD
+	bw_t                                   right_bit_width {0};
+	bw_t                                   left_bit_width {0};
+	inner_t                                right_for_base {0}; // Always 0
+	uint16_t                               left_for_base {0};  // Always 0
+	uint16_t                               left_parts_dict[config::MAX_RD_DICTIONARY_SIZE] {};
+	uint8_t                                actual_dictionary_size {};
+	uint32_t                               actual_dictionary_size_bytes {};
+	std::unordered_map<uint16_t, uint16_t> left_parts_dict_map;
+};
 
 template <typename PT>
 struct encoder {
@@ -85,7 +127,7 @@ struct encoder {
 	 * This function is called once per rowgroup
 	 * This operates over ALP first level samples
 	 */
-	static inline void find_top_k_combinations(const PT* smp_arr, state& stt) {
+	static inline void find_top_k_combinations(const PT* smp_arr, state<PT>& stt) {
 		const auto n_vectors_to_sample =
 		    static_cast<uint64_t>(std::ceil(static_cast<double>(stt.sampled_values_n) / config::SAMPLES_PER_VECTOR));
 		const uint64_t                     samples_size = std::min(stt.sampled_values_n, config::SAMPLES_PER_VECTOR);
@@ -162,7 +204,7 @@ struct encoder {
 
 		// We adapt scheme if we were not able to achieve compression in the current rg
 		if (best_estimated_compression_size >= Constants<PT>::RD_SIZE_THRESHOLD_LIMIT) {
-			stt.scheme = SCHEME::ALP_RD;
+			stt.scheme = Scheme::ALP_RD;
 			return;
 		}
 
@@ -416,12 +458,12 @@ struct encoder {
 		*exceptions_count = current_exceptions_count;
 	}
 
-	static inline void encode(const PT* input_vector,
-	                          PT*       exceptions,
-	                          uint16_t* exceptions_positions,
-	                          uint16_t* exceptions_count,
-	                          int64_t*  encoded_integers,
-	                          state&    stt) {
+	static inline void encode(const PT*  input_vector,
+	                          PT*        exceptions,
+	                          uint16_t*  exceptions_positions,
+	                          uint16_t*  exceptions_count,
+	                          int64_t*   encoded_integers,
+	                          state<PT>& stt) {
 
 		if (stt.k_combinations > 1) { // Only if more than 1 found top combinations we sample and search
 			find_best_exponent_factor_from_combinations(
@@ -435,8 +477,8 @@ struct encoder {
 	}
 
 	static inline void
-	init(const PT* data_column, const size_t column_offset, const size_t tuples_count, PT* sample_arr, state& stt) {
-		stt.scheme           = SCHEME::ALP;
+	init(const PT* data_column, const size_t column_offset, const size_t tuples_count, PT* sample_arr, state<PT>& stt) {
+		stt.scheme           = Scheme::ALP;
 		stt.sampled_values_n = sampler::first_level_sample<PT>(data_column, column_offset, tuples_count, sample_arr);
 		stt.k_combinations   = config::MAX_K_COMBINATIONS;
 		stt.best_k_combinations.clear();

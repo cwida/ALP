@@ -53,7 +53,7 @@ TEST_F(arm64v8_neon_intrinsic_1024_uf1_falp, fused)
 	{
 		std:: ifstream         ifile(dataset.csv_file_path, std::ios:: in );
 		ASSERT_EQ(ifile.fail(), false);
-		   alp::state stt;
+		   alp::state<double> stt;
 		if (dataset.suitable_for_cutting) { continue; }
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
 		double num = 0.0;
@@ -88,7 +88,7 @@ TEST_F(arm64v8_neon_intrinsic_1024_uf1_falp, unfused)
 	{
 		std:: ifstream         ifile(dataset.csv_file_path, std::ios:: in );
 		ASSERT_EQ(ifile.fail(), false);
-		   alp::state stt;
+		   alp::state<double> stt;
 		if (dataset.suitable_for_cutting) { continue; }
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
 		double num = 0.0;
