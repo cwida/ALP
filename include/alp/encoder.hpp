@@ -25,24 +25,6 @@
  */
 namespace alp {
 
-// Default template, not defined intentionally
-template <typename T>
-struct inner_t;
-
-// Specialization for float -> uint32_t
-template <>
-struct inner_t<float> {
-	using ut = uint32_t;
-	using st = int32_t;
-};
-
-// Specialization for double -> uint64_t
-template <>
-struct inner_t<double> {
-	using ut = uint64_t;
-	using st = int64_t;
-};
-
 template <typename PT>
 struct state {
 	using UT = typename inner_t<PT>::ut;
@@ -100,7 +82,7 @@ struct encoder {
 	}
 
 	template <typename UT>
-	static uint64_t count_bits(UT x) {
+	static uint8_t count_bits(UT x) {
 		if constexpr (std::is_same_v<UT, uint64_t>) {
 			return 64 - __builtin_clzll(x);
 		} else {
@@ -109,9 +91,10 @@ struct encoder {
 	}
 
 	template <typename ST>
-	static uint64_t count_bits(ST max, ST min) {
+	static uint8_t count_bits(ST max, ST min) {
 		const auto delta = (static_cast<UT>(max) - static_cast<UT>(min));
-		return count_bits<UT>(delta);
+		auto       res   = count_bits<UT>(delta);
+		return res;
 	}
 
 	//! Analyze FFOR to obtain bitwidth and frame-of-reference value
