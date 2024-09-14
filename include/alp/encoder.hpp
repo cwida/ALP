@@ -99,6 +99,10 @@ struct encoder {
 		return static_cast<ST>(tmp_encoded_value);
 	}
 
+	static uint64_t count_bits(uint64_t x) {
+		return 64 - __builtin_clzll(x); // Subtract leading zeros from 64
+	}
+
 	//! Analyze FFOR to obtain bitwidth and frame-of-reference value
 	static inline void analyze_ffor(const ST* input_vector, bw_t& bit_width, ST* base_for) {
 		auto min = std::numeric_limits<ST>::max();
@@ -110,7 +114,7 @@ struct encoder {
 		}
 
 		const auto delta                    = (static_cast<uint64_t>(max) - static_cast<uint64_t>(min));
-		const auto estimated_bits_per_value = static_cast<bw_t>(ceil(log2(delta + 1)));
+		const auto estimated_bits_per_value = count_bits(delta);
 		bit_width                           = estimated_bits_per_value;
 		base_for[0]                         = min;
 	}

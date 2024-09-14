@@ -197,7 +197,6 @@ TEST_F(alp_test, test_alp_double) {
 /// Test used for correctness of bitwidth and exceptions on the first vector of generated data
 TEST_F(alp_test, test_alp_on_generated) {
 	for (const auto& col : alp_bench::generated_cols) {
-		if (col.bit_width > 42) { continue; }
 		test_column<double>(col);
 	}
 }
