@@ -3,7 +3,7 @@
 
 #include "alp/config.hpp"
 #include "alp/constants.hpp"
-#include "alp/decode.hpp"
+#include "alp/decoder.hpp"
 #include "alp/sampler.hpp"
 #include "common.hpp"
 #include <cfloat>
