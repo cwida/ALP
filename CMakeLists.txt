@@ -19,15 +19,17 @@ include(CTest)
 
 
 # Clang Tidy : ---------------------------------------------------------------------------------------------------------
-find_program(CLANG_TIDY_EXE NAMES clang-tidy)
-if (NOT CLANG_TIDY_EXE)
-    message(FATAL_ERROR "-- ALP: clang-tidy not found.")
-else ()
-    set(CMAKE_CXX_CLANG_TIDY
-            ${CLANG_TIDY_EXE};
-            -header-filter=include/alp;
-            -warnings-as-errors=*;)
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+    if (NOT CLANG_TIDY_EXE)
+        message(FATAL_ERROR "-- ALP: clang-tidy not found.")
+    else ()
+        set(CMAKE_CXX_CLANG_TIDY
+                ${CLANG_TIDY_EXE};
+                -header-filter=include/alp;
+                -warnings-as-errors=*;)
 
+    endif ()
 endif ()
 
 
