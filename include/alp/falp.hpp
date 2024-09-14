@@ -25,12 +25,12 @@ inline void falp(const int64_t* __restrict in,
 	falp(in_p, out, bw, base_p, factor, exponent);
 }
 
-inline void falp(const uint32_t* __restrict in,
-                 float* __restrict out,
-                 uint8_t bw,
-                 const uint32_t* __restrict a_base_p,
-                 uint8_t factor,
-                 uint8_t exponent) {}
+void falp(const uint32_t* __restrict in,
+          float* __restrict out,
+          uint8_t bw,
+          const uint32_t* __restrict base,
+          uint8_t factor,
+          uint8_t exponent);
 
 inline void falp(const int32_t* __restrict in,
                  float* __restrict out,

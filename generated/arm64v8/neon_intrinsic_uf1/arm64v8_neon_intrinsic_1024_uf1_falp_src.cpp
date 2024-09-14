@@ -15,7 +15,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -94,7 +94,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -494,7 +494,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -895,7 +895,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -1299,7 +1299,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -1702,7 +1702,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -2110,7 +2110,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -2519,7 +2519,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -2931,7 +2931,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -3338,7 +3338,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -3754,7 +3754,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -4171,7 +4171,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -4591,7 +4591,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -5010,7 +5010,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -5434,7 +5434,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -5859,7 +5859,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -6287,7 +6287,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -6702,7 +6702,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -7134,7 +7134,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -7567,7 +7567,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -8003,7 +8003,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -8438,7 +8438,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -8878,7 +8878,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -9319,7 +9319,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -9763,7 +9763,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -10202,7 +10202,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -10650,7 +10650,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -11099,7 +11099,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -11551,7 +11551,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -12002,7 +12002,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -12458,7 +12458,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -12915,7 +12915,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -13375,7 +13375,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -13806,7 +13806,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -14270,7 +14270,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -14735,7 +14735,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -15203,7 +15203,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -15670,7 +15670,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -16142,7 +16142,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -16615,7 +16615,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -17091,7 +17091,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -17562,7 +17562,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -18042,7 +18042,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -18523,7 +18523,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -19007,7 +19007,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -19490,7 +19490,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -19978,7 +19978,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -20467,7 +20467,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -20959,7 +20959,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -21438,7 +21438,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -21934,7 +21934,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -22431,7 +22431,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -22931,7 +22931,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -23430,7 +23430,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -23934,7 +23934,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -24439,7 +24439,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -24947,7 +24947,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -25450,7 +25450,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -25962,7 +25962,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -26475,7 +26475,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -26991,7 +26991,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -27506,7 +27506,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -28026,7 +28026,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -28547,7 +28547,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
@@ -29071,7 +29071,7 @@ namespace generated
 				[[maybe_unused]] uint64x2_t register_0;
 				[[maybe_unused]] uint64x2_t tmp_0;
 				[[maybe_unused]] int64x2_t base_0 = vmovq_n_u64(*(a_base_p));
-				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::FACT_ARR[fac]);
+				[[maybe_unused]] int64x2_t factor = vmovq_n_u64(alp::Constants<double>::FACT_ARR[fac]);
 				[[maybe_unused]] float64x2_t frac10 = vmovq_n_f64(alp::Constants<double>::FRAC_ARR[exp]);
 				[[maybe_unused]] float64x2_t tmp_dbl;
 				[[maybe_unused]] int64x2_t tmp_int;
