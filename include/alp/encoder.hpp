@@ -134,7 +134,7 @@ struct encoder {
 	 */
 	static inline void find_top_k_combinations(const PT* smp_arr, state<PT>& stt) {
 		const auto n_vectors_to_sample =
-		    static_cast<uint64_t>(std::ceil(static_cast<double>(stt.sampled_values_n) / config::SAMPLES_PER_VECTOR));
+		    static_cast<uint64_t>(std::ceil(static_cast<PT>(stt.sampled_values_n) / config::SAMPLES_PER_VECTOR));
 		const uint64_t                     samples_size = std::min(stt.sampled_values_n, config::SAMPLES_PER_VECTOR);
 		std::map<std::pair<int, int>, int> global_combinations;
 		uint64_t                           smp_offset {0};
@@ -303,16 +303,15 @@ struct encoder {
 		factor   = found_factor;
 	}
 
-	// DOUBLE
-	static inline void encode_simdized(const double*        input_vector,
-	                                   double*              exceptions,
+	static inline void encode_simdized(const PT*            input_vector,
+	                                   PT*                  exceptions,
 	                                   exp_p_t*             exceptions_positions,
 	                                   exp_c_t*             exceptions_count,
 	                                   ST*                  encoded_integers,
 	                                   const factor_idx_t   factor_idx,
 	                                   const exponent_idx_t exponent_idx) {
-		alignas(64) static double   ENCODED_DBL_ARR[1024];
-		alignas(64) static double   DBL_ARR_WITHOUT_SPECIALS[1024];
+		alignas(64) static PT       ENCODED_DBL_ARR[1024];
+		alignas(64) static PT       DBL_ARR_WITHOUT_SPECIALS[1024];
 		alignas(64) static uint64_t INDEX_ARR[1024];
 
 		exp_p_t  current_exceptions_count {0};
@@ -324,7 +323,7 @@ struct encoder {
 			const auto is_special =
 			    ((tmp_input[i] & 0x7FFFFFFFFFFFFFFF) >=
 			     0x7FF0000000000000) // any NaN, +inf and -inf (https://stackoverflow.com/questions/29730530/)
-			    || tmp_input[i] == Constants<double>::NEGATIVE_ZERO;
+			    || tmp_input[i] == Constants<PT>::NEGATIVE_ZERO;
 
 			if (is_special) {
 				DBL_ARR_WITHOUT_SPECIALS[i] = ENCODING_UPPER_LIMIT;
@@ -338,10 +337,10 @@ struct encoder {
 			auto const actual_value = DBL_ARR_WITHOUT_SPECIALS[i];
 
 			// Attempt conversion
-			const ST encoded_value     = encode_value<false>(actual_value, factor_idx, exponent_idx);
-			encoded_integers[i]        = encoded_value;
-			const double decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
-			ENCODED_DBL_ARR[i]         = decoded_value;
+			const ST encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
+			encoded_integers[i]    = encoded_value;
+			const PT decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
+			ENCODED_DBL_ARR[i]     = decoded_value;
 		}
 
 #ifdef __AVX512F__
@@ -351,86 +350,6 @@ struct encoder {
 			__m512i index        = _mm512_loadu_pd(INDEX_ARR + i);
 			auto    is_exception = _mm512_cmpneq_pd_mask(l, r);
 			_mm512_mask_compressstoreu_pd(tmp_index + exceptions_idx, is_exception, index);
-			exceptions_idx += LOOKUP_TABLE[is_exception];
-		}
-#else
-		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto l                    = ENCODED_DBL_ARR[i];
-			auto r                    = DBL_ARR_WITHOUT_SPECIALS[i];
-			auto is_exception         = (l != r);
-			INDEX_ARR[exceptions_idx] = i;
-			exceptions_idx += is_exception;
-		}
-#endif
-
-		ST a_non_exception_value = 0;
-		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			if (i != INDEX_ARR[i]) {
-				a_non_exception_value = encoded_integers[i];
-				break;
-			}
-		}
-
-		for (size_t j {0}; j < exceptions_idx; j++) {
-			size_t     i                                   = INDEX_ARR[j];
-			const auto actual_value                        = input_vector[i];
-			encoded_integers[i]                            = a_non_exception_value;
-			exceptions[current_exceptions_count]           = actual_value;
-			exceptions_positions[current_exceptions_count] = i;
-			current_exceptions_count                       = current_exceptions_count + 1;
-		}
-
-		*exceptions_count = current_exceptions_count;
-	}
-
-	// FLOAT
-	static inline void encode_simdized(const float*         input_vector,
-	                                   float*               exceptions,
-	                                   exp_p_t*             exceptions_positions,
-	                                   exp_c_t*             exceptions_count,
-	                                   ST*                  encoded_integers,
-	                                   const factor_idx_t   factor_idx,
-	                                   const exponent_idx_t exponent_idx) {
-		alignas(64) static float    ENCODED_DBL_ARR[1024];
-		alignas(64) static float    DBL_ARR_WITHOUT_SPECIALS[1024];
-		alignas(64) static uint64_t INDEX_ARR[1024];
-
-		exp_p_t  current_exceptions_count {0};
-		uint64_t exceptions_idx {0};
-
-		// make copy of input with all special values replaced by  ENCODING_UPPER_LIMIT
-		const auto* tmp_input = reinterpret_cast<const uint32_t*>(input_vector);
-		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			const auto is_special =
-			    ((tmp_input[i] & 0x7FFFFFFF) >=
-			     0x7F800000) // any NaN, +inf and -inf (https://stackoverflow.com/questions/29730530/)
-			    || tmp_input[i] == Constants<float>::NEGATIVE_ZERO;
-
-			if (is_special) {
-				DBL_ARR_WITHOUT_SPECIALS[i] = ENCODING_UPPER_LIMIT;
-			} else {
-				DBL_ARR_WITHOUT_SPECIALS[i] = input_vector[i];
-			}
-		}
-
-#pragma clang loop vectorize_width(64)
-		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto const actual_value = DBL_ARR_WITHOUT_SPECIALS[i];
-
-			// Attempt conversion
-			const ST encoded_value    = encode_value<false>(actual_value, factor_idx, exponent_idx);
-			encoded_integers[i]       = encoded_value;
-			const float decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
-			ENCODED_DBL_ARR[i]        = decoded_value;
-		}
-
-#ifdef __AVX512F__
-		for (size_t i {0}; i < config::VECTOR_SIZE; i = i + 16) {
-			__m512  l            = _mm512_loadu_ps(tmp_dbl_arr + i);
-			__m512  r            = _mm512_loadu_ps(input_vector + i);
-			__m512i index        = _mm512_loadu_ps(INDEX_ARR + i);
-			auto    is_exception = _mm512_cmpneq_ps_mask(l, r);
-			_mm512_mask_compressstoreu_ps(tmp_index + exceptions_idx, is_exception, index);
 			exceptions_idx += LOOKUP_TABLE[is_exception];
 		}
 #else
