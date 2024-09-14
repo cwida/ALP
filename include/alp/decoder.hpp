@@ -101,7 +101,7 @@ struct decoder {
 
 	//! Scalar decoding a single value with ALP
 	static inline PT decode_value(const int64_t encoded_value, const uint8_t factor, const uint8_t exponent) {
-		const PT decoded_value = encoded_value * FACT_ARR[factor] * Constants<PT>::FRAC_ARR[exponent];
+		const PT decoded_value = encoded_value * Constants<PT>::FACT_ARR[factor] * Constants<PT>::FRAC_ARR[exponent];
 		return decoded_value;
 	}
 
