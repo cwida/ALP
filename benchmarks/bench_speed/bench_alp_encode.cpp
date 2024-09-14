@@ -26,8 +26,8 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const d
 
 	uint64_t cycles = benchmark::cycleclock::Now();
 	for (uint64_t i = 0; i < iterations; ++i) {
-		alp::AlpEncode<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
-		alp::AlpEncode<double>::analyze_ffor(encoded_arr, bw, base_arr);
+		alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
+		alp::encoder<double>::analyze_ffor(encoded_arr, bw, base_arr);
 		ffor::ffor(encoded_arr, ffor_arr, bw, base_arr);
 	}
 
@@ -83,7 +83,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 
 		size_t     global_c {0};
 		alp::state stt;
-		alp::AlpEncode<double>::init(dbl_arr, global_c, n_values, rg_smp_arr, stt); // 32 runs of 1 value
+		alp::encoder<double>::init(dbl_arr, global_c, n_values, rg_smp_arr, stt); // 32 runs of 1 value
 
 		// benchmark alp encode
 		benchmark.Run(b_a_e(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, bw, ffor_arr, base_arr, stt, dataset));

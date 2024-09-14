@@ -3,7 +3,7 @@
 
 // NOLINTBEGIN
 
-#include "alp/encode.hpp"
+#include "alp/encoder.hpp"
 #include "alp/rd.hpp"
 #include "alp/state.hpp"
 #include "alp/storer.hpp"
@@ -59,9 +59,8 @@ struct AlpCompressor {
 	}
 
 	void compress_alp_vector() {
-		AlpEncode<T>::encode(
-		    input_vector, exceptions, exceptions_position, &stt.exceptions_count, encoded_integers, stt);
-		AlpEncode<T>::analyze_ffor(encoded_integers, stt.bit_width, &stt.for_base);
+		encoder<T>::encode(input_vector, exceptions, exceptions_position, &stt.exceptions_count, encoded_integers, stt);
+		encoder<T>::analyze_ffor(encoded_integers, stt.bit_width, &stt.for_base);
 		ffor::ffor(encoded_integers, alp_encoded_array, stt.bit_width, &stt.for_base);
 		alp_bp_size = AlpApiUtils<T>::get_size_after_bitpacking(stt.bit_width);
 	}
@@ -82,7 +81,7 @@ struct AlpCompressor {
 			/*
 			 * Rowgroup level
 			 */
-			AlpEncode<T>::init(values, current_idx, values_count, sample_array, stt);
+			encoder<T>::init(values, current_idx, values_count, sample_array, stt);
 			if (stt.scheme == SCHEME::ALP_RD) {
 				AlpRD<T>::init(values, current_idx, values_count, sample_array, stt);
 				left_bp_size  = AlpApiUtils<T>::get_size_after_bitpacking(stt.left_bit_width);

@@ -64,10 +64,10 @@ TEST_F(arm64v8_neon_intrinsic_1024_uf1_falp, fused)
 			c          = c + 1;
 		}
 		// Init
-		alp::AlpEncode<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
+		alp::encoder<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
 		// Encode
-		alp::AlpEncode<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
-		alp::AlpEncode<double>::analyze_ffor(dig_arr, bw, base_arr);
+		alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
+		alp::encoder<double>::analyze_ffor(dig_arr, bw, base_arr);
 		fastlanes::generated::ffor::fallback::scalar::ffor(dig_arr, ffor_arr, bw, base_arr);
 		// Decode
 		generated::falp::arm64v8::neon::falp(reinterpret_cast < uint64_t * > (ffor_arr), dec_dbl_arr, bw, reinterpret_cast < uint64_t * > (base_arr),stt.fac, stt.exp);
@@ -99,10 +99,10 @@ TEST_F(arm64v8_neon_intrinsic_1024_uf1_falp, unfused)
 			c          = c + 1;
 		}
 		// Init
-		alp::AlpEncode<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
+		alp::encoder<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
 		// Encode
-		alp::AlpEncode<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
-		alp::AlpEncode<double>::analyze_ffor(dig_arr, bw, base_arr);
+		alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
+		alp::encoder<double>::analyze_ffor(dig_arr, bw, base_arr);
 		fastlanes::generated::ffor::fallback::scalar::ffor(dig_arr, ffor_arr, bw, base_arr);
 		// Decode
 		fastlanes::generated::unffor::fallback::scalar::unffor(ffor_arr, unffor_arr, bw, base_arr);

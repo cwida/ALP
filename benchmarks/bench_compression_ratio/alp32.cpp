@@ -148,7 +148,7 @@ TEST_F(alp32_test, test_alprd32_on_whole_datasets) {
 		size_t     vectors_count {1};
 
 		/* Init */
-		alp::AlpEncode<float>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
+		alp::encoder<float>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
 
 		ASSERT_EQ(stt.scheme, alp::SCHEME::ALP_RD);
 

@@ -3,7 +3,7 @@
 
 #include "alp/common.hpp"
 #include "alp/constants.hpp"
-#include "alp/encode.hpp"
+#include "alp/encoder.hpp"
 #include "alp/sampler.hpp"
 #include <algorithm>
 

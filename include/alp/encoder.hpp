@@ -1,5 +1,5 @@
-#ifndef ALP_ENCODE_HPP
-#define ALP_ENCODE_HPP
+#ifndef ALP_ENCODER_HPP
+#define ALP_ENCODER_HPP
 
 #include "alp/config.hpp"
 #include "alp/constants.hpp"
@@ -26,29 +26,29 @@
  */
 namespace alp {
 
-template <class T>
-struct AlpEncode {
+template <typename PT>
+struct encoder {
 
-	using EXACT_TYPE                            = typename FloatingToExact<T>::type;
+	using EXACT_TYPE                            = typename FloatingToExact<PT>::type;
 	static constexpr uint8_t EXACT_TYPE_BITSIZE = sizeof(EXACT_TYPE) * 8;
 
 	/*
 	 * Check for special values which are impossible for ALP to encode
 	 * because they cannot be cast to int64 without an undefined behaviour
 	 */
-	static inline bool is_impossible_to_encode(const T n) {
+	static inline bool is_impossible_to_encode(const PT n) {
 		return !std::isfinite(n) || std::isnan(n) || n > ENCODING_UPPER_LIMIT || n < ENCODING_LOWER_LIMIT ||
 		       (n == 0.0 && std::signbit(n)); //! Verification for -0.0
 	}
 
 	//! Scalar encoding a single value with ALP
 	template <bool SAFE = true>
-	static int64_t encode_value(const T value, const factor_idx_t factor_idx, const exponent_idx_t exponent_idx) {
-		T tmp_encoded_value = value * Constants<T>::EXP_ARR[exponent_idx] * Constants<T>::FRAC_ARR[factor_idx];
+	static int64_t encode_value(const PT value, const factor_idx_t factor_idx, const exponent_idx_t exponent_idx) {
+		PT tmp_encoded_value = value * Constants<PT>::EXP_ARR[exponent_idx] * Constants<PT>::FRAC_ARR[factor_idx];
 		if constexpr (SAFE) {
 			if (is_impossible_to_encode(tmp_encoded_value)) { return ENCODING_UPPER_LIMIT; }
 		}
-		tmp_encoded_value = tmp_encoded_value + Constants<T>::MAGIC_NUMBER - Constants<T>::MAGIC_NUMBER;
+		tmp_encoded_value = tmp_encoded_value + Constants<PT>::MAGIC_NUMBER - Constants<PT>::MAGIC_NUMBER;
 		return static_cast<int64_t>(tmp_encoded_value);
 	}
 
@@ -85,7 +85,7 @@ struct AlpEncode {
 	 * This function is called once per rowgroup
 	 * This operates over ALP first level samples
 	 */
-	static inline void find_top_k_combinations(const T* smp_arr, state& stt) {
+	static inline void find_top_k_combinations(const PT* smp_arr, state& stt) {
 		const auto n_vectors_to_sample =
 		    static_cast<uint64_t>(std::ceil(static_cast<double>(stt.sampled_values_n) / config::SAMPLES_PER_VECTOR));
 		const uint64_t                     samples_size = std::min(stt.sampled_values_n, config::SAMPLES_PER_VECTOR);
@@ -94,18 +94,18 @@ struct AlpEncode {
 
 		// For each vector in the rg sample
 		size_t best_estimated_compression_size {
-		    (samples_size * (Constants<T>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE)) +
-		    (samples_size * (Constants<T>::EXCEPTION_SIZE))};
+		    (samples_size * (Constants<PT>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE)) +
+		    (samples_size * (Constants<PT>::EXCEPTION_SIZE))};
 		for (size_t smp_n = 0; smp_n < n_vectors_to_sample; smp_n++) {
 			uint8_t found_factor {0};
 			uint8_t found_exponent {0};
 			// We start our optimization with the worst possible total bits obtained from compression
 			uint64_t sample_estimated_compression_size {
-			    (samples_size * (Constants<T>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE)) +
-			    (samples_size * (Constants<T>::EXCEPTION_SIZE))}; // worst scenario
+			    (samples_size * (Constants<PT>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE)) +
+			    (samples_size * (Constants<PT>::EXCEPTION_SIZE))}; // worst scenario
 
 			// We try all combinations in search for the one which minimize the compression size
-			for (int8_t exp_ref = Constants<T>::MAX_EXPONENT; exp_ref >= 0; exp_ref--) {
+			for (int8_t exp_ref = Constants<PT>::MAX_EXPONENT; exp_ref >= 0; exp_ref--) {
 				for (int8_t factor_idx = exp_ref; factor_idx >= 0; factor_idx--) {
 					uint16_t exceptions_count           = {0};
 					uint16_t non_exceptions_count       = {0};
@@ -115,9 +115,9 @@ struct AlpEncode {
 					int64_t  min_encoded_value          = {std::numeric_limits<int64_t>::max()};
 
 					for (size_t i = 0; i < samples_size; i++) {
-						const T       actual_value  = smp_arr[smp_offset + i];
+						const PT      actual_value  = smp_arr[smp_offset + i];
 						const int64_t encoded_value = encode_value(actual_value, factor_idx, exp_ref);
-						const T       decoded_value = AlpDecode<T>::decode_value(encoded_value, factor_idx, exp_ref);
+						const PT      decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exp_ref);
 						if (decoded_value == actual_value) {
 							non_exceptions_count++;
 							if (encoded_value > max_encoded_value) { max_encoded_value = encoded_value; }
@@ -136,7 +136,7 @@ struct AlpEncode {
 					estimated_bits_per_value = std::ceil(std::log2(delta + 1));
 					estimated_compression_size += samples_size * estimated_bits_per_value;
 					estimated_compression_size +=
-					    exceptions_count * (Constants<T>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE);
+					    exceptions_count * (Constants<PT>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE);
 
 					if ((estimated_compression_size < sample_estimated_compression_size) ||
 					    (estimated_compression_size == sample_estimated_compression_size &&
@@ -161,7 +161,7 @@ struct AlpEncode {
 		}
 
 		// We adapt scheme if we were not able to achieve compression in the current rg
-		if (best_estimated_compression_size >= Constants<T>::RD_SIZE_THRESHOLD_LIMIT) {
+		if (best_estimated_compression_size >= Constants<PT>::RD_SIZE_THRESHOLD_LIMIT) {
 			stt.scheme = SCHEME::ALP_RD;
 			return;
 		}
@@ -192,7 +192,7 @@ struct AlpEncode {
 	static inline void
 	find_best_exponent_factor_from_combinations(const std::vector<std::pair<int, int>>& top_combinations,
 	                                            const uint8_t                           top_k,
-	                                            const T*                                input_vector,
+	                                            const PT*                               input_vector,
 	                                            const uint16_t                          input_vector_size,
 	                                            uint8_t&                                factor,
 	                                            uint8_t&                                exponent) {
@@ -215,9 +215,9 @@ struct AlpEncode {
 			int64_t   min_encoded_value {std::numeric_limits<int64_t>::max()};
 
 			for (size_t sample_idx = 0; sample_idx < input_vector_size; sample_idx += sample_increments) {
-				const T       actual_value  = input_vector[sample_idx];
+				const PT      actual_value  = input_vector[sample_idx];
 				const int64_t encoded_value = encode_value(actual_value, factor_idx, exp_idx);
-				const T       decoded_value = AlpDecode<T>::decode_value(encoded_value, factor_idx, exp_idx);
+				const PT      decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exp_idx);
 				if (decoded_value == actual_value) {
 					if (encoded_value > max_encoded_value) { max_encoded_value = encoded_value; }
 					if (encoded_value < min_encoded_value) { min_encoded_value = encoded_value; }
@@ -230,7 +230,7 @@ struct AlpEncode {
 			const uint64_t delta     = max_encoded_value - min_encoded_value;
 			estimated_bits_per_value = ceil(log2(delta + 1));
 			estimated_compression_size += config::SAMPLES_PER_VECTOR * estimated_bits_per_value;
-			estimated_compression_size += exception_count * (Constants<T>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE);
+			estimated_compression_size += exception_count * (Constants<PT>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE);
 
 			if (k == 0) { // First try with first combination
 				best_estimated_compression_size = estimated_compression_size;
@@ -293,7 +293,7 @@ struct AlpEncode {
 			// Attempt conversion
 			const int64_t encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
 			encoded_integers[i]         = encoded_value;
-			const double decoded_value  = AlpDecode<T>::decode_value(encoded_value, factor_idx, exponent_idx);
+			const double decoded_value  = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
 			ENCODED_DBL_ARR[i]          = decoded_value;
 		}
 
@@ -373,7 +373,7 @@ struct AlpEncode {
 			// Attempt conversion
 			const int64_t encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
 			encoded_integers[i]         = encoded_value;
-			const float decoded_value   = AlpDecode<T>::decode_value(encoded_value, factor_idx, exponent_idx);
+			const float decoded_value   = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
 			ENCODED_DBL_ARR[i]          = decoded_value;
 		}
 
@@ -416,8 +416,8 @@ struct AlpEncode {
 		*exceptions_count = current_exceptions_count;
 	}
 
-	static inline void encode(const T*  input_vector,
-	                          T*        exceptions,
+	static inline void encode(const PT* input_vector,
+	                          PT*       exceptions,
 	                          uint16_t* exceptions_positions,
 	                          uint16_t* exceptions_count,
 	                          int64_t*  encoded_integers,
@@ -435,9 +435,9 @@ struct AlpEncode {
 	}
 
 	static inline void
-	init(const T* data_column, const size_t column_offset, const size_t tuples_count, T* sample_arr, state& stt) {
+	init(const PT* data_column, const size_t column_offset, const size_t tuples_count, PT* sample_arr, state& stt) {
 		stt.scheme           = SCHEME::ALP;
-		stt.sampled_values_n = sampler::first_level_sample<T>(data_column, column_offset, tuples_count, sample_arr);
+		stt.sampled_values_n = sampler::first_level_sample<PT>(data_column, column_offset, tuples_count, sample_arr);
 		stt.k_combinations   = config::MAX_K_COMBINATIONS;
 		stt.best_k_combinations.clear();
 		find_top_k_combinations(sample_arr, stt);

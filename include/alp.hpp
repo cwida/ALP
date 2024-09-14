@@ -6,7 +6,7 @@
 #include "alp/constants.hpp"
 #include "alp/decode.hpp"
 #include "alp/decompressor.hpp"
-#include "alp/encode.hpp"
+#include "alp/encoder.hpp"
 #include "alp/falp.hpp"
 #include "alp/rd.hpp"
 #include "alp/sampler.hpp"

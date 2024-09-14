@@ -57,10 +57,10 @@ TEST_F(fallback_scalar_aav_1024_uf1_falp, fused) {
 			c          = c + 1;
 		}
 		// Init
-		alp::AlpEncode<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
+		alp::encoder<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
 		// Encode
-		alp::AlpEncode<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
-		alp::AlpEncode<double>::analyze_ffor(dig_arr, bw, base_arr);
+		alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
+		alp::encoder<double>::analyze_ffor(dig_arr, bw, base_arr);
 		ffor::ffor(dig_arr, ffor_arr, bw, base_arr);
 		// Decode
 		generated::falp::fallback::scalar::falp(reinterpret_cast<uint64_t*>(ffor_arr),
@@ -93,10 +93,10 @@ TEST_F(fallback_scalar_aav_1024_uf1_falp, unfused) {
 			c          = c + 1;
 		}
 		// Init
-		alp::AlpEncode<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
+		alp::encoder<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
 		// Encode
-		alp::AlpEncode<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
-		alp::AlpEncode<double>::analyze_ffor(dig_arr, bw, base_arr);
+		alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
+		alp::encoder<double>::analyze_ffor(dig_arr, bw, base_arr);
 		ffor::ffor(dig_arr, ffor_arr, bw, base_arr);
 		// Decode
 		unffor::unffor(ffor_arr, unffor_arr, bw, base_arr);

@@ -2,7 +2,7 @@
 #define ALP_UTILS_HPP
 
 #include "alp/config.hpp"
-#include "alp/encode.hpp"
+#include "alp/encoder.hpp"
 #include <cmath>
 #include <random>
 
@@ -46,7 +46,7 @@ struct AlpApiUtils {
 			input_vector[i] = 0.0;
 		}
 		// We encode the vector filled with the dummy values
-		AlpEncode<T>::encode(input_vector, exceptions, exceptions_positions, exceptions_count, encoded_integers, stt);
+		encoder<T>::encode(input_vector, exceptions, exceptions_positions, exceptions_count, encoded_integers, stt);
 		T a_non_exception_value = 0.0;
 		// We lookup the first non exception value from the true vector values
 		for (size_t i {0}; i < stt.vector_size; i++) {
