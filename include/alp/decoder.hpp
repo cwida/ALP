@@ -1,5 +1,5 @@
-#ifndef ALP_DECODE_HPP
-#define ALP_DECODE_HPP
+#ifndef ALP_DECODER_HPP
+#define ALP_DECODER_HPP
 
 #include "common.hpp"
 #include <cstdint>
@@ -101,7 +101,7 @@ struct decoder {
 
 	//! Scalar decoding a single value with ALP
 	static inline PT decode_value(const int64_t encoded_value, const uint8_t factor, const uint8_t exponent) {
-		const PT decoded_value = encoded_value * FACT_ARR[factor] * alp::Constants<PT>::FRAC_ARR[exponent];
+		const PT decoded_value = encoded_value * FACT_ARR[factor] * Constants<PT>::FRAC_ARR[exponent];
 		return decoded_value;
 	}
 
@@ -127,4 +127,4 @@ struct decoder {
 
 } // namespace alp
 
-#endif // ALP_DECODE_HPP
+#endif // ALP_DECODER_HPP

@@ -159,7 +159,8 @@ public:
 
 			break;
 		}
-		case alp::Scheme::ALP: { // Encode
+		case alp::Scheme::ALP: {
+			// Encode
 			alp::encoder<PT>::encode(input_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
 			alp::encoder<PT>::analyze_ffor(encoded_arr, bit_width, base_arr);
 			ffor::ffor(encoded_arr, ffor_arr, bit_width, base_arr);
@@ -168,8 +169,8 @@ public:
 			generated::falp::fallback::scalar::falp(ffor_arr, dec_dbl_arr, bit_width, base_arr, stt.fac, stt.exp);
 			alp::decoder<PT>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
 
+			// validation
 			auto exceptions_count = exc_c_arr[0];
-
 			for (size_t i = 0; i < alp::config::VECTOR_SIZE; ++i) {
 				test::ALP_ASSERT(input_arr[i], dec_dbl_arr[i]);
 			}
@@ -180,7 +181,7 @@ public:
 		default:;
 		}
 
-		std::cout << "Testing ALP on one vector on dataset: " << column.name << " OK" << '\n';
+		std::cout << "\033[32m-- " << column.name << '\n';
 
 		file.close();
 	}
