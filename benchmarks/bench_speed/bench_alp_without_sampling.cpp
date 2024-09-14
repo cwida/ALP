@@ -30,8 +30,8 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_enc
 
 	uint64_t cycles = benchmark::cycleclock::Now();
 	for (uint64_t i = 0; i < iterations; ++i) {
-		alp::AlpEncode<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
-		alp::AlpEncode<double>::analyze_ffor(encoded_arr, bw, base_arr);
+		alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
+		alp::encoder<double>::analyze_ffor(encoded_arr, bw, base_arr);
 		ffor::ffor(encoded_arr, ffor_arr, bw, base_arr);
 	}
 
@@ -65,8 +65,8 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_enc
 
 	uint64_t cycles = benchmark::cycleclock::Now();
 	for (uint64_t i = 0; i < iterations; ++i) {
-		alp::AlpEncode<double>::encode_simdized(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, fac, exp);
-		alp::AlpEncode<double>::analyze_ffor(encoded_arr, bw, base_arr);
+		alp::encoder<double>::encode_simdized(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, fac, exp);
+		alp::encoder<double>::analyze_ffor(encoded_arr, bw, base_arr);
 		ffor::ffor(encoded_arr, ffor_arr, bw, base_arr);
 	}
 

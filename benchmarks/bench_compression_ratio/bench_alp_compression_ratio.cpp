@@ -123,67 +123,13 @@ public:
 	}
 };
 
-// we prefer the binary_path over csv_path
-void read_data(std::vector<double>& data, const std::string& csv_file_path, const std::string& bin_file_path) {
-	if (csv_file_path.empty()) {
-
-		// Open the binary file in input mode
-		std::ifstream file(bin_file_path, std::ios::binary | std::ios::in);
-
-		if (!file) { throw std::runtime_error("Failed to open file: " + bin_file_path); }
-
-		// Get the size of the file
-		file.seekg(0, std::ios::end);
-		std::streamsize fileSize = file.tellg();
-		file.seekg(0, std::ios::beg);
-
-		// Ensure the file size is a multiple of the size of a double
-		if (fileSize % sizeof(double) != 0) { throw std::runtime_error("File size is not a multiple of double size!"); }
-		// Calculate the number of doubles
-		std::size_t numDoubles = fileSize / sizeof(double);
-
-		// Resize the vector to hold all the doubles
-		data.resize(numDoubles);
-
-		// Read the data into the vector
-		file.read(reinterpret_cast<char*>(data.data()), fileSize);
-
-		// Close the file
-		file.close();
-		return;
-	}
-	if (bin_file_path.empty()) {
-		const auto&   path = csv_file_path;
-		std::ifstream file(path);
-
-		if (!file) { throw std::runtime_error("Failed to open file: " + path); }
-
-		std::string line;
-		// Read each line, convert it to double, and store it in the vector
-		while (std::getline(file, line)) {
-			try {
-				// Convert the string to double and add to the vector
-				data.push_back(std::stod(line));
-			} catch (const std::invalid_argument& e) {
-				throw std::runtime_error("Invalid data in file: " + line);
-			} catch (const std::out_of_range& e) {
-				//
-				throw std::runtime_error("Number out of range in file: " + line);
-			}
-		}
-
-		file.close();
-		return;
-	}
-	throw std::runtime_error("No bin or csv file specified");
-}
-
 /*
  * Test to encode and decode whole datasets using ALP
  * This test will output and write a file with the estimated bits/value after compression with alp
  */
 
 TEST_F(alp_test, test_alp_on_whole_datasets) {
+
 	if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v == nullptr) {
 		throw std::runtime_error("Environment variable ALP_DATASET_DIR_PATH is not set!");
 	}
@@ -197,22 +143,19 @@ TEST_F(alp_test, test_alp_on_whole_datasets) {
 		std::cout << dataset.name << std::endl;
 
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
-		std::vector<double>                    data;
-		read_data(data, dataset.csv_file_path, dataset.binary_file_path);
-		double* data_column = data.data();
-		size_t  n_tuples    = data.size();
-
+		size_t                                 tuples_count;
+		auto*      data_column = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
 		double     value_to_encode {0.0};
 		size_t     vector_idx {0};
 		size_t     rowgroup_counter {0};
 		size_t     rowgroup_offset {0};
 		alp::state stt;
-		size_t     rowgroups_count = std::ceil(static_cast<double>(n_tuples) / ROWGROUP_SIZE);
-		size_t     vectors_count   = n_tuples / VECTOR_SIZE;
+		size_t     rowgroups_count = std::ceil(static_cast<double>(tuples_count) / ROWGROUP_SIZE);
+		size_t     vectors_count   = tuples_count / VECTOR_SIZE;
 		/* Init */
-		alp::AlpEncode<double>::init(data_column, rowgroup_offset, n_tuples, smp_arr, stt);
+		alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
 		/* Encode - Decode - Validate. */
-		for (size_t i = 0; i < n_tuples; i++) {
+		for (size_t i = 0; i < tuples_count; i++) {
 			value_to_encode     = data_column[i];
 			dbl_arr[vector_idx] = value_to_encode;
 			vector_idx          = vector_idx + 1;
@@ -222,10 +165,10 @@ TEST_F(alp_test, test_alp_on_whole_datasets) {
 			if (vector_idx != VECTOR_SIZE) { continue; }
 			if (rowgroup_counter == ROWGROUP_SIZE) {
 				rowgroup_counter = 0;
-				alp::AlpEncode<double>::init(data_column, rowgroup_offset, n_tuples, smp_arr, stt);
+				alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
 			}
-			alp::AlpEncode<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
-			alp::AlpEncode<double>::analyze_ffor(encoded_arr, bit_width, base_arr);
+			alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
+			alp::encoder<double>::analyze_ffor(encoded_arr, bit_width, base_arr);
 			ffor::ffor(encoded_arr, ffor_arr, bit_width, base_arr);
 
 			unffor::unffor(ffor_arr, unffor_arr, bit_width, base_arr);
@@ -266,10 +209,8 @@ TEST_F(alp_test, test_alprd_on_whole_datasets) {
 		if (!dataset.suitable_for_cutting) { continue; }
 
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
-		std::vector<double>                    data;
-		read_data(data, dataset.csv_file_path, dataset.binary_file_path);
-		double*    data_column     = data.data();
-		size_t     n_tuples        = data.size();
+		size_t                                 tuples_count;
+		auto*      data_column     = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
 		double     value_to_encode = 0.0;
 		size_t     vector_idx {0};
 		size_t     rowgroup_counter {0};
@@ -279,14 +220,14 @@ TEST_F(alp_test, test_alprd_on_whole_datasets) {
 		size_t     vectors_count {1};
 
 		/* Init */
-		alp::AlpEncode<double>::init(data_column, rowgroup_offset, n_tuples, smp_arr, stt);
+		alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
 
 		ASSERT_EQ(stt.scheme, alp::SCHEME::ALP_RD);
 
-		alp::AlpRD<double>::init(data_column, rowgroup_offset, n_tuples, smp_arr, stt);
+		alp::AlpRD<double>::init(data_column, rowgroup_offset, tuples_count, smp_arr, stt);
 
 		/* Encode - Decode - Validate. */
-		for (size_t i = 0; i < n_tuples; i++) {
+		for (size_t i = 0; i < tuples_count; i++) {
 			value_to_encode     = data_column[i];
 			dbl_arr[vector_idx] = value_to_encode;
 			vector_idx          = vector_idx + 1;
