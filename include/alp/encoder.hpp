@@ -108,6 +108,12 @@ struct encoder {
 		}
 	}
 
+	template <typename ST>
+	static uint64_t count_bits(ST max, ST min) {
+		const auto delta = (static_cast<UT>(max) - static_cast<UT>(min));
+		return count_bits<UT>(delta);
+	}
+
 	//! Analyze FFOR to obtain bitwidth and frame-of-reference value
 	static inline void analyze_ffor(const ST* input_vector, bw_t& bit_width, ST* base_for) {
 		auto min = std::numeric_limits<ST>::max();
@@ -118,10 +124,8 @@ struct encoder {
 			if (input_vector[i] > max) { max = input_vector[i]; }
 		}
 
-		const auto delta                    = (static_cast<uint64_t>(max) - static_cast<uint64_t>(min));
-		const auto estimated_bits_per_value = count_bits<UT>(delta);
-		bit_width                           = estimated_bits_per_value;
-		base_for[0]                         = min;
+		bit_width   = count_bits<ST>(max, min);
+		base_for[0] = min;
 	}
 
 	/*
@@ -187,9 +191,7 @@ struct encoder {
 					if (non_exceptions_count < 2) { continue; }
 
 					// Evaluate factor/exponent compression size (we optimize for FOR)
-					const uint64_t delta =
-					    (static_cast<uint64_t>(max_encoded_value) - static_cast<uint64_t>(min_encoded_value));
-					estimated_bits_per_value = std::ceil(std::log2(delta + 1));
+					estimated_bits_per_value = count_bits<ST>(max_encoded_value, min_encoded_value);
 					estimated_compression_size += samples_size * estimated_bits_per_value;
 					estimated_compression_size +=
 					    exceptions_count * (Constants<PT>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE);
@@ -283,8 +285,7 @@ struct encoder {
 			}
 
 			// Evaluate factor/exponent performance (we optimize for FOR)
-			const uint64_t delta     = max_encoded_value - min_encoded_value;
-			estimated_bits_per_value = ceil(log2(delta + 1));
+			estimated_bits_per_value = count_bits<ST>(max_encoded_value, min_encoded_value);
 			estimated_compression_size += config::SAMPLES_PER_VECTOR * estimated_bits_per_value;
 			estimated_compression_size += exception_count * (Constants<PT>::EXCEPTION_SIZE + EXCEPTION_POSITION_SIZE);
 
