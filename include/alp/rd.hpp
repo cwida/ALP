@@ -11,8 +11,8 @@ namespace alp {
 
 template <class PT>
 struct rd_encoder {
-	using inner_t                                = typename alp_inner_t<PT>::type;
-	static constexpr uint8_t EXACT_TYPE_BIT_SIZE = sizeof(inner_t) * 8;
+	using UT                                     = typename inner_t<PT>::ut;
+	static constexpr uint8_t EXACT_TYPE_BIT_SIZE = sizeof(UT) * 8;
 
 	//! Estimate the bits per value of ALPRD within a sample
 	static inline double estimate_compression_size(const bw_t     right_bit_width,
@@ -26,10 +26,10 @@ struct rd_encoder {
 
 	template <bool PERSIST_DICT>
 	static double build_left_parts_dictionary(const PT* in_p, bw_t right_bit_width, state<PT>& stt) {
-		std::unordered_map<inner_t, int32_t>  left_parts_hash;
+		std::unordered_map<UT, int32_t>       left_parts_hash;
 		std::vector<std::pair<int, uint64_t>> left_parts_sorted_repetitions;
 
-		auto* in = reinterpret_cast<const inner_t*>(in_p);
+		auto* in = reinterpret_cast<const UT*>(in_p);
 		// Building a hash for all the left parts and how many times they appear
 		for (size_t i = 0; i < stt.sampled_values_n; i++) {
 			auto left_tmp = in[i] >> right_bit_width;
@@ -104,14 +104,14 @@ struct rd_encoder {
 	                          uint16_t*  exceptions,
 	                          uint16_t*  exception_positions,
 	                          uint16_t*  exceptions_count_p,
-	                          inner_t*   right_parts,
+	                          UT*        right_parts,
 	                          uint16_t*  left_parts,
 	                          state<PT>& stt) {
-		const auto* in = reinterpret_cast<const inner_t*>(dbl_arr);
+		const auto* in = reinterpret_cast<const UT*>(dbl_arr);
 
 		// Cutting the floating point values
 		for (size_t i {0}; i < config::VECTOR_SIZE; ++i) {
-			inner_t tmp    = in[i];
+			UT tmp         = in[i];
 			right_parts[i] = tmp & ((1ULL << stt.right_bit_width) - 1);
 			left_parts[i]  = (tmp >> stt.right_bit_width);
 		}
@@ -144,30 +144,30 @@ struct rd_encoder {
 	 * ALP RD Decode
 	 */
 	static inline void decode(PT*        a_out,
-	                          inner_t*   unffor_right_arr,
+	                          UT*        unffor_right_arr,
 	                          uint16_t*  unffor_left_arr,
 	                          uint16_t*  exceptions,
 	                          uint16_t*  exceptions_positions,
 	                          uint16_t*  exceptions_count,
 	                          state<PT>& stt) {
 
-		auto* out         = reinterpret_cast<inner_t*>(a_out);
+		auto* out         = reinterpret_cast<UT*>(a_out);
 		auto* right_parts = unffor_right_arr;
 		auto* left_parts  = unffor_left_arr;
 
 		// Decoding
 		for (size_t i = 0; i < config::VECTOR_SIZE; i++) {
 			uint16_t left  = stt.left_parts_dict[left_parts[i]];
-			inner_t  right = right_parts[i];
-			out[i]         = (static_cast<inner_t>(left) << stt.right_bit_width) | right;
+			UT       right = right_parts[i];
+			out[i]         = (static_cast<UT>(left) << stt.right_bit_width) | right;
 		}
 
 		// Exceptions Patching (exceptions only occur in left parts)
 		auto exp_c = exceptions_count[0];
 		for (size_t i = 0; i < exp_c; i++) {
-			inner_t  right               = right_parts[exceptions_positions[i]];
+			UT       right               = right_parts[exceptions_positions[i]];
 			uint16_t left                = exceptions[i];
-			out[exceptions_positions[i]] = (static_cast<inner_t>(left) << stt.right_bit_width) | right;
+			out[exceptions_positions[i]] = (static_cast<UT>(left) << stt.right_bit_width) | right;
 		}
 	}
 

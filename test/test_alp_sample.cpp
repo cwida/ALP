@@ -95,13 +95,13 @@ public:
 
 	template <typename PT>
 	void test_column(const alp_bench::Column& column) {
-		using inner_type = typename alp::alp_inner_t<PT>::type;
+		using UT = typename alp::inner_t<PT>::ut;
 
 		auto* input_arr        = reinterpret_cast<PT*>(intput_buf);
 		auto* sample_arr       = reinterpret_cast<PT*>(sample_buf);
-		auto* right_arr        = reinterpret_cast<inner_type*>(right_buf);
-		auto* ffor_right_arr   = reinterpret_cast<inner_type*>(ffor_right_buf);
-		auto* unffor_right_arr = reinterpret_cast<inner_type*>(unffor_right_buf);
+		auto* right_arr        = reinterpret_cast<UT*>(right_buf);
+		auto* ffor_right_arr   = reinterpret_cast<UT*>(ffor_right_buf);
+		auto* unffor_right_arr = reinterpret_cast<UT*>(unffor_right_buf);
 		auto* glue_arr         = reinterpret_cast<PT*>(glue_buf);
 		auto* exc_arr          = reinterpret_cast<PT*>(exception_buf);
 		auto* dec_dbl_arr      = reinterpret_cast<PT*>(decoded_buf);
