@@ -96,7 +96,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 		                                        stt.fac,
 		                                        stt.exp);
 
-		alp::AlpDecode<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
+		alp::decoder<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
 
 		// Validate
 		for (size_t j = 0; j < alp::config::VECTOR_SIZE; ++j) {

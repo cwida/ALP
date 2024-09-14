@@ -143,7 +143,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 		                                        dataset.factor,
 		                                        dataset.exponent);
 
-		alp::AlpDecode<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
+		alp::decoder<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
 
 		// Validate
 		for (size_t j = 0; j < VECTOR_SIZE; ++j) {

@@ -35,10 +35,10 @@ public:
 	uint16_t* rd_exc_arr {};
 	uint16_t* pos_arr {};
 	uint16_t* exc_c_arr {};
-	int64_t*  ffor_arr {};
+	int64_t*  ffor_buf {};
 	int64_t*  unffor_arr {};
-	int64_t*  base_arr {};
-	int64_t*  encoded_arr {};
+	int64_t*  base_buf {};
+	int64_t*  encoded_buf {};
 
 	uint64_t* ffor_right_buf {};
 	uint16_t* ffor_left_arr {};
@@ -62,14 +62,15 @@ public:
 		unffor_right_buf = new uint64_t[alp::config::VECTOR_SIZE];
 
 		//
+		encoded_buf = new int64_t[alp::config::VECTOR_SIZE];
+		base_buf    = new int64_t[alp::config::VECTOR_SIZE];
+		ffor_buf    = new int64_t[alp::config::VECTOR_SIZE];
 
+		//
 		rd_exc_arr      = new uint16_t[alp::config::VECTOR_SIZE];
 		pos_arr         = new uint16_t[alp::config::VECTOR_SIZE];
-		encoded_arr     = new int64_t[alp::config::VECTOR_SIZE];
 		exc_c_arr       = new uint16_t[alp::config::VECTOR_SIZE];
-		ffor_arr        = new int64_t[alp::config::VECTOR_SIZE];
 		unffor_arr      = new int64_t[alp::config::VECTOR_SIZE];
-		base_arr        = new int64_t[alp::config::VECTOR_SIZE];
 		left_arr        = new uint16_t[alp::config::VECTOR_SIZE];
 		ffor_left_arr   = new uint16_t[alp::config::VECTOR_SIZE];
 		unffor_left_arr = new uint16_t[alp::config::VECTOR_SIZE];
@@ -81,12 +82,12 @@ public:
 		delete[] exception_buf;
 		delete[] rd_exc_arr;
 		delete[] pos_arr;
-		delete[] encoded_arr;
+		delete[] encoded_buf;
 		delete[] decoded_buf;
 		delete[] exc_c_arr;
-		delete[] ffor_arr;
+		delete[] ffor_buf;
 		delete[] unffor_arr;
-		delete[] base_arr;
+		delete[] base_buf;
 		delete[] right_buf;
 		delete[] left_arr;
 		delete[] unffor_right_buf;
@@ -96,6 +97,7 @@ public:
 	template <typename PT>
 	void test_column(const alp_bench::Column& column) {
 		using UT = typename alp::inner_t<PT>::ut;
+		using ST = typename alp::inner_t<PT>::st;
 
 		auto* input_arr        = reinterpret_cast<PT*>(intput_buf);
 		auto* sample_arr       = reinterpret_cast<PT*>(sample_buf);
@@ -105,6 +107,9 @@ public:
 		auto* glue_arr         = reinterpret_cast<PT*>(glue_buf);
 		auto* exc_arr          = reinterpret_cast<PT*>(exception_buf);
 		auto* dec_dbl_arr      = reinterpret_cast<PT*>(decoded_buf);
+		auto* encoded_arr      = reinterpret_cast<ST*>(encoded_buf);
+		auto* base_arr         = reinterpret_cast<ST*>(base_buf);
+		auto* ffor_arr         = reinterpret_cast<ST*>(ffor_buf);
 
 		std::ifstream file(column.sample_csv_file_path, std::ios::in);
 		if (!file) { throw std::runtime_error(column.sample_csv_file_path + " : " + strerror(errno)); }
@@ -118,9 +123,13 @@ public:
 		// keep storing values from the text file so long as data exists:
 		size_t row_idx {0};
 		while (file >> val_str) {
-			value_to_encode    = std::stod(val_str);
-			input_arr[row_idx] = value_to_encode;
+			if constexpr (std::is_same_v<PT, double>) {
+				value_to_encode = std::stod(val_str);
+			} else {
+				value_to_encode = std::stof(val_str);
+			}
 
+			input_arr[row_idx] = value_to_encode;
 			row_idx += 1;
 		}
 
@@ -156,13 +165,8 @@ public:
 			ffor::ffor(encoded_arr, ffor_arr, bit_width, base_arr);
 
 			// Decode
-			generated::falp::fallback::scalar::falp(reinterpret_cast<uint64_t*>(ffor_arr),
-			                                        dec_dbl_arr,
-			                                        bit_width,
-			                                        reinterpret_cast<uint64_t*>(base_arr),
-			                                        stt.fac,
-			                                        stt.exp);
-			alp::AlpDecode<PT>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
+			generated::falp::fallback::scalar::falp(ffor_arr, dec_dbl_arr, bit_width, base_arr, stt.fac, stt.exp);
+			alp::decoder<PT>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
 
 			auto exceptions_count = exc_c_arr[0];
 
@@ -204,8 +208,8 @@ TEST_F(alp_test, test_alp_on_edge_case) {
 	}
 }
 
-// TEST_F(alp_test, alp_float_test_dataset) {
-// 	for (const auto& col : alp_bench::float_test_dataset) {
-// 		test_column<float>(col);
-// 	}
-// }
+TEST_F(alp_test, alp_float_test_dataset) {
+	for (const auto& col : alp_bench::float_test_dataset) {
+		test_column<float>(col);
+	}
+}

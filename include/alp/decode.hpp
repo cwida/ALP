@@ -96,26 +96,26 @@ void avx2_decode(const int64_t* digits, uint8_t fac_idx, uint8_t exp_idx, double
 
 #endif
 
-template <class T>
-struct AlpDecode {
+template <class PT>
+struct decoder {
 
 	//! Scalar decoding a single value with ALP
-	static inline T decode_value(const int64_t encoded_value, const uint8_t factor, const uint8_t exponent) {
-		const T decoded_value = encoded_value * FACT_ARR[factor] * alp::Constants<T>::FRAC_ARR[exponent];
+	static inline PT decode_value(const int64_t encoded_value, const uint8_t factor, const uint8_t exponent) {
+		const PT decoded_value = encoded_value * FACT_ARR[factor] * alp::Constants<PT>::FRAC_ARR[exponent];
 		return decoded_value;
 	}
 
 	//! Scalar decoding of an ALP vector
 	static inline void
-	decode(const int64_t* encoded_integers, const uint8_t fac_idx, const uint8_t exp_idx, T* output) {
+	decode(const int64_t* encoded_integers, const uint8_t fac_idx, const uint8_t exp_idx, PT* output) {
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
 			output[i] = decode_value(encoded_integers[i], fac_idx, exp_idx);
 		}
 	}
 
 	//! Patch Exceptions
-	static inline void patch_exceptions(T*             out,
-	                                    const T*       exceptions,
+	static inline void patch_exceptions(PT*            out,
+	                                    const PT*      exceptions,
 	                                    const exp_p_t* exceptions_positions,
 	                                    const exp_c_t* exceptions_count) {
 		const auto exp_c = exceptions_count[0];

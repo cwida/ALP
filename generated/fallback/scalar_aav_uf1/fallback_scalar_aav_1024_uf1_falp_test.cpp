@@ -69,7 +69,7 @@ TEST_F(fallback_scalar_aav_1024_uf1_falp, fused) {
 		                                        reinterpret_cast<uint64_t*>(base_arr),
 		                                        stt.fac,
 		                                        stt.exp);
-		alp::AlpDecode<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
+		alp::decoder<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
 		for (size_t i = 0; i < 1024; ++i) {
 			ASSERT_EQ(dbl_arr[i], dec_dbl_arr[i]);
 		}
@@ -100,8 +100,8 @@ TEST_F(fallback_scalar_aav_1024_uf1_falp, unfused) {
 		ffor::ffor(dig_arr, ffor_arr, bw, base_arr);
 		// Decode
 		unffor::unffor(ffor_arr, unffor_arr, bw, base_arr);
-		alp::AlpDecode<double>::decode(unffor_arr, stt.fac, stt.exp, dec_dbl_arr);
-		alp::AlpDecode<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
+		alp::decoder<double>::decode(unffor_arr, stt.fac, stt.exp, dec_dbl_arr);
+		alp::decoder<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
 		for (size_t i = 0; i < 1024; ++i) {
 			ASSERT_EQ(dbl_arr[i], dec_dbl_arr[i]);
 		}

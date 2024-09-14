@@ -46,7 +46,7 @@ struct inner_t<double> {
 template <typename PT>
 struct state {
 	using UT = typename inner_t<PT>::ut;
-	using ST = typename inner_t<PT>::ut;
+	using ST = typename inner_t<PT>::st;
 
 	Scheme   scheme {Scheme::ALP};
 	uint16_t vector_size {config::VECTOR_SIZE};
@@ -164,7 +164,7 @@ struct encoder {
 					for (size_t i = 0; i < samples_size; i++) {
 						const PT actual_value  = smp_arr[smp_offset + i];
 						const ST encoded_value = encode_value(actual_value, factor_idx, exp_ref);
-						const PT decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exp_ref);
+						const PT decoded_value = decoder<PT>::decode_value(encoded_value, factor_idx, exp_ref);
 						if (decoded_value == actual_value) {
 							non_exceptions_count++;
 							if (encoded_value > max_encoded_value) { max_encoded_value = encoded_value; }
@@ -264,7 +264,7 @@ struct encoder {
 			for (size_t sample_idx = 0; sample_idx < input_vector_size; sample_idx += sample_increments) {
 				const PT actual_value  = input_vector[sample_idx];
 				const ST encoded_value = encode_value(actual_value, factor_idx, exp_idx);
-				const PT decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exp_idx);
+				const PT decoded_value = decoder<PT>::decode_value(encoded_value, factor_idx, exp_idx);
 				if (decoded_value == actual_value) {
 					if (encoded_value > max_encoded_value) { max_encoded_value = encoded_value; }
 					if (encoded_value < min_encoded_value) { min_encoded_value = encoded_value; }
@@ -339,7 +339,7 @@ struct encoder {
 			// Attempt conversion
 			const ST encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
 			encoded_integers[i]    = encoded_value;
-			const PT decoded_value = AlpDecode<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
+			const PT decoded_value = decoder<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
 			ENCODED_DBL_ARR[i]     = decoded_value;
 		}
 
