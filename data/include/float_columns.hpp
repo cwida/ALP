@@ -13,9 +13,11 @@ inline std::array<Column, 4> sp_datasets = {{
 
 }};
 
-inline std::array<Column, 2> float_test_dataset = {{
+inline std::array<Column, 4> float_test_dataset = {{
     {0, "Arade/4", PATHS.ALP_DATASET_SAMPLE_CSV_PATH + "arade4.csv", "", 0, 0, 0, 0},
-    {1, "test_0", CMAKE_SOURCE_DIR "/data/float/test_0.csv", "", 14, 10, 0, 4},
+    {1, "test_0", CMAKE_SOURCE_DIR "/data/float/test_0.csv", "", 0, 0, 0, 4},
+    {2, "test_1", CMAKE_SOURCE_DIR "/data/float/test_1.csv", "", 0, 0, 0, 10},
+    {3, "test_2", CMAKE_SOURCE_DIR "/data/float/test_2.csv", "", 0, 0, 0, 17},
 
 }};
 

@@ -6,6 +6,24 @@
 
 namespace alp {
 
+// Default template, not defined intentionally
+template <typename T>
+struct inner_t;
+
+// Specialization for float -> uint32_t
+template <>
+struct inner_t<float> {
+	using ut = uint32_t;
+	using st = int32_t;
+};
+
+// Specialization for double -> uint64_t
+template <>
+struct inner_t<double> {
+	using ut = uint64_t;
+	using st = int64_t;
+};
+
 #ifdef AVX2
 #include "immintrin.h"
 
@@ -98,16 +116,17 @@ void avx2_decode(const int64_t* digits, uint8_t fac_idx, uint8_t exp_idx, double
 
 template <class PT>
 struct decoder {
+	using UT = typename inner_t<PT>::ut;
+	using ST = typename inner_t<PT>::st;
 
 	//! Scalar decoding a single value with ALP
-	static inline PT decode_value(const int64_t encoded_value, const uint8_t factor, const uint8_t exponent) {
+	static inline PT decode_value(const ST encoded_value, const uint8_t factor, const uint8_t exponent) {
 		const PT decoded_value = encoded_value * Constants<PT>::FACT_ARR[factor] * Constants<PT>::FRAC_ARR[exponent];
 		return decoded_value;
 	}
 
 	//! Scalar decoding of an ALP vector
-	static inline void
-	decode(const int64_t* encoded_integers, const uint8_t fac_idx, const uint8_t exp_idx, PT* output) {
+	static inline void decode(const ST* encoded_integers, const uint8_t fac_idx, const uint8_t exp_idx, PT* output) {
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
 			output[i] = decode_value(encoded_integers[i], fac_idx, exp_idx);
 		}
