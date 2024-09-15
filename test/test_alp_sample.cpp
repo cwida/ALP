@@ -111,8 +111,8 @@ public:
 		auto* base_arr         = reinterpret_cast<ST*>(base_buf);
 		auto* ffor_arr         = reinterpret_cast<ST*>(ffor_buf);
 
-		std::ifstream file(column.sample_csv_file_path, std::ios::in);
-		if (!file) { throw std::runtime_error(column.sample_csv_file_path + " : " + strerror(errno)); }
+		std::ifstream file(column.csv_file_path, std::ios::in);
+		if (!file) { throw std::runtime_error(column.csv_file_path + " : " + strerror(errno)); }
 
 		alp::state<PT> stt;
 		size_t         tuples_count {alp::config::VECTOR_SIZE};
