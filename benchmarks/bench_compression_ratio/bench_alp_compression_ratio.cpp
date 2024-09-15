@@ -58,6 +58,61 @@ double get_average_exception_count(std::vector<alp_bench::VectorMetadata>& vecto
 	return avg_exceptions_count;
 }
 
+// we prefer the binary_path over csv_path
+void read_data(std::vector<double>& data, const std::string& csv_file_path, const std::string& bin_file_path) {
+	if (!bin_file_path.empty()) {
+
+		// Open the binary file in input mode
+		std::ifstream file(bin_file_path, std::ios::binary | std::ios::in);
+
+		if (!file) { throw std::runtime_error("Failed to open file: " + bin_file_path); }
+
+		// Get the size of the file
+		file.seekg(0, std::ios::end);
+		std::streamsize fileSize = file.tellg();
+		file.seekg(0, std::ios::beg);
+
+		// Ensure the file size is a multiple of the size of a double
+		if (fileSize % sizeof(double) != 0) { throw std::runtime_error("File size is not a multiple of double size!"); }
+		// Calculate the number of doubles
+		std::size_t numDoubles = fileSize / sizeof(double);
+
+		// Resize the vector to hold all the doubles
+		data.resize(numDoubles);
+
+		// Read the data into the vector
+		file.read(reinterpret_cast<char*>(data.data()), fileSize);
+
+		// Close the file
+		file.close();
+		return;
+	}
+	if (!csv_file_path.empty()) {
+		const auto&   path = csv_file_path;
+		std::ifstream file(path);
+
+		if (!file) { throw std::runtime_error("Failed to open file: " + path); }
+
+		std::string line;
+		// Read each line, convert it to double, and store it in the vector
+		while (std::getline(file, line)) {
+			try {
+				// Convert the string to double and add to the vector
+				data.push_back(std::stod(line));
+			} catch (const std::invalid_argument& e) {
+				throw std::runtime_error("Invalid data in file: " + line);
+			} catch (const std::out_of_range& e) {
+				//
+				throw std::runtime_error("Number out of range in file: " + line);
+			}
+		}
+
+		file.close();
+		return;
+	}
+	throw std::runtime_error("No bin or csv file specified");
+}
+
 class alp_test : public ::testing::Test {
 public:
 	double*   intput_buf {};
@@ -119,41 +174,30 @@ public:
 		delete[] unffor_right_buf;
 		delete[] unffor_left_arr;
 	}
-};
 
-/*
- * Test to encode and decode whole datasets using ALP
- * This test will output and write a file with the estimated bits/value after compression with alp
- */
-
-TEST_F(alp_test, test_alp_on_whole_datasets) {
-
-	if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v == nullptr) {
-		throw std::runtime_error("Environment variable ALP_DATASET_DIR_PATH is not set!");
-	}
-
-	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "alp_compression_ratio.csv", std::ios::out);
-	ofile << "dataset,size,rowgroups_count,vectors_count\n";
-
-	for (auto& dataset : alp_bench::alp_dataset) {
-		if (dataset.suitable_for_cutting) { continue; }
+	void bench_alp_compression_ratio(const alp_bench::Column& dataset, std::ofstream& ofile) {
+		if (dataset.suitable_for_cutting) { return; }
 
 		std::cout << dataset.name << std::endl;
 
+		std::vector<double> data;
+		read_data(data, dataset.csv_file_path, dataset.binary_file_path);
+		double* data_column = data.data();
+		size_t  n_tuples    = data.size();
+
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
-		size_t                                 tuples_count;
-		auto*              data_column = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
-		double             value_to_encode {0.0};
-		size_t             vector_idx {0};
-		size_t             rowgroup_counter {0};
-		size_t             rowgroup_offset {0};
-		alp::state<double> stt;
-		size_t             rowgroups_count = std::ceil(static_cast<double>(tuples_count) / ROWGROUP_SIZE);
-		size_t             vectors_count   = tuples_count / VECTOR_SIZE;
+		double                                 value_to_encode {0.0};
+		size_t                                 vector_idx {0};
+		size_t                                 rowgroup_counter {0};
+		size_t                                 rowgroup_offset {0};
+		alp::state<double>                     stt;
+		size_t rowgroups_count = std::ceil(static_cast<double>(n_tuples) / ROWGROUP_SIZE);
+		size_t vectors_count   = n_tuples / VECTOR_SIZE;
+
 		/* Init */
-		alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
+		alp::encoder<double>::init(data_column, rowgroup_offset, n_tuples, sample_buf, stt);
 		/* Encode - Decode - Validate. */
-		for (size_t i = 0; i < tuples_count; i++) {
+		for (size_t i = 0; i < n_tuples; i++) {
 			value_to_encode        = data_column[i];
 			intput_buf[vector_idx] = value_to_encode;
 			vector_idx             = vector_idx + 1;
@@ -163,7 +207,7 @@ TEST_F(alp_test, test_alp_on_whole_datasets) {
 			if (vector_idx != VECTOR_SIZE) { continue; }
 			if (rowgroup_counter == ROWGROUP_SIZE) {
 				rowgroup_counter = 0;
-				alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
+				alp::encoder<double>::init(data_column, rowgroup_offset, n_tuples, sample_buf, stt);
 			}
 			alp::encoder<double>::encode(intput_buf, exc_arr, pos_arr, exc_c_arr, encoded_buf, stt);
 			alp::encoder<double>::analyze_ffor(encoded_buf, bit_width, base_buf);
@@ -193,22 +237,17 @@ TEST_F(alp_test, test_alp_on_whole_datasets) {
 			ASSERT_EQ(alp_bench::to_str(compression_ratio), alp_bench::results.find(dataset.name)->second);
 		}
 	}
-}
 
-/*
- * Test to encode and decode whole datasets using ALP RD (aka ALP Cutter)
- * This test will output and write a file with the estimated bits/value after compression with alp
- */
-TEST_F(alp_test, test_alprd_on_whole_datasets) {
-	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "alp_rd_compression_ratio.csv", std::ios::out);
-	ofile << "dataset,size,rowgroups_count,vectors_count\n";
-
-	for (auto& dataset : alp_bench::alp_dataset) {
-		if (!dataset.suitable_for_cutting) { continue; }
+	void bench_alp_rd_compression_ratio(const alp_bench::Column& dataset, std::ofstream& ofile) {
+		if (!dataset.suitable_for_cutting) { return; }
 
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
-		size_t                                 tuples_count;
-		auto*              data_column     = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
+
+		std::vector<double> data;
+		read_data(data, dataset.csv_file_path, dataset.binary_file_path);
+		double* data_column = data.data();
+		size_t  n_tuples    = data.size();
+
 		double             value_to_encode = 0.0;
 		size_t             vector_idx {0};
 		size_t             rowgroup_counter {0};
@@ -218,14 +257,14 @@ TEST_F(alp_test, test_alprd_on_whole_datasets) {
 		size_t             vectors_count {1};
 
 		/* Init */
-		alp::encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
+		alp::encoder<double>::init(data_column, rowgroup_offset, n_tuples, sample_buf, stt);
 
 		ASSERT_EQ(stt.scheme, alp::Scheme::ALP_RD);
 
-		alp::rd_encoder<double>::init(data_column, rowgroup_offset, tuples_count, sample_buf, stt);
+		alp::rd_encoder<double>::init(data_column, rowgroup_offset, n_tuples, sample_buf, stt);
 
 		/* Encode - Decode - Validate. */
-		for (size_t i = 0; i < tuples_count; i++) {
+		for (size_t i = 0; i < n_tuples; i++) {
 			value_to_encode        = data_column[i];
 			intput_buf[vector_idx] = value_to_encode;
 			vector_idx             = vector_idx + 1;
@@ -280,6 +319,45 @@ TEST_F(alp_test, test_alprd_on_whole_datasets) {
 		    alp_bench::results.end()) { // To avoid error when tested dataset is not found on results
 			ASSERT_EQ(alp_bench::to_str(compression_ratio), alp_bench::results.find(dataset.name)->second);
 		}
+	}
+};
+
+/*
+ * Test to encode and decode whole datasets using ALP
+ * This test will output and write a file with the estimated bits/value after compression with alp
+ */
+TEST_F(alp_test, test_alp_on_whole_datasets) {
+	if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v == nullptr) {
+		throw std::runtime_error("Environment variable ALP_DATASET_DIR_PATH is not set!");
+	}
+
+	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "alp_compression_ratio.csv", std::ios::out);
+	ofile << "dataset,size,rowgroups_count,vectors_count\n";
+
+	for (auto& dataset : alp_bench::alp_dataset) {
+		bench_alp_compression_ratio(dataset, ofile);
+	}
+}
+
+/*
+ * Test to encode and decode whole datasets using ALP RD (aka ALP Cutter)
+ * This test will output and write a file with the estimated bits/value after compression with alp
+ */
+TEST_F(alp_test, test_alprd_on_whole_datasets) {
+	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "alp_rd_compression_ratio.csv", std::ios::out);
+	ofile << "dataset,size,rowgroups_count,vectors_count\n";
+
+	for (auto& dataset : alp_bench::alp_dataset) {
+		bench_alp_rd_compression_ratio(dataset, ofile);
+	}
+}
+
+TEST_F(alp_test, test_alprd_on_evalimplsts) {
+	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "evalimplsts.csv", std::ios::out);
+	ofile << "dataset,size,rowgroups_count,vectors_count\n";
+
+	for (auto& dataset : alp_bench::evalimplsts) {
+		bench_alp_rd_compression_ratio(dataset, ofile);
 	}
 }
 

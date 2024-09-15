@@ -5,7 +5,7 @@
 
 namespace alp_bench {
 
-inline std::array<Column, 31> alp_dataset = {{
+inline std::array<Column, 30> alp_dataset = {{
 
     {1,
      "Air-Pressure",
@@ -280,7 +280,6 @@ inline std::array<Column, 31> alp_dataset = {{
      12,
      0,
      16},
-    {31, "issue_8", PATHS.ALP_ISSUE_CSV_PATH + "active_power.csv", "", 0, 0, 0, 0, true},
 
 }};
 } // namespace alp_bench

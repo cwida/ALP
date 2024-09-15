@@ -4,6 +4,7 @@
 #include "column.hpp"
 #include "double_columns.hpp"
 #include "edge_case.hpp"
+#include "evalimplsts.hpp"
 #include "float_columns.hpp"
 #include "generated_columns.hpp"
 

@@ -25,7 +25,7 @@ struct paths {
 	std::string ALP_DATASET_CSV_PATH       = std::string {CMAKE_SOURCE_DIR} + "/data/samples/";
 	std::string EDGE_DATASET_CSV_PATH      = std::string {CMAKE_SOURCE_DIR} + "/data/edge_case/";
 	std::string RESULT_DIR_PATH            = std::string {CMAKE_SOURCE_DIR} + "/publication/";
-	std::string ALP_ISSUE_CSV_PATH         = std::string {CMAKE_SOURCE_DIR} + "/data/issue/";
+	std::string EVALIMPLSTS_CSV_PATH         = std::string {CMAKE_SOURCE_DIR} + "/data/evalimplsts/";
 
 	std::string ALP_DATASET_BINARY_DIR_PATH = " ";
 
