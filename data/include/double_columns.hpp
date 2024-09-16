@@ -282,5 +282,9 @@ inline std::array<Column, 30> alp_dataset = {{
      16},
 
 }};
+
+inline std::array<Column, 1> double_test_dataset = {{
+    {0, "test_0", CMAKE_SOURCE_DIR "/data/double/test_0.csv", "", 0, 0, 0, 0},
+}};
 } // namespace alp_bench
 #endif
