@@ -6,6 +6,7 @@
 #include "alp/decoder.hpp"
 #include "alp/sampler.hpp"
 #include "common.hpp"
+#include "constants.hpp"
 #include <cfloat>
 #include <cmath>
 #include <cstdint>
@@ -313,11 +314,12 @@ struct encoder {
 		uint64_t exceptions_idx {0};
 
 		// make copy of input with all special values replaced by  ENCODING_UPPER_LIMIT
-		const auto* tmp_input = reinterpret_cast<const uint64_t*>(input_vector);
+		const auto* tmp_input = reinterpret_cast<const UT*>(input_vector);
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
 			const auto is_special =
-			    ((tmp_input[i] & 0x7FFFFFFFFFFFFFFF) >=
-			     0x7FF0000000000000) // any NaN, +inf and -inf (https://stackoverflow.com/questions/29730530/)
+			    ((tmp_input[i] & Constants<PT>::SIGN_BIT_MASK) >=
+			     Constants<PT>::EXPONENTIAL_BITS_MASK) // any NaN, +inf and -inf
+			                                           // (https://stackoverflow.com/questions/29730530/)
 			    || tmp_input[i] == Constants<PT>::NEGATIVE_ZERO;
 
 			if (is_special) {
