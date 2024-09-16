@@ -7,7 +7,7 @@
 // NOLINTBEGIN
 
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "--Wimplicit-int-float-conversion"
+#pragma GCC diagnostic ignored "-Wimplicit-int-float-conversion"
 
 namespace alp {
 
