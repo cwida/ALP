@@ -6,6 +6,9 @@
 
 // NOLINTBEGIN
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "--Wimplicit-int-float-conversion"
+
 namespace alp {
 
 // Default template, not defined intentionally
@@ -149,5 +152,7 @@ struct decoder {
 } // namespace alp
 
 // NOLINTEND
+
+#pragma GCC diagnostic pop
 
 #endif // ALP_DECODER_HPP
