@@ -22,6 +22,11 @@
 
 #endif
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wfloat-conversion"
+#pragma GCC diagnostic ignored "-Wimplicit-int-conversion"
+
 /*
  * ALP Encoding
  */
@@ -308,7 +313,7 @@ struct encoder {
 	                                   const exponent_idx_t exponent_idx) {
 		alignas(64) static PT       ENCODED_DBL_ARR[1024];
 		alignas(64) static PT       DBL_ARR_WITHOUT_SPECIALS[1024];
-		alignas(64) static uint64_t INDEX_ARR[1024];
+		alignas(64) static uint64_t TMP_INDEX_ARR[1024];
 
 		exp_p_t  current_exceptions_count {0};
 		uint64_t exceptions_idx {0};
@@ -351,24 +356,24 @@ struct encoder {
 		}
 #else
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto l                    = ENCODED_DBL_ARR[i];
-			auto r                    = DBL_ARR_WITHOUT_SPECIALS[i];
-			auto is_exception         = (l != r);
-			INDEX_ARR[exceptions_idx] = i;
+			auto l                        = ENCODED_DBL_ARR[i];
+			auto r                        = DBL_ARR_WITHOUT_SPECIALS[i];
+			auto is_exception             = (l != r);
+			TMP_INDEX_ARR[exceptions_idx] = i;
 			exceptions_idx += is_exception;
 		}
 #endif
 
 		ST a_non_exception_value = 0;
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			if (i != INDEX_ARR[i]) {
+			if (i != TMP_INDEX_ARR[i]) {
 				a_non_exception_value = encoded_integers[i];
 				break;
 			}
 		}
 
 		for (size_t j {0}; j < exceptions_idx; j++) {
-			size_t     i                                   = INDEX_ARR[j];
+			size_t     i                                   = TMP_INDEX_ARR[j];
 			const auto actual_value                        = input_vector[i];
 			encoded_integers[i]                            = a_non_exception_value;
 			exceptions[current_exceptions_count]           = actual_value;
@@ -408,4 +413,7 @@ struct encoder {
 };
 
 } // namespace alp
+
+#pragma GCC diagnostic pop
+
 #endif

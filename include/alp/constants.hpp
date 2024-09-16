@@ -44,11 +44,20 @@ struct Constants<float> {
 	static constexpr uint32_t SIGN_BIT_MASK         = 0b01111111111111111111111111111111;
 	static constexpr uint32_t EXPONENTIAL_BITS_MASK = 0b01111111100000000000000000000000;
 
-	static inline constexpr float FRAC_ARR[] = {
-	    1.0, 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001, 0.00000001, 0.000000001, 0.0000000001};
+	static constexpr float FRAC_ARR[] = {
+	    1.0f, 0.1f, 0.01f, 0.001f, 0.0001f, 0.00001f, 0.000001f, 0.0000001f, 0.00000001f, 0.000000001f, 0.0000000001f};
 
-	static inline constexpr float EXP_ARR[] = {
-	    1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0, 1000000000.0, 10000000000.0};
+	static constexpr float EXP_ARR[] = {1.0f,
+	                                    10.0f,
+	                                    100.0f,
+	                                    1000.0f,
+	                                    10000.0f,
+	                                    100000.0f,
+	                                    1000000.0f,
+	                                    10000000.0f,
+	                                    100000000.0f,
+	                                    1000000000.0f,
+	                                    10000000000.0f};
 
 	static constexpr int32_t FACT_ARR[] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 };

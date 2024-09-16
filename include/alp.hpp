@@ -9,7 +9,6 @@
 #include "alp/rd.hpp"
 #include "alp/sampler.hpp"
 #include "alp/storer.hpp"
-#include "alp/utils.hpp"
 #include "fastlanes/ffor.hpp"
 #include "fastlanes/unffor.hpp"
 

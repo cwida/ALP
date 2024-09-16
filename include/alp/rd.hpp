@@ -7,6 +7,11 @@
 #include "alp/sampler.hpp"
 #include <algorithm>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wfloat-conversion"
+#pragma GCC diagnostic ignored "-Wimplicit-int-conversion"
+
 namespace alp {
 
 template <class PT>
@@ -20,7 +25,8 @@ struct rd_encoder {
 	                                               const exp_c_t  exceptions_count,
 	                                               const uint64_t sample_count) {
 		const double exceptions_size = exceptions_count * (RD_EXCEPTION_POSITION_SIZE + RD_EXCEPTION_SIZE);
-		const double estimated_size  = right_bit_width + left_bit_width + (exceptions_size / sample_count);
+		const double estimated_size =
+		    right_bit_width + left_bit_width + (exceptions_size / static_cast<double>(sample_count));
 		return estimated_size;
 	}
 
@@ -180,4 +186,7 @@ struct rd_encoder {
 };
 
 } // namespace alp
+
+#pragma GCC diagnostic pop
+
 #endif // ALP_RD_HPP
