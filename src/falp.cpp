@@ -3,7 +3,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #pragma GCC diagnostic ignored "-Wfloat-conversion"
-#pragma GCC diagnostic ignored "--Wimplicit-int-float-conversion"
+#pragma GCC diagnostic ignored "-Wimplicit-int-float-conversion"
 
 #include "alp/falp.hpp"
 #include "alp/constants.hpp"
