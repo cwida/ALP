@@ -9,7 +9,8 @@ add_compile_options(-fPIC)
 option(ALP_BUILD_TESTING "Build Test" OFF)
 option(ALP_BUILD_BENCHMARKING "Build Benchmark" OFF)
 option(ALP_BUILD_BENCHMARKING_COMPRESSION_RATIO "Build Benchmarking compression ratio" OFF)
-option(ALP_BUILD_GENERATED "Build generated ALP" OFF)
+option(ALP_BUILD_BENCHMARKING_GENERATED "Build generated ALP" OFF)
+option(ALP_ENABLE_CLANG_TIDY "Enable clang_tidy on all targets" ON)
 
 #-----------------------------------------------------------------------------------------------------------------------
 include(FetchContent)
@@ -19,7 +20,7 @@ include(CTest)
 
 
 # Clang Tidy : ---------------------------------------------------------------------------------------------------------
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND ALP_ENABLE_CLANG_TIDY)
     find_program(CLANG_TIDY_EXE NAMES clang-tidy)
     if (NOT CLANG_TIDY_EXE)
         message(FATAL_ERROR "-- ALP: clang-tidy not found.")
@@ -71,7 +72,7 @@ if (ALP_BUILD_TESTING)
 endif ()
 
 # Generated : ----------------------------------------------------------------------------------------------------------
-if (ALP_BUILD_GENERATED)
+if (ALP_BUILD_BENCHMARKING_GENERATED)
     message("---------------------------------------------------------------------------------------------------------")
     message("-- ALP: Generated:")
 
