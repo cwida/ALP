@@ -1,5 +1,9 @@
 // generated!
 // NOLINTBEGIN
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wfloat-conversion"
+
 #include "alp/falp.hpp"
 #include "alp/constants.hpp"
 namespace generated { namespace falp::fallback { namespace scalar {
@@ -42735,4 +42739,6 @@ void falp(const uint32_t* __restrict a_in_p,
 	}
 }
 }}}; // namespace generated::falp::fallback::scalar
+
+#pragma GCC diagnostic pop
 // NOLINTEND

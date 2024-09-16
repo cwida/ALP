@@ -4,6 +4,8 @@
 #include "common.hpp"
 #include <cstdint>
 
+// NOLINTBEGIN
+
 namespace alp {
 
 // Default template, not defined intentionally
@@ -145,5 +147,7 @@ struct decoder {
 };
 
 } // namespace alp
+
+// NOLINTEND
 
 #endif // ALP_DECODER_HPP

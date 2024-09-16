@@ -5,6 +5,10 @@
 #include <algorithm>
 #include <cmath>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wfloat-conversion"
+
 namespace alp::sampler {
 
 template <class T>
@@ -48,5 +52,7 @@ inline size_t first_level_sample(const T* data, const size_t data_offset, const 
 }
 
 } // namespace alp::sampler
+
+#pragma GCC diagnostic pop
 
 #endif
