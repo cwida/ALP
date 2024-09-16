@@ -213,3 +213,9 @@ TEST_F(alp_test, alp_float_test_dataset) {
 		test_column<float>(col);
 	}
 }
+
+TEST_F(alp_test, alp_double_test_dataset) {
+	for (const auto& col : alp_bench::double_test_dataset) {
+		test_column<double>(col);
+	}
+}
