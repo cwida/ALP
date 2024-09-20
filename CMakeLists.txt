@@ -6,18 +6,16 @@ project(ALP)
 add_compile_options(-fPIC)
 
 # Options : ------------------------------------------------------------------------------------------------------------
-option(ALP_BUILD_TESTING "Build Test" OFF)
-option(ALP_BUILD_BENCHMARKING "Build Benchmark" OFF)
-option(ALP_BUILD_BENCHMARKING_COMPRESSION_RATIO "Build Benchmarking compression ratio" OFF)
-option(ALP_BUILD_BENCHMARKING_GENERATED "Build generated ALP" OFF)
+option(ALP_BUILD_TESTING "Build Testing" OFF)
+option(ALP_BUILD_BENCHMARKING "Build Benchmarking" OFF)
 option(ALP_ENABLE_CLANG_TIDY "Enable clang_tidy on all targets" ON)
+option(ALP_BUILD_PAPER_AVAILABILITY_AND_REPRODUCIBILITY "Build Availability and Reproducibility" OFF)
 
 #-----------------------------------------------------------------------------------------------------------------------
 include(FetchContent)
 include(CheckCXXCompilerFlag)
 include(CMakePrintHelpers)
 include(CTest)
-
 
 # Clang Tidy : ---------------------------------------------------------------------------------------------------------
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND ALP_ENABLE_CLANG_TIDY)
@@ -46,7 +44,7 @@ add_subdirectory(src)
 # Test : ---------------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_TESTING)
     message("---------------------------------------------------------------------------------------------------------")
-    message("-- ALP: Testing:")
+    message("-- ALP: Build Testing:")
 
     # Gtest: -----------------------------------------------------------------------------------------------------------
     include(GoogleTest)
@@ -71,20 +69,21 @@ if (ALP_BUILD_TESTING)
     add_subdirectory(${CMAKE_SOURCE_DIR}/test)
 endif ()
 
-# Generated : ----------------------------------------------------------------------------------------------------------
-if (ALP_BUILD_BENCHMARKING_GENERATED)
-    message("---------------------------------------------------------------------------------------------------------")
-    message("-- ALP: Generated:")
-
-    add_subdirectory(generated)
-endif ()
-
 # Benchmark : ----------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_BENCHMARKING)
     message("---------------------------------------------------------------------------------------------------------")
-    message("-- ALP: Benchmarking:")
+    message("-- ALP: Build Benchmarking:")
 
     include_directories(${CMAKE_SOURCE_DIR}/benchmarks/include)
     include_directories(${CMAKE_SOURCE_DIR}/data/include)
     add_subdirectory(benchmarks)
+endif ()
+
+
+# Availability and Reproducibility : -----------------------------------------------------------------------------------
+if (ALP_BUILD_PAPER_AVAILABILITY_AND_REPRODUCIBILITY)
+    message("---------------------------------------------------------------------------------------------------------")
+    message("-- ALP: Build Availability and Reproducibility:")
+
+    add_subdirectory(availability_and_reproducibility)
 endif ()
