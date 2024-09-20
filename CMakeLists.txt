@@ -9,7 +9,7 @@ add_compile_options(-fPIC)
 option(ALP_BUILD_TESTING "Build Testing" OFF)
 option(ALP_BUILD_BENCHMARKING "Build Benchmarking" OFF)
 option(ALP_ENABLE_CLANG_TIDY "Enable clang_tidy on all targets" ON)
-option(ALP_BUILD_PAPER_AVAILABILITY_AND_REPRODUCIBILITY "Build Availability and Reproducibility" OFF)
+option(ALP_BUILD_PAPER "Build Availability and Reproducibility" OFF)
 
 #-----------------------------------------------------------------------------------------------------------------------
 include(FetchContent)
@@ -80,10 +80,10 @@ if (ALP_BUILD_BENCHMARKING)
 endif ()
 
 
-# Availability and Reproducibility : -----------------------------------------------------------------------------------
-if (ALP_BUILD_PAPER_AVAILABILITY_AND_REPRODUCIBILITY)
+# Paper : --------------------------------------------------------------------------------------------------------------
+if (ALP_BUILD_PAPER)
     message("---------------------------------------------------------------------------------------------------------")
-    message("-- ALP: Build Availability and Reproducibility:")
+    message("-- ALP: Paper: Build Availability and Reproducibility:")
 
-    add_subdirectory(availability_and_reproducibility)
+    add_subdirectory(publication)
 endif ()
