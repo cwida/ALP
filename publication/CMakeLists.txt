@@ -1,1 +1,1 @@
-add_subdirectory(avalibility_and_reproducibility)
+add_subdirectory(availability_and_reproducibility)

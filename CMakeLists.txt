@@ -38,10 +38,16 @@ add_compile_definitions(CMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 # Include --------------------------------------------------------------------------------------------------------------
 include_directories(include)
 
-# Src: -------------------------------------------------------------------------------------------------------
+# Src: -----------------------------------------------------------------------------------------------------------------
 add_subdirectory(src)
 
-# Gtest: -----------------------------------------------------------------------------------------------------------
+# Data: ----------------------------------------------------------------------------------------------------------------
+if (ALP_BUILD_TESTING OR ALP_BUILD_PAPER OR ALP_BUILD_BENCHMARKING)
+    include_directories(${CMAKE_SOURCE_DIR}/data/include)
+endif ()
+
+
+# Gtest: ---------------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_TESTING OR ALP_BUILD_PAPER OR ALP_BUILD_BENCHMARKING)
     include(GoogleTest)
     FetchContent_Declare(googletest
@@ -67,7 +73,6 @@ if (ALP_BUILD_TESTING)
     message("-- ALP: Build Testing:")
 
     include_directories(${CMAKE_SOURCE_DIR}/test/include)
-    include_directories(${CMAKE_SOURCE_DIR}/data/include)
     add_subdirectory(${CMAKE_SOURCE_DIR}/test)
 endif ()
 
@@ -77,7 +82,6 @@ if (ALP_BUILD_BENCHMARKING)
     message("-- ALP: Build Benchmarking:")
 
     include_directories(${CMAKE_SOURCE_DIR}/benchmarks/include)
-    include_directories(${CMAKE_SOURCE_DIR}/data/include)
     add_subdirectory(benchmarks)
 endif ()
 
@@ -87,5 +91,6 @@ if (ALP_BUILD_PAPER)
     message("---------------------------------------------------------------------------------------------------------")
     message("-- ALP: Paper: Build Availability and Reproducibility:")
 
+    include_directories(${CMAKE_SOURCE_DIR}/publication/availability_and_reproducibility/include)
     add_subdirectory(publication)
 endif ()
