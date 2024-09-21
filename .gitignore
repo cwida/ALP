@@ -16,6 +16,7 @@ test_*.cmake
 bench_*.cmake
 bench_*.hpp
 libzstd.pc
+__pycache__
 
 bench_alp_cutter_decode
 bench_alp_cutter_encode
