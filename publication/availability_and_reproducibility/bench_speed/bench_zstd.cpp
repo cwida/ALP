@@ -1,6 +1,6 @@
 #include "bench_zstd.hpp"
 #include "data.hpp"
-#include "test/mapper.hpp"
+#include "mapper.hpp"
 #include "zstd.h"
 
 // NOLINTBEGIN
