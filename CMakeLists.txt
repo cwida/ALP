@@ -41,12 +41,8 @@ include_directories(include)
 # Src: -------------------------------------------------------------------------------------------------------
 add_subdirectory(src)
 
-# Test : ---------------------------------------------------------------------------------------------------------------
-if (ALP_BUILD_TESTING)
-    message("---------------------------------------------------------------------------------------------------------")
-    message("-- ALP: Build Testing:")
-
-    # Gtest: -----------------------------------------------------------------------------------------------------------
+# Gtest: -----------------------------------------------------------------------------------------------------------
+if (ALP_BUILD_TESTING OR ALP_BUILD_PAPER OR ALP_BUILD_BENCHMARKING)
     include(GoogleTest)
     FetchContent_Declare(googletest
             GIT_REPOSITORY https://github.com/google/googletest.git
@@ -63,6 +59,12 @@ if (ALP_BUILD_TESTING)
     set_target_properties(gmock_main PROPERTIES CXX_CLANG_TIDY "")
 
     enable_testing()
+endif ()
+
+# Test : ---------------------------------------------------------------------------------------------------------------
+if (ALP_BUILD_TESTING)
+    message("---------------------------------------------------------------------------------------------------------")
+    message("-- ALP: Build Testing:")
 
     include_directories(${CMAKE_SOURCE_DIR}/test/include)
     include_directories(${CMAKE_SOURCE_DIR}/data/include)
