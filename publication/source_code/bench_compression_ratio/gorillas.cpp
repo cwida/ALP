@@ -1,7 +1,7 @@
 #include "gorillas/gorillas.hpp"
 #include "alp.hpp"
 #include "data.hpp"
-#include "test/mapper.hpp"
+#include "mapper.hpp"
 #include "gtest/gtest.h"
 
 // NOLINTBEGIN
