@@ -68,38 +68,12 @@ commonalities to achieve higher compression ratios and be faster (by avoiding pe
 
 Both encodings encode outliers as *exceptions* to achieve higher compression ratios.
 
-## Quickstart
-
-[Usage examples](/example/) are available under the `example` directory. In here, we use a simple [de]compression API to
-store/read ALP data in/from memory.
-
-- [Simple compress](/example/simple_compress.cpp): An example to compress a buffer of random doubles with limited
-  decimal precision. Also available for [32bit single precision](/example/simple_compress32.cpp)
-- [RD Compress](/example/rd_compress.cpp): An example to directly compress using `ALP_RD` scheme if the data are true
-  doubles. Also available for [32bit single precision](/example/rd_compress32.cpp)
-- [Adaptive Compress](/example/adaptive_compress.cpp): An example in which half of the data is of limited decimal
-  precision and half of the data are true doubles.
-
-Note that the [de]compression API used by these examples is only a naive wrapper of the real ALP
-core: [the primitives](#alp-primitives).
-
 ## Building and Running
 
 Requirements:
 
 1) __Clang++__
 2) __CMake__ 3.20 or higher
-
-Building and running the [simple compress](/example/simple_compress.cpp) example:
-
-```sh
-cmake -DALP_BUILD_EXAMPLE=ON .   # or set option in the CMakeLists.txt
-cd example
-make
-./simple_compress
-```
-
-This will also generate the ALP Primitives.
 
 ## ALP Primitives
 
@@ -134,7 +108,7 @@ in [SIGMOD ARΙ Package Requirements and Guidelines](https://reproducibility.sig
 
 On the benchmarked datasets from our publication:
 
-- ALP achieves on average **x3 compression ratios** (sometimes much much higher).
+- ALP achieves on average **x3 compression ratios** (sometimes much, much higher).
 - ALP encodes on average 0.5 doubles per CPU cycle.
 - ALP decodes on average 2.6 doubles per CPU cycle.
 

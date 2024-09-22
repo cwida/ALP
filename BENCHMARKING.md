@@ -118,26 +118,26 @@ implementations and Architectures/ISAs by running the commands below. Results ar
 
 | Implementation  | Command                                                                                                |
 |-----------------|--------------------------------------------------------------------------------------------------------|
-| Scalar          | `./generated/fallback/scalar_nav_uf1/fallback_scalar_nav_1024_uf1_falp_bench`                          |
-| SIMD            | `./generated/{Arch}/{Arch}_{extension}_intrinsic_uf1/{Arch}_{extension}_intrinsic_1024_uf1_falp_bench` |
-| Auto-Vectorized | `./generated/fallback/scalar_aav_uf1/fallback_scalar_aav_1024_uf1_falp_bench`                          |
+| Scalar          | `./publication/source_code/generated/fallback/scalar_nav_uf1/fallback_scalar_nav_1024_uf1_falp_bench`                          |
+| SIMD            | `./publication/source_code/generated/{Arch}/{Arch}_{extension}_intrinsic_uf1/{Arch}_{extension}_intrinsic_1024_uf1_falp_bench` |
+| Auto-Vectorized | `./publication/source_code/generated/fallback/scalar_aav_uf1/fallback_scalar_aav_1024_uf1_falp_bench`                          |
 
 While the *correctness* can be tested by running:
 
 | Implementation  | Command                                                                                               |
 |-----------------|-------------------------------------------------------------------------------------------------------|
-| Scalar          | `./generated/fallback/scalar_nav_uf1/fallback_scalar_nav_1024_uf1_falp_test`                          |
-| SIMD            | `./generated/{Arch}/{Arch}_{extension}_intrinsic_uf1/{Arch}_{extension}_intrinsic_1024_uf1_falp_test` |
-| Auto-Vectorized | `./generated/fallback/scalar_aav_uf1/fallback_scalar_aav_1024_uf1_falp_test`                          |
+| Scalar          | `/publication/source_code/generated/fallback/scalar_nav_uf1/fallback_scalar_nav_1024_uf1_falp_test`                          |
+| SIMD            | `/publication/source_code/generated/{Arch}/{Arch}_{extension}_intrinsic_uf1/{Arch}_{extension}_intrinsic_1024_uf1_falp_test` |
+| Auto-Vectorized | `/publication/source_code/generated/fallback/scalar_aav_uf1/fallback_scalar_aav_1024_uf1_falp_test`                          |
 
 The source file of the `falp` primitive (FUSED ALP+FOR+Bitpack generated
 by [FastLanes](https://github.com/cwida/FastLanes)) for each different implementation are at:
 
 | Implementation  | Source File                                                                                            |
 |-----------------|--------------------------------------------------------------------------------------------------------|
-| Scalar          | `generated/fallback/scalar_nav_uf1/fallback_scalar_nav_1024_uf1_falp_src.cpp`                          |
-| SIMD            | `generated/{Arch}/{Arch}_{extension}_intrinsic_uf1/{Arch}_{extension}_intrinsic_1024_uf1_falp_src.cpp` |
-| Auto-Vectorized | `generated/fallback/scalar_aav_uf1/fallback_scalar_aav_1024_uf1_falp_src.cpp`                          |
+| Scalar          | `/publication/source_code/generated/fallback/scalar_nav_uf1/fallback_scalar_nav_1024_uf1_falp_src.cpp`                          |
+| SIMD            | `/publication/source_code/generated/{Arch}/{Arch}_{extension}_intrinsic_uf1/{Arch}_{extension}_intrinsic_1024_uf1_falp_src.cpp` |
+| Auto-Vectorized | `/publication/source_code/generated/fallback/scalar_aav_uf1/fallback_scalar_aav_1024_uf1_falp_src.cpp`                          |
 
 Architectures and ISAs:
 
