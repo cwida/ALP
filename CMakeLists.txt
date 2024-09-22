@@ -91,6 +91,6 @@ if (ALP_BUILD_PUBLICATION)
     message("---------------------------------------------------------------------------------------------------------")
     message("-- ALP: Paper: Build Availability and Reproducibility:")
 
-    include_directories(${CMAKE_SOURCE_DIR}/publication/availability_and_reproducibility/include)
+    include_directories(${CMAKE_SOURCE_DIR}/publication/source_code/include)
     add_subdirectory(publication)
 endif ()

@@ -97,7 +97,7 @@ ALP replaced Chimp128 and Patas in [DuckDB](https://github.com/duckdb/duckdb/pul
 
 
 ## Availability & Reproducibility Initiative (ARI) Report
-In [this report](/availability_reproducibility_initiative_report), we explain how to replicate the experiments and benchmarks according to the format requested in [SIGMOD ARΙ Package Requirements and Guidelines](https://reproducibility.sigmod.org/2024/).
+In [this report](availability_reproducibility_initiative_report.md), we explain how to replicate the experiments and benchmarks according to the format requested in [SIGMOD ARΙ Package Requirements and Guidelines](https://reproducibility.sigmod.org/2024/).
 
 ## Benchmarking (Replicating Paper Experiments)
 In [BENCHMARKING.md](/BENCHMARKING.md) we detail how to replicate the experiments and benchmarks presented in our [publication](https://dl.acm.org/doi/pdf/10.1145/3626717). 
