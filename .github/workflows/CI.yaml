@@ -120,77 +120,13 @@ jobs:
         run: mkdir ${{github.workspace}}/build
 
       - name: Configure CMake
-        run: cmake -DALP_BUILD_BENCHMARKING=ON -DALP_BUILD_TESTING=ON -S ${{github.workspace}} -B ${{github.workspace}}/build
+        run: cmake ALP_BUILD_BENCHMARKING -S ${{github.workspace}} -B ${{github.workspace}}/build
         env:
           CXX: ${{ matrix.cxx }}
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build -j 16
 
-
-  build_paper:
-    needs:
-      - test
-    strategy:
-      fail-fast: true
-      matrix:
-        platform: [ ubuntu-latest, macos-latest ]
-        BUILD_TYPE: [ Release ]
-        cc: [ clang ]
-        cxx: [ clang++ ]
-    runs-on: ${{ matrix.platform }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-
-      - name: mkdir build
-        run: mkdir ${{github.workspace}}/build
-
-      - name: Configure CMake
-        run: cmake -DALP_BUILD_PAPER=ON -S ${{github.workspace}} -B ${{github.workspace}}/build
-        env:
-          CXX: ${{ matrix.cxx }}
-
-      - name: Build
-        run: cmake --build ${{github.workspace}}/build -j 16
-
-
-  #      - name: run alp
-  #        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp_compression_ratio
-  #
-  #      - name: run alp32
-  #        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp32_compression_ratio
-  #
-  #      - name: run zstd
-  #        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_zstd_compression_ratio
-  #      - name: run bench_alp_cutter_decode
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_cutter_decode
-  #
-  #      - name: run bench_alp_cutter_encode
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_cutter_encode
-  #
-  #      - name: run bench_alp_encode
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_encode
-  #
-  #      - name: run bench_alp_without_sampling
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_without_sampling
-  #
-  #      - name: run bench_chimp
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_chimp
-  #
-  #      - name: run bench_chimp128
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_chimp128
-  #
-  #      - name: run bench_gorillas
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_gorillas
-  #
-  #      - name: run bench_patas
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_patas
-  #
-  #      - name: run bench_zstd
-  #        run: ${{github.workspace}}/build/benchmarks/bench/bench_zstd
 
 
 
