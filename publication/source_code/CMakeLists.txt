@@ -18,6 +18,6 @@ add_subdirectory(${zstd_SOURCE_DIR}/build/cmake ${zstd_BINARY_DIR})
 add_subdirectory(test)
 add_subdirectory(bench_speed)
 add_subdirectory(bench_compression_ratio)
-
+add_subdirectory(generated)
 
 
