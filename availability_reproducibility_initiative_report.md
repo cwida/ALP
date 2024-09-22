@@ -21,8 +21,9 @@
     - Follow the [Publication CI](.github/workflows/PUBLICATION.yaml)
     - In [BENCHMARKING.md](/BENCHMARKING.md) we detail how to replicate the experiments and benchmarks presented in
       our [publication](https://dl.acm.org/doi/pdf/10.1145/3626717).
-6) A link to a single master script that runs the experiments, collects the data, and
-    - follow the [Publication CI](.github/workflows/PUBLICATION.yaml)
+6) A link to [a single master script](publication/master_script/master_script.sh) that runs the experiments, collects
+   the data, and
+
 7)
     - An estimation of the deployment time and effort : X hours
     - The execution time of the whole workflow to prepare the reviewers : Y hours

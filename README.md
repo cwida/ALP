@@ -21,10 +21,19 @@ previous floating-point encodings in both speed and compression ratio (figure be
 To *rigorously* benchmark ALP with your own data we provide our [ALP primitives](#alp-primitives) as a single C++ header
 file.
 
-To *quickly* test ALP we recommend following [our examples](#quickstart) in the Quickstart guide
-or [using it on DuckDB](#alp-in-duckdb) (note that ALP inside DuckDB is slower than using our primitives).
-
 ALP details can be found in the [publication](https://dl.acm.org/doi/pdf/10.1145/3626717).
+
+## Availability & Reproducibility Initiative (ARI) Report
+
+In [this report](availability_reproducibility_initiative_report.md), we explain how to replicate the experiments and
+benchmarks according to the format requested
+in [SIGMOD ARΙ Package Requirements and Guidelines](https://reproducibility.sigmod.org/2024/).
+
+On the benchmarked datasets from our publication:
+
+- ALP achieves on average **x3 compression ratios** (sometimes much, much higher).
+- ALP encodes on average 0.5 doubles per CPU cycle.
+- ALP decodes on average 2.6 doubles per CPU cycle.
 
 ### Used By
 
@@ -99,18 +108,6 @@ using the Python API.
 
 **Please note**: ALP inside DuckDB: i) Is slower than using our primitives presented here, and ii) compression ratios
 can be slightly worse due to the metadata needed to skip vectors and DuckDB storage layout.
-
-## Availability & Reproducibility Initiative (ARI) Report
-
-In [this report](availability_reproducibility_initiative_report.md), we explain how to replicate the experiments and
-benchmarks according to the format requested
-in [SIGMOD ARΙ Package Requirements and Guidelines](https://reproducibility.sigmod.org/2024/).
-
-On the benchmarked datasets from our publication:
-
-- ALP achieves on average **x3 compression ratios** (sometimes much, much higher).
-- ALP encodes on average 0.5 doubles per CPU cycle.
-- ALP decodes on average 2.6 doubles per CPU cycle.
 
 ## FCBench
 
