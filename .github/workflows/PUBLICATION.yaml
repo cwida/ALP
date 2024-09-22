@@ -30,40 +30,50 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build -j 16
 
+      - name: Check if ALP_DATASET_DIR_PATH is set and print download link
+        run: |
+          if [ -z "${ALP_DATASET_DIR_PATH}" ]; then
+            echo -e "\033[33mPlease download the dataset from: https://drive.google.com/drive/folders/167faTwZJjqJMKM9Yc6E7KF5LUbsitxJS?usp=sharing\033[0m"
+            echo -e "\033[33mWarning: ALP_DATASET_DIR_PATH is not set!\033[0m"
+          else
+            echo "ALP_DATASET_DIR_PATH is set to ${ALP_DATASET_DIR_PATH}"
+          fi
+
+
       - name: run alp
-        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp_compression_ratio
+        run: ${{github.workspace}}/build/b/publication/source_code/bench_compression_ratio/bench_alp_compression_ratio
 
       - name: run alp32
-        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_alp32_compression_ratio
+        run: ${{github.workspace}}/build/b/publication/source_code/bench_compression_ratio/bench_alp32_compression_ratio
 
       - name: run zstd
-        run: ${{github.workspace}}/build/benchmarks/bench_compression_ratio/bench_zstd_compression_ratio
+        run: ${{github.workspace}}/build/b/publication/source_code/bench_compression_ratio/bench_zstd_compression_ratio
       - name: run bench_alp_cutter_decode
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_cutter_decode
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_alp_cutter_decode
 
       - name: run bench_alp_cutter_encode
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_cutter_encode
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_alp_cutter_encode
 
       - name: run bench_alp_encode
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_encode
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_alp_encode
 
       - name: run bench_alp_without_sampling
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_alp_without_sampling
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_alp_without_sampling
 
       - name: run bench_chimp
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_chimp
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_chimp
 
       - name: run bench_chimp128
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_chimp128
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_chimp128
 
       - name: run bench_gorillas
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_gorillas
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_gorillas
 
       - name: run bench_patas
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_patas
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_patas
 
       - name: run bench_zstd
-        run: ${{github.workspace}}/build/benchmarks/bench/bench_zstd
+        run: ${{github.workspace}}/build/b/publication/source_code/bench/bench_zstd
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -78,13 +88,6 @@ jobs:
       - name: Run plotter script
         run: python publication/plotter/plotter.py
 
-      - name: Check if ALP_DATASET_DIR_PATH is set
-        run: |
-          if [ -z "${ALP_DATASET_DIR_PATH}" ]; then
-            echo "Warning: ALP_DATASET_DIR_PATH is not set!"
-          else
-            echo "ALP_DATASET_DIR_PATH is set to ${ALP_DATASET_DIR_PATH}"
-          fi
 
 
 

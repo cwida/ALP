@@ -80,11 +80,12 @@ name, and binary_file_path.
 After building and setting up the data, and the `ALP_DATASET_DIR_PATH` env variable, run the following:
 
 ```sh
-./benchmarks/bench_compression_ratio/bench_alp_compression_ratio
+./publication/source_code/bench_compression_ratio/bench_alp_compression_ratio
 ```
 
 This will execute the tests found in
-the [/benchmarks/bench_compression_ratio/alp.cpp](/benchmarks/bench_compression_ratio/alp.cpp) file, which will compress
+the [/publication/source_code/bench_compression_ratio/alp.cpp](/publication/source_code/bench_compression_ratio/alp.cpp)
+file, which will compress
 an entire binary file and write the resulting (estimated) compression ratio results (in bits/value) from the datasets
 in [double_columns.hpp](/data/include/double_columns.hpp), on the `publication` directory. One CSV file will be created
 for the datasets which use the `ALP` scheme and another one for the ones which use the `ALP_RD` scheme. Note that this
@@ -93,7 +94,7 @@ is a dry compression (compressed data is not stored).
 ### Chimp, Chimp128, Gorillas, Patas, Zstd Compression Ratios
 
 After building and setting up the data, and the `ALP_DATASET_DIR_PATH` env variable, run the following:
-`./benchmarks/bench_compression_ratio/bench_{algorithm}_compression_ratio`, in which `algorithm` can be:
+`./publication/source_code/bench_compression_ratio/bench_{algorithm}_compression_ratio`, in which `algorithm` can be:
 `chimp|chimp128|gorillas|patas|zstd`. One CSV file will be created for each encoding and for each dataset on the
 `publication` directory. Note that this is a dry compression (compressed data is not stored). For PDE and ELF, we used
 their own code for compression ratios.
@@ -107,7 +108,7 @@ the [publication](https://dl.acm.org/doi/pdf/10.1145/3626717).
 ### ALP Encoding Speed Test
 
 Encoding is comprised of the `encode`, `analyze_ffor`, and `ffor` primitives. Benchmarked by running:
-`./benchmarks/bench_speed/bench_alp_encode`. Results are located on `publication/results/`.
+`./publication/source_code/bench_speed/bench_alp_encode`. Results are located on `publication/results/`.
 
 ### ALP Decoding Speed Test
 
@@ -152,17 +153,18 @@ Architectures and ISAs:
 ### ALP RD Encoding Speed Test
 
 Encoding is comprised of `rd_encode` and two calls to `ffor` (for both the left and right parts). Benchmarked by
-running: `./benchmarks/bench_speed/bench_alp_cutter_encode`. Results are located on `publication/results/`.
+running: `./publication/source_code/bench_speed/bench_alp_cutter_encode`. Results are located on `publication/results/`.
 
 ### ALP RD Decoding Speed Test
 
 Decoding is comprised of two calls to `unffor` (for both the left and right parts) and the `rd_decode` primitives.
-Benchmarked by running: `./benchmarks/bench_speed/bench_alp_cutter_decode`. Results are located on
+Benchmarked by running: `./publication/source_code/bench_speed/bench_alp_cutter_decode`. Results are located on
 `publication/results/`.
 
 ### Chimp, Chimp128, Gorillas, Patas, Zstd Speed Test
 
-Benchmarked both decoding and encoding by running `./benchmarks/bench_speed/bench_{algorithm}`, in which `algorithm` can
+Benchmarked both decoding and encoding by running `./publication/source_code/bench_speed/bench_{algorithm}`, in which
+`algorithm` can
 be: `chimp|chimp128|gorillas|patas|zstd`. Results are located on `publication/results/i4i`.
 
 ### PseudoDecimals Speed Test
