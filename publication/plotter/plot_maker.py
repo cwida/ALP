@@ -13,7 +13,7 @@ class PlotMaker:
     matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
     matplotlib.rc('font', family='Droid Serif')
 
-    def __init__(self, results_directory='../results', out_directory='./figures'):
+    def __init__(self, results_directory='publication/results', out_directory='publication/figures'):
         self.results_directory = results_directory
         self.out_directory = out_directory
 
