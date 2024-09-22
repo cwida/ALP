@@ -4,8 +4,6 @@
 
 1) [source_code](/publication/source_code)
 
---- 
-
 2) Description of software/library dependencies:
     1) __Clang++__
     2) __CMake__ 3.20 or higher
