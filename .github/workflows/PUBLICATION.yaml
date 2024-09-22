@@ -78,6 +78,14 @@ jobs:
       - name: Run plotter script
         run: python publication/plotter/plotter.py
 
+      - name: Check if ALP_DATASET_DIR_PATH is set
+        run: |
+          if [ -z "${ALP_DATASET_DIR_PATH}" ]; then
+            echo "Warning: ALP_DATASET_DIR_PATH is not set!"
+          else
+            echo "ALP_DATASET_DIR_PATH is set to ${ALP_DATASET_DIR_PATH}"
+          fi
+
 
 
 
