@@ -9,7 +9,7 @@ add_compile_options(-fPIC)
 option(ALP_BUILD_TESTING "Build Testing" OFF)
 option(ALP_BUILD_BENCHMARKING "Build Benchmarking" OFF)
 option(ALP_ENABLE_CLANG_TIDY "Enable clang_tidy on all targets" ON)
-option(ALP_BUILD_PAPER "Build Availability and Reproducibility" OFF)
+option(ALP_BUILD_PUBLICATION "Build Availability and Reproducibility" OFF)
 
 #-----------------------------------------------------------------------------------------------------------------------
 include(FetchContent)
@@ -42,13 +42,13 @@ include_directories(include)
 add_subdirectory(src)
 
 # Data: ----------------------------------------------------------------------------------------------------------------
-if (ALP_BUILD_TESTING OR ALP_BUILD_PAPER OR ALP_BUILD_BENCHMARKING)
+if (ALP_BUILD_TESTING OR ALP_BUILD_PUBLICATION OR ALP_BUILD_BENCHMARKING)
     include_directories(${CMAKE_SOURCE_DIR}/data/include)
 endif ()
 
 
 # Gtest: ---------------------------------------------------------------------------------------------------------------
-if (ALP_BUILD_TESTING OR ALP_BUILD_PAPER OR ALP_BUILD_BENCHMARKING)
+if (ALP_BUILD_TESTING OR ALP_BUILD_PUBLICATION OR ALP_BUILD_BENCHMARKING)
     include(GoogleTest)
     FetchContent_Declare(googletest
             GIT_REPOSITORY https://github.com/google/googletest.git
@@ -87,7 +87,7 @@ endif ()
 
 
 # Paper : --------------------------------------------------------------------------------------------------------------
-if (ALP_BUILD_PAPER)
+if (ALP_BUILD_PUBLICATION)
     message("---------------------------------------------------------------------------------------------------------")
     message("-- ALP: Paper: Build Availability and Reproducibility:")
 

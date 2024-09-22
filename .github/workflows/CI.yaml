@@ -1,5 +1,5 @@
 name: CI
-run-name: ${{ github.actor }} is building
+run-name: ${{ github.actor }} is running the ALP CI
 
 on: push
 
