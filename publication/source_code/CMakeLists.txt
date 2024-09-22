@@ -17,14 +17,7 @@ add_subdirectory(${zstd_SOURCE_DIR}/build/cmake ${zstd_BINARY_DIR})
 
 add_subdirectory(test)
 add_subdirectory(bench_speed)
-
-
-# Benchmark Full Dataset : ---------------------------------------------------------------------------------------------
-if (ALP_BUILD_BENCHMARKING_COMPRESSION_RATIO)
-    message("---------------------------------------------------------------------------------------------------------")
-    message("- Benchmark compression ratio:")
-    add_subdirectory(bench_compression_ratio)
-endif ()
+add_subdirectory(bench_compression_ratio)
 
 
 
