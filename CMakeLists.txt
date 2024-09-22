@@ -89,7 +89,7 @@ endif ()
 # Paper : --------------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_PUBLICATION)
     message("---------------------------------------------------------------------------------------------------------")
-    message("-- ALP: Paper: Build Availability and Reproducibility:")
+    message("-- ALP : Build Publication:")
 
     include_directories(${CMAKE_SOURCE_DIR}/publication/source_code/include)
     add_subdirectory(publication)
