@@ -65,7 +65,7 @@ void read_data(std::vector<double>& data, const std::string& csv_file_path, cons
 		// Open the binary file in input mode
 		std::ifstream file(bin_file_path, std::ios::binary | std::ios::in);
 
-		if (!file) { throw std::runtime_error("Failed to open file: " + bin_file_path); }
+		if (!file) { throw std::runtime_error("Failed to open file: " + bin_file_path + " - " + strerror(errno)); }
 
 		// Get the size of the file
 		file.seekg(0, std::ios::end);
