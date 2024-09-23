@@ -103,7 +103,7 @@ int main() {
 	benchmark::Benchmark benchmark =
 	    benchmark::create("zstd")
 	        .save()
-	        .at(std::string(SOURCE_DIR) + "/alp_pub/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
+	        .at(std::string(SOURCE_DIR) + "/publication/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
 	        .print()
 	        .add_extra_info(benchmark::CmakeInfo::getCmakeInfo());
 	benchmark_all(benchmark);
