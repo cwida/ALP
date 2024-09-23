@@ -52,7 +52,7 @@ public:
 double chimp_overhead_per_vector {static_cast<double>(8 + 16 + 16)};
 
 TEST_F(chimp_test, test_chimp_on_whole_datasets) {
-	std::cout << alp_bench::PATHS.ALP_DATASET_BINARY_DIR_PATH;
+	std::cout << "HERE" << alp_bench::PATHS.ALP_DATASET_BINARY_DIR_PATH;
 
 	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "chimp_compression_ratio.csv", std::ios::out);
 	ofile << "dataset,size,vectors_count\n";
