@@ -327,10 +327,6 @@ public:
  * This test will output and write a file with the estimated bits/value after compression with alp
  */
 TEST_F(alp_test, test_alp_on_whole_datasets) {
-	if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v == nullptr) {
-		throw std::runtime_error("Environment variable ALP_DATASET_DIR_PATH is not set!");
-	}
-
 	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "alp_compression_ratio.csv", std::ios::out);
 	ofile << "dataset,size,rowgroups_count,vectors_count\n";
 
