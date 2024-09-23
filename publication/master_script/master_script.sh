@@ -3,9 +3,9 @@
 # check BENCHMARKING.md for more details.
 
 WORKSPACE=$(pwd)  # Assuming this is the workspace directory
-REPO_URL="https://github.com/azimafroozeh/_ALP.git"
+REPO_URL="https://github.com/cwida/ALP.git"
 TARGET_DIR="$WORKSPACE/ALP"  # Define target directory for the clone
-BRANCH="2_ari"  # Branch to clone
+BRANCH="main"  # Branch to clone
 
 # Clone the repository if it doesn't already exist
 if [ -d "$TARGET_DIR" ]; then
@@ -30,7 +30,7 @@ cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE="$TARGET_DIR/toolchain/e
 cmake --build "$TARGET_DIR/build" -j 16
 
 # Run tests
-#cd "$TARGET_DIR/build" && ctest -j 4  todo
+cd "$TARGET_DIR/build" && ctest -j 4  todo
 
 # Check if ALP_DATASET_DIR_PATH is set
 # Set the environment variable `ALP_DATASET_DIR_PATH` with the path to the directory in which the complete
@@ -44,13 +44,13 @@ else
 fi
 
 # Run benchmarks
-#"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_alp_compression_ratio"
-#"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_alp32_compression_ratio"
-#"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_zstd_compression_ratio"
-#"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_chimp_compression_ratio"
-#"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_chimp128_compression_ratio"
-#"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_gorillas_compression_ratio"
-#"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_patas_compression_ratio"
+"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_alp_compression_ratio"
+"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_alp32_compression_ratio"
+"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_zstd_compression_ratio"
+"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_chimp_compression_ratio"
+"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_chimp128_compression_ratio"
+"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_gorillas_compression_ratio"
+"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_patas_compression_ratio"
 "$TARGET_DIR/build/publication/source_code/bench_speed/bench_alp_cutter_decode"
 "$TARGET_DIR/build/publication/source_code/bench_speed/bench_alp_cutter_encode"
 "$TARGET_DIR/build/publication/source_code/bench_speed/bench_alp_encode"
