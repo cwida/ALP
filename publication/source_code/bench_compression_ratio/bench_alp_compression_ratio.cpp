@@ -240,6 +240,7 @@ public:
 
 	void bench_alp_rd_compression_ratio(const alp_bench::Column& dataset, std::ofstream& ofile) {
 		if (!dataset.suitable_for_cutting) { return; }
+		std::cout << dataset.name << std::endl;
 
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
 
