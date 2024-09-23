@@ -101,7 +101,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	base_arr    = new (std::align_val_t {64}) int64_t[1024];
 	rg_smp_arr  = new (std::align_val_t {64}) double[1024];
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		if (dataset.suitable_for_cutting) { continue; }
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
