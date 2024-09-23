@@ -56,7 +56,7 @@ public:
 };
 
 TEST_F(chimp128_test, test_chimp) {
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		ASSERT_EQ(ifile.fail(), false);
 

@@ -216,7 +216,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	leading_zero_unpacked = new (std::align_val_t {64}) uint8_t[1024];
 	unpacked_data_arr     = new (std::align_val_t {64}) alp_bench::UnpackedData[1024];
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
 

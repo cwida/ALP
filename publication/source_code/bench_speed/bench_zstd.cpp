@@ -67,7 +67,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	enc_arr = (void*)new (std::align_val_t {64}) double[131072];
 	dec_arr = (void*)new (std::align_val_t {64}) double[131072];
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 
 		size_t tup_c;
 
