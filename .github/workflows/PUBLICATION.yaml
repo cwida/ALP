@@ -22,14 +22,6 @@ jobs:
       - name: mkdir build
         run: mkdir ${{github.workspace}}/build
 
-      - name: Configure CMake
-        run: cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/toolchain/example.cmake -S ${{github.workspace}} -B ${{github.workspace}}/build
-        env:
-          CXX: ${{ matrix.cxx }}
-
-      - name: Build
-        run: cmake --build ${{github.workspace}}/build -j 16
-
       - name: Check if ALP_DATASET_DIR_PATH is set and print download link
         run: |
           if [ -z "${ALP_DATASET_DIR_PATH}" ]; then
@@ -39,6 +31,14 @@ jobs:
           else
             echo "ALP_DATASET_DIR_PATH is set to ${ALP_DATASET_DIR_PATH}"
           fi
+
+      - name: Configure CMake
+        run: cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/toolchain/example.cmake -S ${{github.workspace}} -B ${{github.workspace}}/build
+        env:
+          CXX: ${{ matrix.cxx }}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build -j 16
 
       - name: Test
         working-directory: ${{github.workspace}}/build
