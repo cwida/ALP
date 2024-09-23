@@ -18,7 +18,6 @@
     - figure 6 : todo
 
 5) Documentation on how to compile, deploy, run the code, and use the scripts:
-    - Follow the [Publication CI](.github/workflows/PUBLICATION.yaml)
     - In [BENCHMARKING.md](/BENCHMARKING.md) we detail how to replicate the experiments and benchmarks presented in
       our [publication](https://dl.acm.org/doi/pdf/10.1145/3626717).
 6) A link to [a single master script](publication/master_script/master_script.sh) that runs the experiments, collects
