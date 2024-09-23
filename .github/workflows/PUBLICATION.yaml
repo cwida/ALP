@@ -42,7 +42,7 @@ jobs:
 
       - name: Test
         working-directory: ${{github.workspace}}/build
-        run: ctest -j 4
+        run: ctest -j 4 -V
 
       - name: run compression ratio alp
         run: ${{github.workspace}}/build/b/publication/source_code/bench_compression_ratio/bench_alp_compression_ratio
