@@ -189,33 +189,33 @@ public:
 
 /// Test used for correctness of bitwidth and exceptions on the first vector of each dataset
 TEST_F(alp_test, test_alp_double) {
-	for (const auto& col : alp_bench::alp_dataset) {
+	for (const auto& col : alp_bench::get_alp_dataset()) {
 		test_column<double>(col);
 	}
 }
 
 /// Test used for correctness of bitwidth and exceptions on the first vector of generated data
 TEST_F(alp_test, test_alp_on_generated) {
-	for (const auto& col : alp_bench::generated_cols) {
+	for (const auto& col : alp_bench::get_generated_cols()) {
 		test_column<double>(col);
 	}
 }
 
 // Test used for correctness of bitwidth and exceptions on the first vector of edge_case data
 TEST_F(alp_test, test_alp_on_edge_case) {
-	for (const auto& col : alp_bench::edge_case) {
+	for (const auto& col : alp_bench::get_edge_case()) {
 		test_column<double>(col);
 	}
 }
 
 TEST_F(alp_test, alp_float_test_dataset) {
-	for (const auto& col : alp_bench::float_test_dataset) {
+	for (const auto& col : alp_bench::get_float_test_dataset()) {
 		test_column<float>(col);
 	}
 }
 
 TEST_F(alp_test, alp_double_test_dataset) {
-	for (const auto& col : alp_bench::double_test_dataset) {
+	for (const auto& col : alp_bench::get_double_test_dataset()) {
 		test_column<double>(col);
 	}
 }

@@ -25,7 +25,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND ALP_ENABLE_CLANG_TIDY)
     else ()
         set(CMAKE_CXX_CLANG_TIDY
                 ${CLANG_TIDY_EXE};
-                -header-filter=include/alp;
+                -header-filter=include/alp,data/include;
                 -warnings-as-errors=*;)
 
     endif ()

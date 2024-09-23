@@ -65,7 +65,7 @@ void read_data(std::vector<double>& data, const std::string& csv_file_path, cons
 		// Open the binary file in input mode
 		std::ifstream file(bin_file_path, std::ios::binary | std::ios::in);
 
-		if (!file) { throw std::runtime_error("Failed to open file: " + bin_file_path); }
+		if (!file) { throw std::runtime_error("Failed to open file: " + bin_file_path + " - " + strerror(errno)); }
 
 		// Get the size of the file
 		file.seekg(0, std::ios::end);
@@ -240,6 +240,7 @@ public:
 
 	void bench_alp_rd_compression_ratio(const alp_bench::Column& dataset, std::ofstream& ofile) {
 		if (!dataset.suitable_for_cutting) { return; }
+		std::cout << dataset.name << std::endl;
 
 		std::vector<alp_bench::VectorMetadata> compression_metadata;
 
@@ -327,14 +328,10 @@ public:
  * This test will output and write a file with the estimated bits/value after compression with alp
  */
 TEST_F(alp_test, test_alp_on_whole_datasets) {
-	if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v == nullptr) {
-		throw std::runtime_error("Environment variable ALP_DATASET_DIR_PATH is not set!");
-	}
-
-	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "alp_compression_ratio.csv", std::ios::out);
+	std::ofstream ofile(alp_bench::get_paths().result_dir_path + "alp_compression_ratio.csv", std::ios::out);
 	ofile << "dataset,size,rowgroups_count,vectors_count\n";
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 		bench_alp_compression_ratio(dataset, ofile);
 	}
 }
@@ -344,19 +341,19 @@ TEST_F(alp_test, test_alp_on_whole_datasets) {
  * This test will output and write a file with the estimated bits/value after compression with alp
  */
 TEST_F(alp_test, test_alprd_on_whole_datasets) {
-	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "alp_rd_compression_ratio.csv", std::ios::out);
+	std::ofstream ofile(alp_bench::get_paths().result_dir_path + "alp_rd_compression_ratio.csv", std::ios::out);
 	ofile << "dataset,size,rowgroups_count,vectors_count\n";
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 		bench_alp_rd_compression_ratio(dataset, ofile);
 	}
 }
 
 TEST_F(alp_test, test_alprd_on_evalimplsts) {
-	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "evalimplsts.csv", std::ios::out);
+	std::ofstream ofile(alp_bench::get_paths().result_dir_path + "evalimplsts.csv", std::ios::out);
 	ofile << "dataset,size,rowgroups_count,vectors_count\n";
 
-	for (auto& dataset : alp_bench::evalimplsts) {
+	for (auto& dataset : alp_bench::get_evalimplsts()) {
 		bench_alp_rd_compression_ratio(dataset, ofile);
 	}
 }

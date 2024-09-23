@@ -216,7 +216,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	leading_zero_unpacked = new (std::align_val_t {64}) uint8_t[1024];
 	unpacked_data_arr     = new (std::align_val_t {64}) alp_bench::UnpackedData[1024];
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
 
@@ -300,7 +300,7 @@ int main() {
 	benchmark::Benchmark benchmark =
 	    benchmark::create("chimp128")
 	        .save()
-	        .at(std::string(SOURCE_DIR) + "/alp_pub/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
+	        .at(std::string(SOURCE_DIR) + "/publication/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
 	        .print()
 	        .add_extra_info(benchmark::CmakeInfo::getCmakeInfo());
 	benchmark_all(benchmark);

@@ -67,7 +67,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	enc_arr = (void*)new (std::align_val_t {64}) double[131072];
 	dec_arr = (void*)new (std::align_val_t {64}) double[131072];
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 
 		size_t tup_c;
 
@@ -103,7 +103,7 @@ int main() {
 	benchmark::Benchmark benchmark =
 	    benchmark::create("zstd")
 	        .save()
-	        .at(std::string(SOURCE_DIR) + "/alp_pub/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
+	        .at(std::string(SOURCE_DIR) + "/publication/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
 	        .print()
 	        .add_extra_info(benchmark::CmakeInfo::getCmakeInfo());
 	benchmark_all(benchmark);

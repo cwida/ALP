@@ -1,14 +1,19 @@
-#ifndef ALP_DOUBLE_EVALIMPLSTS_HPP
-#define ALP_DOUBLE_EVALIMPLSTS_HPP
+#ifndef EVALIMPLSTS_HPP
+#define EVALIMPLSTS_HPP
 
 #include "column.hpp"
 
 namespace alp_bench {
 
-inline std::array<Column, 1> evalimplsts = {{
-    // prev issue_8
-    {0, "active_power", PATHS.EVALIMPLSTS_CSV_PATH + "active_power.csv", "", 0, 0, 0, 0, true},
+inline auto get_evalimplsts() {
+	static std::array<Column, 1> EVALIMPLSTS = {{
+	    // prev issue_8
+	    {0, "active_power", get_paths().evalimplsts_csv_path + "active_power.csv", "", 0, 0, 0, 0, true},
 
-}};
+	}};
+
+	return EVALIMPLSTS;
+}
+
 } // namespace alp_bench
 #endif

@@ -85,7 +85,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	unffor_left_arr  = new (std::align_val_t {64}) uint16_t[VECTOR_SIZE];
 	glue_arr         = new (std::align_val_t {64}) double[VECTOR_SIZE];
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
 		if (!dataset.suitable_for_cutting) { continue; }
 		if (dataset.name.find("bw") != std::string::npos) { continue; }
@@ -163,7 +163,7 @@ int main() {
 	benchmark::Benchmark benchmark =
 	    benchmark::create("alp_decode_cutter")
 	        .save()
-	        .at(std::string(SOURCE_DIR) + "/alp_pub/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
+	        .at(std::string(SOURCE_DIR) + "/publication/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
 	        .print()
 	        .add_extra_info(benchmark::CmakeInfo::getCmakeInfo());
 	benchmark_all(benchmark);

@@ -52,15 +52,14 @@ public:
 double chimp_overhead_per_vector {static_cast<double>(8 + 16 + 16)};
 
 TEST_F(chimp_test, test_chimp_on_whole_datasets) {
-
-	if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v == nullptr) {
-		throw std::runtime_error("Environment variable ALP_DATASET_DIR_PATH is not set!");
+	if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v != nullptr) {
+		alp_bench::get_paths().alp_dataset_binary_dir_path = *v;
 	}
 
-	std::ofstream ofile(alp_bench::PATHS.RESULT_DIR_PATH + "chimp_compression_ratio.csv", std::ios::out);
+	std::ofstream ofile(alp_bench::get_paths().result_dir_path + "chimp_compression_ratio.csv", std::ios::out);
 	ofile << "dataset,size,vectors_count\n";
 
-	for (auto& dataset : alp_bench::alp_dataset) {
+	for (auto& dataset : alp_bench::get_alp_dataset()) {
 
 		std::cout << dataset.name << std::endl;
 
