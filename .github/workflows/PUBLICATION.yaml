@@ -6,7 +6,7 @@ on: push
 jobs:
   build_paper:
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         platform: [ ubuntu-latest, macos-latest, avx512 ]
         BUILD_TYPE: [ Release ]
