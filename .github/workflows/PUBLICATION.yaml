@@ -30,10 +30,6 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build -j 16
 
-      - name: Test
-        working-directory: ${{github.workspace}}/build
-        run: ctest -j 4
-
       - name: Check if ALP_DATASET_DIR_PATH is set and print download link
         run: |
           if [ -z "${ALP_DATASET_DIR_PATH}" ]; then
@@ -43,6 +39,10 @@ jobs:
           else
             echo "ALP_DATASET_DIR_PATH is set to ${ALP_DATASET_DIR_PATH}"
           fi
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -j 4
 
       - name: run compression ratio alp
         run: ${{github.workspace}}/build/b/publication/source_code/bench_compression_ratio/bench_alp_compression_ratio
