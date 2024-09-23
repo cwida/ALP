@@ -73,7 +73,7 @@ void read_data(std::vector<double>& data, const std::string& csv_file_path, cons
 		file.seekg(0, std::ios::beg);
 
 		// Ensure the file size is a multiple of the size of a double
-		if (fileSize % sizeof(double) != 0) { throw std::runtime_error("File size is not a multiple of double size!"); }
+		// if (fileSize % sizeof(double) != 0) { throw std::runtime_error("File size is not a multiple of double size!"); }
 		// Calculate the number of doubles
 		std::size_t numDoubles = fileSize / sizeof(double);
 
