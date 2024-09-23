@@ -21,10 +21,6 @@ public:
 		dbl_arr     = new double[ZSTD_VECTOR_SIZE];
 		enc_dbl_arr = malloc(INPUT_SIZE);
 		dec_dbl_arr = malloc(INPUT_SIZE);
-
-		const auto v = std::getenv("ALP_DATASET_DIR_PATH");
-		if (v == nullptr) { throw std::runtime_error("Environment variable ALP_DATASET_DIR_PATH is not set!"); }
-		alp_bench::PATHS.ALP_DATASET_BINARY_DIR_PATH = v;
 	}
 
 	~zstd_test() override {
