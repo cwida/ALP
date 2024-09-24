@@ -347,11 +347,11 @@ struct encoder {
 
 #ifdef __AVX512F__
 		for (size_t i {0}; i < config::VECTOR_SIZE; i = i + 8) {
-			__m512d l            = _mm512_loadu_pd(tmp_dbl_arr + i);
-			__m512d r            = _mm512_loadu_pd(input_vector + i);
+			__m512d l            = _mm512_loadu_pd(ENCODED_DBL_ARR + i);
+			__m512d r            = _mm512_loadu_pd(DBL_ARR_WITHOUT_SPECIALS + i);
 			__m512i index        = _mm512_loadu_pd(INDEX_ARR + i);
 			auto    is_exception = _mm512_cmpneq_pd_mask(l, r);
-			_mm512_mask_compressstoreu_pd(tmp_index + exceptions_idx, is_exception, index);
+			_mm512_mask_compressstoreu_pd(TMP_INDEX_ARR + exceptions_idx, is_exception, index);
 			exceptions_idx += LOOKUP_TABLE[is_exception];
 		}
 #else

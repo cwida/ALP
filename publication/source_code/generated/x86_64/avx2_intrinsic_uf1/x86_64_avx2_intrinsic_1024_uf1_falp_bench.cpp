@@ -1,4 +1,4 @@
-#include "arm64v8_neon_intrinsic_1024_uf1_falp_bench.hpp"
+#include "x86_64_avx2_intrinsic_1024_uf1_falp_bench.hpp"
 #include "alp.hpp"
 #include "data.hpp"
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_fused_decode(alp_bench::Column& dataset,
@@ -23,12 +23,12 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_fus
 
 	uint64_t cycles = benchmark::cycleclock::Now();
 	for (uint64_t i = 0; i < iterations; ++i) {
-		generated::falp::arm64v8::neon::falp(reinterpret_cast<uint64_t*>(ffor_arr),
-		                                     dec_dbl_arr,
-		                                     bw,
-		                                     reinterpret_cast<uint64_t*>(base_arr),
-		                                     factor,
-		                                     exponent);
+		generated::falp::x86_64::avx2::falp(reinterpret_cast<uint64_t*>(ffor_arr),
+		                                    dec_dbl_arr,
+		                                    bw,
+		                                    reinterpret_cast<uint64_t*>(base_arr),
+		                                    factor,
+		                                    exponent);
 		alp::decoder<double>::patch_exceptions(dec_dbl_arr, exc_arr, pos_arr, exc_c_arr);
 	}
 
@@ -79,17 +79,17 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	uint16_t* exc_c_arr;
 	int64_t*  ffor_arr;
 	int64_t*  unffor_arr;
-	double*   smp_arr;
 
 	int64_t* base_arr;
 	int64_t* dig_arr;
 	double*  dec_dbl_arr;
+	double*  smp_arr;
+
+	alp::state<double> stt;
 
 	uint8_t bw;
 	uint8_t factor;
 	uint8_t exponent;
-
-	alp::state<double> stt;
 
 	dbl_arr     = new (std::align_val_t {64}) double[1024];
 	exc_arr     = new (std::align_val_t {64}) double[1024];
@@ -100,7 +100,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	ffor_arr    = new (std::align_val_t {64}) int64_t[1024];
 	unffor_arr  = new (std::align_val_t {64}) int64_t[1024];
 	base_arr    = new (std::align_val_t {64}) int64_t[1024];
-	smp_arr     = new double[1024];
+	smp_arr     = new (std::align_val_t {64}) double[1024];
 
 	for (auto& dataset : alp_bench::get_alp_dataset()) {
 		std::ifstream ifile(dataset.csv_file_path, std::ios::in);
@@ -121,6 +121,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 		factor   = dataset.factor;
 		exponent = dataset.exponent;
 
+		// Init
 		alp::encoder<double>::init(dbl_arr, 0, 1024, smp_arr, stt);
 
 		alp::encoder<double>::encode(dbl_arr, exc_arr, pos_arr, exc_c_arr, dig_arr, stt);
@@ -138,7 +139,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 }
 int main() {
 	benchmark::Benchmark benchmark =
-	    benchmark::create("arm64v8_neon_intrinsic_1024_uf1_falp")
+	    benchmark::create("x86_64_avx2_intrinsic_1024_uf1_falp")
 	        .save()
 	        .at(std::string(SOURCE_DIR) + "/publication/results/" + benchmark::CmakeInfo::getCmakeToolchainFile())
 	        .print()

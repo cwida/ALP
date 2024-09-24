@@ -44,6 +44,15 @@ else
 fi
 
 # Run benchmarks
+
+# arm64 arch
+"$TARGET_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
+
+# x86 arch
+"$TARGET_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
+"$TARGET_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+
+# rest
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_alp_compression_ratio"
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_alp32_compression_ratio"
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/bench_zstd_compression_ratio"
