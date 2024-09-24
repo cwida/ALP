@@ -1,6 +1,6 @@
 #include "benchmarks/alp/queries.hpp"
 #include "common/runtime/Import.hpp"
-#include "dataset/alp_ds.hpp"
+#include "data.hpp"
 #include "profile.hpp"
 #include "tbb/tbb.h"
 #include <cerrno>
@@ -28,7 +28,7 @@ void clearOsCaches() {
 	}
 }
 
-//double alp_profile(std::function<void()> fn, uint64_t rep_c, uint64_t warmup_rep_c) {
+// double alp_profile(std::function<void()> fn, uint64_t rep_c, uint64_t warmup_rep_c) {
 //	using namespace std;
 //	// warmup round
 //	for (size_t i {0}; i < warmup_rep_c; ++i) {
@@ -42,7 +42,7 @@ void clearOsCaches() {
 //	auto end = benchmark::cycleclock::Now();
 //
 //	return end - start;
-//}
+// }
 
 int main() {
 	runtime::cur_q_mtd.repetition         = cfg::rep_c;
@@ -52,7 +52,7 @@ int main() {
 	             ",validity,compression_cycles,cycles"
 	          << std::endl;
 	// ALL COLUMNS
-	for (auto& col : dataset::alp_end_to_end) { // TODO
+	for (auto& col : alp_bench::get_alp_end_to_end()) { // TODO
 		runtime::cur_q_mtd.col_name = col.name;
 
 		/* Extension. */
@@ -91,8 +91,8 @@ int main() {
 					//					escape(&res_rel);
 					//
 					//					auto result                 =
-					//*reinterpret_cast<double*>(res_rel.attributes.at("aggr").data()); 					runtime::cur_q_mtd.validity =
-					//result;
+					//*reinterpret_cast<double*>(res_rel.attributes.at("aggr").data());
+					// runtime::cur_q_mtd.validity = result;
 					//
 					//					// Benchmark
 					//					runtime::cur_q_mtd.cycles = alp_profile(
