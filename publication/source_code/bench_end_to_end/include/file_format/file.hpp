@@ -11,7 +11,7 @@ struct file {
 		std::vector<std::string> result_vec;
 
 		for (size_t i {0}; i < scheme.c; ++i) {
-			result_vec.push_back(dataset::paths::get_cache_dir_path(2) + scheme.prefix + "_" + col_name + "_" +
+			result_vec.push_back(dataset::paths::get_cache_dir_path() + scheme.prefix + "_" + col_name + "_" +
 			                     std::to_string(i) + scheme.extension);
 		}
 

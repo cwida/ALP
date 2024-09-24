@@ -7,38 +7,9 @@
 
 namespace dataset {
 struct paths {
-	static std::string get_cache_dir_path(size_t backward_lvl) {
-		std::string result = "";
-		for (size_t i {0}; i < backward_lvl; ++i) {
-			result = result + "../";
-		}
-		return result + "data/cached/";
-	}
-
-	static std::string get_1_rg_dir_path(size_t backward_lvl) {
-		std::string result = "";
-		for (size_t i {0}; i < backward_lvl; ++i) {
-			result = result + "../";
-		}
-		return result + "data/1_rg_data_sample/";
-	}
-
-	static std::string get_128_1024_rg_dir_path(size_t backward_lvl) {
-		std::string result = "";
-		for (size_t i {0}; i < backward_lvl; ++i) {
-			result = result + "../";
-		}
-		return result + "data/128_1024_rg_data_sample/";
-	}
-
-	explicit paths() {
-		//		if (auto v = std::getenv("COLUMNS_1024_SAMPLES_PATH")) { COLUMNS_SAMPLES_PATH = v; }
-		//		if (auto v = std::getenv("COLUMNS_1024_SAMPLES_CSV_PATH")) { COLUMNS_SAMPLES_CSV_PATH = v; }
-		//		if (auto v = std::getenv("COLUMNS_1024_DIGITS_PATH")) { COLUMNS_SAMPLE_CSV_DIGIT_PATH = v; }
-		//		if (auto v = std::getenv("COLUMNS_1024_EXCEPTIONS_PATH")) { COLUMNS_SAMPLE_CSV_EXCEPTION_PATH = v; }
-		//		if (auto v = std::getenv("COLUMNS_COMPLETE_PATH")) { COLUMNS_BINARY_PATH = v; }
-		//		if (auto v = std::getenv("ALP_DATA_DIR_PATH")) { ALP_DATA_DIR_PATH = v; }
-	}
+	static std::string get_cache_dir_path() { return CMAKE_SOURCE_DIR "/data/cached/"; }
+	static std::string get_1_rg_dir_path() { return CMAKE_SOURCE_DIR "/data/1_rg_data_sample/"; }
+	static std::string get_128_1024_rg_dir_path() { return CMAKE_SOURCE_DIR "/data/128_1024_rg_data_sample/"; }
 };
 } // namespace dataset
 
@@ -104,9 +75,9 @@ inline const size_t      vec_tup_c    = 1024;
 inline const size_t      morsel_c     = 1024 * 128;
 inline const bool        is_bitpacked = false;
 inline const std::string tbl_name     = "ALP";
-inline const std::string cached_dir   = dataset::paths::get_cache_dir_path(2);
-inline const std::string data_dir     = dataset::paths::get_1_rg_dir_path(2);
-inline const std::string data_ext_dir = dataset::paths::get_128_1024_rg_dir_path(2);
+inline const std::string cached_dir   = dataset::paths::get_cache_dir_path();
+inline const std::string data_dir     = dataset::paths::get_1_rg_dir_path();
+inline const std::string data_ext_dir = dataset::paths::get_128_1024_rg_dir_path();
 inline const size_t      m_sz         = 48;
 inline const input_t     input_t      = BINARY;
 inline const size_t      vec_c        = 1024 * 1024;
