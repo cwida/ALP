@@ -70,6 +70,9 @@ fi
 "$TARGET_DIR/build/publication/source_code/bench_speed/bench_patas"
 "$TARGET_DIR/build/publication/source_code/bench_speed/bench_zstd"
 
+# end to end
+"$TARGET_DIR/build/publication/source_code/bench_end_to_end/run_alp"
+
 # Set up Python and install dependencies
 python -m pip install --upgrade pip
 pip install -r "$TARGET_DIR/publication/plotter/requirements.txt"
