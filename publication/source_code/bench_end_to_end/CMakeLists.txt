@@ -6,7 +6,7 @@ else()
 	set(LINUX)
 endif()
 
-#[[=====================================================================================================================
+#[[============================================= ========================================================================
 FLS: [CHG] ]]
 #
 # prefer to use clang
@@ -422,6 +422,6 @@ target_include_directories(run_alp PUBLIC
 		PRIVATE src)
 
 
-target_link_libraries(run_alp PUBLIC gtest_main gflags btrblocks tpch hyper vectorwise common ${JEVENTSLIB} alp_ffor x86_64_avx512bw_intrinsic_1024_uf1_falp alp_ffor ${CMAKE_SOURCE_DIR}/include/zstd/libzstd.so)
+target_link_libraries(run_alp PUBLIC gtest_main gflags btrblocks tpch hyper vectorwise common ${JEVENTSLIB} x86_64_avx512bw_intrinsic_1024_uf1_falp ALP libzstd)
 
 target_compile_options(run_alp PUBLIC -mavx512dq)

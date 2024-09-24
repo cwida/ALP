@@ -19,5 +19,6 @@ add_subdirectory(test)
 add_subdirectory(bench_speed)
 add_subdirectory(bench_compression_ratio)
 add_subdirectory(generated)
+add_subdirectory(bench_end_to_end)
 
 

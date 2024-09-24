@@ -1,12 +1,9 @@
-#include "alp/decode.hpp"
-#include "alp/encode.hpp"
-#include "alp/unffor.hpp"
+#include "alp.hpp"
 #include "benchmarks/alp/config.hpp"
 #include "benchmarks/alp/queries.hpp"
 #include "chimp/chimp.hpp"
 #include "chimp/chimp128.hpp"
 #include "common/runtime/Types.hpp"
-#include "debug.hpp"
 #include "encoding/helper.hpp"
 #include "gorillas/gorillas.hpp"
 #include "patas/patas.hpp"
@@ -14,7 +11,7 @@
 #include "vectorwise/Operators.hpp"
 #include "vectorwise/Primitives.hpp"
 #include "vectorwise/VectorAllocator.hpp"
-#include "zstd/zstd.h"
+#include "zstd.h"
 #include <iomanip>
 
 // ---
@@ -27,7 +24,7 @@ using namespace runtime;
 using namespace std;
 using namespace btrblocks;
 
-namespace unffor = alp::generated::unffor::fallback::scalar;
+namespace unffor = fastlanes::generated::unffor::fallback::scalar;
 
 namespace alp_end_to_end { namespace function {
 // using F2 = pos_t (*)(pos_t n, void* result, void* param1);
@@ -81,7 +78,7 @@ pos_t alp_func(pos_t n, void* p0, void* p1, void* p2, void* p3, void* p4) {
 	                                        alp.fac,
 	                                        alp.exp);
 
-	alp::patch(dec_dbl_arr, reinterpret_cast<double*>(exc_arr), reinterpret_cast<uint16_t*>(pos_arr), &alp.exc_c);
+	alp::decoder<double>::patch_exceptions(dec_dbl_arr, reinterpret_cast<double*>(exc_arr), reinterpret_cast<uint16_t*>(pos_arr), &alp.exc_c);
 
 	//	std::cout << __FUNCTION__ << " : ";
 	//	print_alp(*reinterpret_cast<X*>(&alp));

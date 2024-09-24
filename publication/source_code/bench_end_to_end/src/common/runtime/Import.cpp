@@ -1,20 +1,18 @@
 #include "common/runtime/Import.hpp"
-#include "alp/alp.hpp"
-#include "alp/ffor.hpp"
+#include "alp.hpp"
 #include "alp_bench.hpp"
 #include "benchmarks/alp/config.hpp"
 #include "chimp/chimp.hpp"
 #include "chimp/chimp128.hpp"
 #include "common/runtime/Mmap.hpp"
 #include "common/runtime/Types.hpp"
-#include "dataset/column.hpp"
 #include "encoding/helper.hpp"
 #include "encoding/scheme_pool.hpp"
 #include "file_format/file_format.hpp"
 #include "gorillas/gorillas.hpp"
 #include "patas/patas.hpp"
 #include "sys/stat.h"
-#include "zstd/zstd.h"
+#include "zstd.h"
 #include <filesystem>
 #include <fstream>
 
@@ -27,7 +25,7 @@
 #include "btrblocks/scheme/double/Pseudodecimal.hpp"
 #include "btrblocks/scheme/double/RLE.hpp"
 #include "btrblocks/scheme/integer/PBP.hpp"
-#include "dataset/alp_ds.hpp"
+#include "data.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -35,7 +33,7 @@
 
 using namespace btrblocks;
 
-namespace ffor = alp::generated::ffor::fallback::scalar;
+namespace ffor = fastlanes::generated::ffor::fallback::scalar;
 
 using namespace std;
 
@@ -350,7 +348,8 @@ int64_t write_double(ColumnConfig& col, double* dbl_arr) {
 		auto* flags_arr_als        = flags_arr;
 		auto* leading_zero_arr_als = leading_zero_arr;
 
-		start = benchmark::cycleclock::Now();;
+		start = benchmark::cycleclock::Now();
+		;
 		for (size_t vec_n {0}; vec_n < cfg::vec_c; ++vec_n) {
 			state.Reset();
 			state.output.SetStream(data_arr_als);
@@ -605,7 +604,7 @@ int64_t write_double(ColumnConfig& col, double* dbl_arr) {
 		dig_arr   = new int64_t[1024];
 		exc_c_arr = new uint16_t[1];
 		base_arr  = new int64_t[1];
-		smp_arr   = new double[SMP_C];
+		smp_arr   = new double[1024];
 
 		size_t ttl_ffor_arr_byte_c {0};
 		size_t ttl_exc_byte_c {0};
@@ -617,12 +616,10 @@ int64_t write_double(ColumnConfig& col, double* dbl_arr) {
 		size_t ofs {0};
 
 		//		alp_debug::print_arr<double>(dbl_arr, 5, std::cout);
-		alp::state stt;
+		alp::state<double> stt;
 
 		// Init
-		stt.rg_n_comb = alp::config::N_COMB;
-		stt.cmb_arr.clear();
-		alp::sampler::rowgroup::rowgroup_init(dbl_arr, ofs, tup_c, smp_arr, stt);
+		alp::encoder<double>::init(dbl_arr, ofs, tup_c, smp_arr, stt);
 
 		//
 		auto* ffor_arr_als = reinterpret_cast<uint8_t*>(ffor_arr);
@@ -631,14 +628,14 @@ int64_t write_double(ColumnConfig& col, double* dbl_arr) {
 
 		start = benchmark::cycleclock::Now();
 		for (size_t vec_n {0}; vec_n < cfg::vec_c; ++vec_n) {
-			alp::encode_simdized_combined(dbl_arr,
-			                              reinterpret_cast<double*>(exc_arr_als),
-			                              reinterpret_cast<uint16_t*>(pos_arr_als),
-			                              exc_c_arr,
-			                              dig_arr,
-			                              stt);
+			alp::encoder<double>::encode(dbl_arr,
+			                             reinterpret_cast<double*>(exc_arr_als),
+			                             reinterpret_cast<uint16_t*>(pos_arr_als),
+			                             exc_c_arr,
+			                             dig_arr,
+			                             stt);
 
-			alp::analyze_ffor(dig_arr, bw, base_arr);
+			alp::encoder<double>::analyze_ffor(dig_arr, bw, base_arr);
 
 			ffor::ffor(dig_arr, reinterpret_cast<int64_t*>(ffor_arr_als), bw, base_arr);
 
@@ -1097,7 +1094,7 @@ void importSSB(std::string dir, Database& db) {
 	// NO SUPPORT FOR SSB
 }
 
-double import_alp(dataset::Column& col, Database& db, encoding::scheme& scheme) {
+double import_alp(alp_bench::Column& col, Database& db, encoding::scheme& scheme) {
 	auto& rel    = db[cfg::tbl_name];
 	rel.name     = col.name;
 	auto columns = configX({{cfg::schema, col.name, make_unique<algebra::Double>(), scheme}});
@@ -1119,7 +1116,7 @@ double sum(double* in, size_t c) {
 	return result;
 }
 
-void expand_binary_x_times(dataset::Column& col, size_t x) {
+void expand_binary_x_times(alp_bench::Column& col, size_t x) {
 	/**/
 
 	std::string              col_file_path          = cfg::data_dir + col.name + ".bin";
@@ -1139,7 +1136,7 @@ void expand_binary_x_times(dataset::Column& col, size_t x) {
 	//	std::cout << __FUNCTION__ << " : " << col_file_path << " has been extended " << x << " times." << std::endl;
 }
 
-bool is_expanded(dataset::Column& col) {
+bool is_expanded(alp_bench::Column& col) {
 	/**/
 	bool file_exist;
 	bool has_correct_size;
@@ -1168,13 +1165,13 @@ static void remove_file(std::string_view file_path) {
 	//	std::cout << __FUNCTION__ << " : " << file_path << " has been removed successfully." << std::endl;
 }
 
-void remove_binary_file(dataset::Column& col) {
+void remove_binary_file(alp_bench::Column& col) {
 	/**/
 	std::string col_extended_file_path = cfg::data_ext_dir + col.name + +".bin";
 	remove_file(col_extended_file_path);
 }
 
-void clean_compressed_data(dataset::Column& col, encoding::scheme& scheme) {
+void clean_compressed_data(alp_bench::Column& col, encoding::scheme& scheme) {
 	/**/
 	std::vector<std::string> path_vec = ff::file::get_col_paths(col.name, scheme);
 	for (auto& file_path : path_vec) {

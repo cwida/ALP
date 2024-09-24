@@ -1,11 +1,46 @@
 #pragma once
 
-#include "dataset/alp_ds.hpp"
-#include "dataset/path.hpp"
 #include "encoding/encoding.hpp"
 #include "string"
 #include <stdint.h>
 #include <vector>
+
+namespace dataset {
+struct paths {
+	static std::string get_cache_dir_path(size_t backward_lvl) {
+		std::string result = "";
+		for (size_t i {0}; i < backward_lvl; ++i) {
+			result = result + "../";
+		}
+		return result + "data/cached/";
+	}
+
+	static std::string get_1_rg_dir_path(size_t backward_lvl) {
+		std::string result = "";
+		for (size_t i {0}; i < backward_lvl; ++i) {
+			result = result + "../";
+		}
+		return result + "data/1_rg_data_sample/";
+	}
+
+	static std::string get_128_1024_rg_dir_path(size_t backward_lvl) {
+		std::string result = "";
+		for (size_t i {0}; i < backward_lvl; ++i) {
+			result = result + "../";
+		}
+		return result + "data/128_1024_rg_data_sample/";
+	}
+
+	explicit paths() {
+		//		if (auto v = std::getenv("COLUMNS_1024_SAMPLES_PATH")) { COLUMNS_SAMPLES_PATH = v; }
+		//		if (auto v = std::getenv("COLUMNS_1024_SAMPLES_CSV_PATH")) { COLUMNS_SAMPLES_CSV_PATH = v; }
+		//		if (auto v = std::getenv("COLUMNS_1024_DIGITS_PATH")) { COLUMNS_SAMPLE_CSV_DIGIT_PATH = v; }
+		//		if (auto v = std::getenv("COLUMNS_1024_EXCEPTIONS_PATH")) { COLUMNS_SAMPLE_CSV_EXCEPTION_PATH = v; }
+		//		if (auto v = std::getenv("COLUMNS_COMPLETE_PATH")) { COLUMNS_BINARY_PATH = v; }
+		//		if (auto v = std::getenv("ALP_DATA_DIR_PATH")) { ALP_DATA_DIR_PATH = v; }
+	}
+};
+} // namespace dataset
 
 namespace cfg {
 inline std::string options[] = {"0"};
