@@ -25,7 +25,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g -fPIC")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_DEBUG_RELEASE} -g -fPIC")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g")
-add_compile_options(-march=native -Wall -Wextra)
+add_compile_options(-march=native -Wno-error)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -70,15 +70,15 @@ include("${CMAKE_VENDOR_DIR}/dynamic_bitset.cmake")
 #include("${CMAKE_VENDOR_DIR}/tbb.cmake")
 #include("${CMAKE_VENDOR_DIR}/gflags.cmake")
 #include("${CMAKE_VENDOR_DIR}/spdlog.cmake")
-include("${CMAKE_VENDOR_DIR}/yaml-cpp.cmake")
-include("${CMAKE_VENDOR_DIR}/csv-parser.cmake")
+#include("${CMAKE_VENDOR_DIR}/yaml-cpp.cmake")
+#include("${CMAKE_VENDOR_DIR}/csv-parser.cmake")
 
 # Test dependencies
 #include("${CMAKE_VENDOR_DIR}/googletest.cmake")
 
 # Benchmark dependencies
-include("${CMAKE_VENDOR_DIR}/aws-sdk.cmake")
-include("${CMAKE_VENDOR_DIR}/benchmark.cmake")
+#include("${CMAKE_VENDOR_DIR}/aws-sdk.cmake")
+#include("${CMAKE_VENDOR_DIR}/benchmark.cmake")
 include("${CMAKE_VENDOR_DIR}/gdouble.cmake")
 include("${CMAKE_VENDOR_DIR}/turbo.cmake")
 include("${CMAKE_VENDOR_DIR}/lz4.cmake")
@@ -88,9 +88,9 @@ include("${CMAKE_VENDOR_DIR}/lz4.cmake")
 # ---------------------------------------------------------------------------
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/btrblocks/local.cmake")  # btrblocks library
-include("${CMAKE_CURRENT_SOURCE_DIR}/btrfiles/local.cmake")   # btrblocks files library
-include("${CMAKE_CURRENT_SOURCE_DIR}/test/local.cmake")       # btrblocks tests
-include("${CMAKE_CURRENT_SOURCE_DIR}/tools/local.cmake")      # btrblocks tooling
+#include("${CMAKE_CURRENT_SOURCE_DIR}/btrfiles/local.cmake")   # btrblocks files library
+#include("${CMAKE_CURRENT_SOURCE_DIR}/test/local.cmake")       # btrblocks tests
+#include("${CMAKE_CURRENT_SOURCE_DIR}/tools/local.cmake")      # btrblocks tooling
 
 # ---------------------------------------------------------------------------
 # Linting

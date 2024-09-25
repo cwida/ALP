@@ -19,6 +19,15 @@ add_subdirectory(test)
 add_subdirectory(bench_speed)
 add_subdirectory(bench_compression_ratio)
 add_subdirectory(generated)
-add_subdirectory(bench_end_to_end)
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+else ()
+    if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm64" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+    elseif (${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
+        add_subdirectory(bench_end_to_end)
+    else ()
+    endif ()
+endif ()
+
 
 
