@@ -18,6 +18,10 @@ include(CMakePrintHelpers)
 include(CTest)
 
 # Clang Tidy : ---------------------------------------------------------------------------------------------------------
+if (ALP_BUILD_PUBLICATION)
+    set(ALP_ENABLE_CLANG_TIDY OFF)
+endif ()
+
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND ALP_ENABLE_CLANG_TIDY)
     find_program(CLANG_TIDY_EXE NAMES clang-tidy)
     if (NOT CLANG_TIDY_EXE)
