@@ -281,10 +281,6 @@ endif ()
 
 # Btrblocks ------------------------------------------------------------------------------------------------------------
 
-add_subdirectory(btrblocks_copy)
-include_directories(btrblocks_copy)
-include_directories(btrblocks_copy/btrblocks)
-
 
 #[[=====================================================================================================================
 FLS: [CHG] ]]

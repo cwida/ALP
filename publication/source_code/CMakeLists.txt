@@ -24,6 +24,11 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
 else ()
     if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm64" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
     elseif (${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
+
+        add_subdirectory(btrblocks_copy)
+        include_directories(btrblocks_copy)
+        include_directories(btrblocks_copy/btrblocks)
+
         add_subdirectory(bench_end_to_end)
     else ()
     endif ()
