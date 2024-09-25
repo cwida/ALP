@@ -30,7 +30,7 @@ cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE="$TARGET_DIR/toolchain/e
 cmake --build "$TARGET_DIR/build" -j 16
 
 # Run tests
-cd "$TARGET_DIR/build" && ctest -j 4  todo
+cd "$TARGET_DIR/build" && ctest -j 4
 
 # Check if ALP_DATASET_DIR_PATH is set
 # Set the environment variable `ALP_DATASET_DIR_PATH` with the path to the directory in which the complete
@@ -79,3 +79,35 @@ pip install -r "$TARGET_DIR/publication/plotter/requirements.txt"
 
 # Run the plotter script
 python "$TARGET_DIR/publication/plotter/plotter.py"
+
+# Clone the new repository
+NEW_REPO_URL="https://github.com/azimafroozeh/bench_ped.git"  # New repository URL
+NEW_TARGET_DIR="$WORKSPACE/BENCH_PED"  # Define new target directory for the clone
+
+if [ -d "$NEW_TARGET_DIR" ]; then
+  echo "New repository already exists, pulling the latest changes from branch $BRANCH..."
+  cd "$NEW_TARGET_DIR" && git pull origin "$BRANCH"
+else
+  echo "Cloning the new repository and checking out branch $BRANCH..."
+  git clone --branch "$BRANCH" "$NEW_REPO_URL" "$NEW_TARGET_DIR"
+fi
+
+# Move to the new cloned repository
+cd "$NEW_TARGET_DIR"
+
+# Create build directory
+mkdir -p "$NEW_TARGET_DIR/build"
+
+# Configure CMake for the new repository
+cmake -DCMAKE_TOOLCHAIN_FILE="$NEW_TARGET_DIR/toolchain/example.cmake" -S "$NEW_TARGET_DIR" -B "$NEW_TARGET_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+
+# Build the project for the new repository
+cmake --build "$NEW_TARGET_DIR/build" -j 16
+
+# Run specific targets
+cmake --build "$NEW_TARGET_DIR/build" --target bench_ped -j 16
+cmake --build "$NEW_TARGET_DIR/build" --target test_ped -j 16
+
+# Execute the new targets
+"$NEW_TARGET_DIR/build/bench_ped"
+"$NEW_TARGET_DIR/build/test_ped"
