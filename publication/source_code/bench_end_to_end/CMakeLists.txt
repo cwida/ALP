@@ -246,6 +246,9 @@ file(GLOB SBBQUERIES src/benchmarks/sbb/queries/*.cpp)
 
 #[[===================================================================================================================]]
 
+add_subdirectory(btrblocks_copy)
+include_directories(btrblocks_copy)
+include_directories(btrblocks_copy/btrblocks)
 
 # BtrBlocks ------------------------------------------------------------------------------------------------------------
 FetchContent_Declare(
