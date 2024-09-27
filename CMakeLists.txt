@@ -17,6 +17,11 @@ include(CheckCXXCompilerFlag)
 include(CMakePrintHelpers)
 include(CTest)
 
+# Requirements : -------------------------------------------------------------------------------------------------------
+if (NOT "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    message(FATAL_ERROR "Only Clang is supported!")
+endif ()
+
 # Clang Tidy : ---------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_PUBLICATION)
     set(ALP_ENABLE_CLANG_TIDY OFF)
