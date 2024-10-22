@@ -82,17 +82,6 @@ template <> __device__ __forceinline__ int64_t *get_fact_arr() {
 }
 } // namespace constant_memory
 
-// WARNING
-// WARNING
-// TODO WARNING IS IT NOT FASTER TO PASS THESE ARGUMENTS IN FULL WIDTH?
-
-// SO uint8_T -> uint32_t (if it gets multiplied with 32) This saves a cast
-// in each kernel, and we do not care how big parameters are, as they are
-// passed via const
-// INFO Hypothesis: not stalling on arithmetic, so it does not matter in
-// execution time. Check # executed instructions tho.
-// WARNING
-// WARNING
 template <typename T_in, typename T_out, UnpackingType unpacking_type,
           unsigned UNPACK_N_VECTORS, unsigned UNPACK_N_VALUES>
 __device__ void unalp(T_out *__restrict out, const AlpColumn<T_out> column,
@@ -112,9 +101,8 @@ __device__ void unalp(T_out *__restrict out, const AlpColumn<T_out> column,
   INT_T factor =
       constant_memory::get_fact_arr<INT_T>()[column.factors[vector_index]];
   T_out frac10 = constant_memory::get_frac_arr<
-      T_out>()[column.exponents[vector_index]]; // WARNING TODO implement a
-                                                // compile time switch to grab
-                                                // float array
+      T_out>()[column.exponents[vector_index]]; 
+
   auto lambda = [base, factor, frac10](const T_in value) -> T_out {
     return static_cast<T_out>(static_cast<INT_T>((value + base) *
                                                  static_cast<UINT_T>(factor))) *
@@ -138,8 +126,6 @@ __device__ void unalp(T_out *__restrict out, const AlpColumn<T_out> column,
   if (unpacking_type == UnpackingType::VectorArray) {
     for (int i{lane}; i < exceptions_count; i += N_LANES) {
       // WARNING Currently assumes that you are decoding an entire vector
-      // TODO Implement an if (position > startindex && position < (start_index
-      // + UNPACK_N_VALUES * n_lanes) {...}
       auto position = vec_exceptions_positions[i];
       out[position] = vec_exceptions[i];
     }
@@ -161,83 +147,6 @@ __device__ void unalp(T_out *__restrict out, const AlpColumn<T_out> column,
 
 template <typename T_in, typename T_out, UnpackingType unpacking_type,
           unsigned UNPACK_N_VECTORS, unsigned UNPACK_N_VALUES>
-__device__ void
-unalp_with_scanner(T_out *__restrict out, const AlpColumn<T_out> column,
-                   const uint16_t vector_index, const uint16_t lane,
-                   const uint16_t start_index) {
-  static_assert((std::is_same<T_in, uint32_t>::value &&
-                 std::is_same<T_out, float>::value) ||
-                    (std::is_same<T_in, uint64_t>::value &&
-                     std::is_same<T_out, double>::value),
-                "Wrong type arguments");
-  using INT_T = typename utils::same_width_int<T_out>::type;
-  using UINT_T = typename utils::same_width_int<T_out>::type;
-
-  T_in *in = column.ffor_array + consts::VALUES_PER_VECTOR * vector_index;
-  uint16_t value_bit_width = column.bit_widths[vector_index];
-  UINT_T base = column.ffor_bases[vector_index];
-  INT_T factor =
-      constant_memory::get_fact_arr<INT_T>()[column.factors[vector_index]];
-  T_out frac10 = constant_memory::get_frac_arr<
-      T_out>()[column.exponents[vector_index]]; // WARNING TODO implement a
-                                                // compile time switch to grab
-                                                // float array
-  auto lambda = [base, factor, frac10](const T_in value) -> T_out {
-    return static_cast<T_out>(static_cast<INT_T>((value + base) *
-                                                 static_cast<UINT_T>(factor))) *
-           frac10;
-  };
-
-  unpack_vector<T_in, T_out, unpacking_type, UNPACK_N_VECTORS, UNPACK_N_VALUES>(
-      in, out, lane, value_bit_width, start_index, lambda);
-
-  // Patch exceptions
-  constexpr auto N_LANES = utils::get_n_lanes<INT_T>();
-  auto exceptions_count = column.counts[vector_index];
-
-  auto vec_exceptions =
-      column.exceptions + consts::VALUES_PER_VECTOR * vector_index;
-  auto vec_exceptions_positions =
-      column.positions + consts::VALUES_PER_VECTOR * vector_index;
-
-  const int first_pos = start_index * N_LANES + lane;
-  const int last_pos = first_pos + N_LANES * (UNPACK_N_VALUES - 1);
-  if (unpacking_type == UnpackingType::VectorArray) {
-    for (int i{lane}; i < exceptions_count; i += N_LANES) {
-      // WARNING Currently assumes that you are decoding an entire vector
-      // TODO Implement an if (position > startindex && position < (start_index
-      // + UNPACK_N_VALUES * n_lanes) {...}
-      auto position = vec_exceptions_positions[i];
-      out[position] = vec_exceptions[i];
-    }
-  } else if (unpacking_type == UnpackingType::LaneArray) {
-    constexpr int32_t SCANNER_SIZE = 1;
-    uint16_t scanner[SCANNER_SIZE];
-
-    for (int i{0}; i < exceptions_count; i += SCANNER_SIZE) {
-
-      for (int j{0}; j < SCANNER_SIZE && j + i < exceptions_count; ++j) {
-        scanner[j] = vec_exceptions_positions[j + i];
-      }
-
-      for (int j{0}; j < SCANNER_SIZE && j + i < exceptions_count; ++j) {
-        auto position = scanner[j];
-        if (position >= first_pos) {
-          if (position <= last_pos && position % N_LANES == lane) {
-            out[(position - first_pos) / N_LANES] = vec_exceptions[j + i];
-          }
-          if (position + 1 > last_pos) {
-            return;
-          }
-        }
-      }
-    }
-  }
-}
-
-template <typename T_in, typename T_out, UnpackingType unpacking_type,
-          unsigned UNPACK_N_VECTORS, unsigned UNPACK_N_VALUES>
-
 struct Unpacker {
   const int16_t vector_index;
   const uint16_t lane;
@@ -328,7 +237,6 @@ __device__ void unalprd(T_out *__restrict out, const AlpRdColumn<T_out> column,
   UINT_T *out_ut = reinterpret_cast<UINT_T *>(out);
 
   // Loading left parts dict
-  // TODO Let the threads collaborate to load this data
   const uint16_t *left_parts_dicts_p =
       column.left_parts_dicts +
       vector_index * alp::config::MAX_RD_DICTIONARY_SIZE;
@@ -338,7 +246,6 @@ __device__ void unalprd(T_out *__restrict out, const AlpRdColumn<T_out> column,
   }
 
   // Unfforring Arrays
-  // INFO The paper says something about fusing, consider using a custom lambda
   // TODO Do thread local array instead of shared
   __shared__ uint16_t left_array[consts::VALUES_PER_VECTOR];
   const uint16_t *left_ffor_array =
@@ -367,9 +274,6 @@ __device__ void unalprd(T_out *__restrict out, const AlpRdColumn<T_out> column,
   // Decoding
 #pragma unroll
   for (int i{lane}; i < consts::VALUES_PER_VECTOR; i += N_LANES) {
-    // WARNING THIS SHOULD NOT WRITE TO GLOBAL
-    // TODO write to thread local, and then patch all thread local values
-    // INFO THIS IS ALSO an issue in the normal ALP kernel
     out_ut[i] =
         (static_cast<UINT_T>(left_array[i]) << right_bitwidth) | right_array[i];
   }
