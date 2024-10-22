@@ -2,10 +2,10 @@
 #include <cstdio>
 #include <type_traits>
 
-#include "../alp/constants.hpp"
-#include "../common/utils.hpp"
-#include "../gpu-fls/fls.cuh"
-#include "src/alp/config.hpp"
+#include "../alp/include/constants.hpp"
+#include "utils.hpp"
+#include "fls.cuh"
+#include "../alp/include/config.hpp"
 
 #ifndef ALP_CUH
 #define ALP_CUH

@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <type_traits>
 
-#include "../common/utils.hpp"
+#include "utils.hpp"
 
 #ifndef FLS_CUH
 #define FLS_CUH

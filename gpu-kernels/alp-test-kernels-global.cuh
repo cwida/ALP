@@ -1,6 +1,6 @@
 #include "alp.cuh"
 
-#include "../common/utils.hpp"
+#include "utils.hpp"
 
 #ifndef ALP_TEST_KERNELS_GLOBAL_CUH
 #define ALP_TEST_KERNELS_GLOBAL_CUH
