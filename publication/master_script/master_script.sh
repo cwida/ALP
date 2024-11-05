@@ -46,7 +46,7 @@ green_echo "Determining toolchain file based on system architecture..."
 # Determine toolchain file based on system architecture
 ARCH=$(uname -m)
 if [ "$ARCH" == "arm64" ]; then
-  TOOLCHAIN_FILE="$TARGET_DIR/toolchain/m1.cmake"
+  TOOLCHAIN_FILE="$TARGET_DIR/toolchain/arm64.cmake"
   green_echo "Using ARM64 toolchain file..."
 else
   TOOLCHAIN_FILE="$TARGET_DIR/toolchain/x86.cmake"
