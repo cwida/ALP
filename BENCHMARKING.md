@@ -1,101 +1,76 @@
 # Benchmarking
 
-Here we explain how to replicate the experiments presented in
-our [publication](https://dl.acm.org/doi/pdf/10.1145/3626717) and how to benchmark with your own data.
+This guide explains how to:
+- Replicate the experiments presented in our [publication](https://dl.acm.org/doi/pdf/10.1145/3626717)
+- Benchmark with your own data
 
-On the benchmarked datasets from our publication:
+## How to Replicate the Experiments
 
-- ALP achieves x3 compression ratios on average (sometimes much, much higher).
-- ALP encodes 0.5 values per CPU cycle.
-- ALP decodes 2.6 values per CPU cycle.
+### 1. Download Data
 
-## Contents
+You can download the datasets used in our publication [here](https://drive.google.com/drive/folders/167faTwZJjqJMKM9Yc6E7KF5LUbsitxJS?usp=sharing) (`complete_binaries.zip`). These files are in binary format (64-bit doubles) and were used thourght the benchmarks in our paper.
 
-- [Contents](#contents)
-- [Build](#build)
-- [Downloading Data](#downloading-data)
-    - [Environment Variables](#environment-variables)
-    - [Setup Data](#setup-data)
-- [Compression Ratios Experiment](#compression-ratios-experiment)
-    - [ALP](#alp)
-    - [Chimp, Chimp128, Gorillas, Patas, Zstd Compression Ratios](#chimp-chimp128-gorillas-patas-zstd-compression-ratios)
-- [Speed Tests](#speed-tests)
-    - [ALP Encoding Speed Test](#alp-encoding-speed-test)
-    - [ALP Decoding Speed Test](#alp-decoding-speed-test)
-    - [ALP RD Encoding Speed Test](#alp-rd-encoding-speed-test)
-    - [ALP RD Decoding Speed Test](#alp-rd-decoding-speed-test)
-    - [Chimp, Chimp128, Gorillas, Patas, Zstd Speed Test](#chimp-chimp128-gorillas-patas-zstd-speed-test)
-    - [PseudoDecimals Speed Test](#pseudodecimals-speed-test)
-    - [ELF Speed Test](#elf-speed-test)
-- [FCBench](#fcbench)
+### 2. Set Environment Variables
 
-## Build
+Set the environment variable `ALP_DATASET_DIR_PATH` with the path to the directory containing the binary datasets that you downloaded in step 1.
+
+Additionally, inside `data/datasets_transformer.ipynb`, you can find a [Jupyter Notebook script](/data/datasets_transformer.ipynb) with guidelines to download datasets from their original source and code to convert them to binary format (64-bit doubles). Some datasets may require heavy pre-processing.
+
+### 3. Set the Correct Toolchain File
+
+There are two toolchain files in the [toolchain directory](toolchain). Adjust them based on the `clang` and `clang++` versions you are using.
+
+### 4. Run the Benchmark Script
+
+Run the [master_script.sh](publication/master_script/master_script.sh) on the following architectures:
+
+- **Intel Ice Lake (x86_64, AVX512):** M6i and C6i instances
+- **AMD Zen3 (x86_64, AVX2):** M6a and C6a instances
+- **AWS Graviton2 (ARM64, NEON):** M6g, C6g, R6g, and T4g instances
+- **AWS Graviton3 (ARM64, NEON):** M7g, C7g, and R7g instances
+- **Apple M1:** Note that on M1, you should run the following script with `sudo` permissions.
+
 
 ```shell
-cmake [OPTIONS] .
-make
+./publication/master_script/master_script.sh
 ```
 
-Options:
+### 5. Details:
 
-- `-DALP_BUILD_PUBLICATION=ON`: Build all experiments in `/publication/source_code`
-
-## Downloading Data
-
-You can download the datasets shown in our
-publication [here](https://drive.google.com/drive/folders/167faTwZJjqJMKM9Yc6E7KF5LUbsitxJS?usp=sharing) (
-`complete_binaries.zip`). They are in a binary format (64 bit doubles one after another). These are the files we used to
-benchmark ALP compression ratios in the [publication](https://dl.acm.org/doi/pdf/10.1145/3626717).
-
-In addition to this, inside `data/datasets_transformer.ipynb` you can find
-a [Jupyter Notebook script](/data/datasets_transformer.ipynb) with guidelines to download the datasets from their
-original source and code to transform them to a binary format (64 bits doubles). Note that some of these require a heavy
-pre-processing phase.
-
-### Environment Variables
-
-Set the environment variable `ALP_DATASET_DIR_PATH` with the path to the directory in which the complete binary datasets
-are located; either on your env or manually on the [column.hpp](/data/include/column.hpp) file.
-
-### Setup Data
-
-Inside `data/include/double_columns.hpp` you can find an array containing information regarding the datasets used to
-benchmark ALP. Datasets information includes a path to a sample of one vector (1024 values) in CSV format (inside
-`/data/samples/`) and a path to the entire file in binary format.
-
-The binary file is used to benchmark ALP compression ratios, while the CSV sample is used to benchmark ALP speed. To
-ensure the correctness of the speed tests we also keep extra variables from each dataset, which include the number of
-exceptions and the bitwidth resulting after compression (unless the algorithm changes, these should remain consistent),
-and the factor/exponent indexes used to encode/decode the doubles into integers.
-
-To set up the data you want to run the test on, add or remove entries in the array found
-in [double_columns.hpp](/data/include/double_columns.hpp) and `make` again. The data needed for each entry is detailed
-in [column.hpp](/data/include/column.hpp). To replicate the compression ratio tests you only need to set the dataset id,
-name, and binary_file_path.
+- [Compression Ratios Experiment](#compression-ratios-experiment)
+  - [ALP](#alp)
+  - [Chimp, Chimp128, Gorillas, Patas, Zstd Compression Ratios](#chimp-chimp128-gorillas-patas-zstd-compression-ratios)
+- [Speed Tests](#speed-tests)
+  - [ALP Encoding Speed Test](#alp-encoding-speed-test)
+  - [ALP Decoding Speed Test](#alp-decoding-speed-test)
+  - [ALP RD Encoding Speed Test](#alp-rd-encoding-speed-test)
+  - [ALP RD Decoding Speed Test](#alp-rd-decoding-speed-test)
+  - [Chimp, Chimp128, Gorillas, Patas, Zstd Speed Test](#chimp-chimp128-gorillas-patas-zstd-speed-test)
+  - [PseudoDecimals Speed Test](#pseudodecimals-speed-test)
+  - [ELF Speed Test](#elf-speed-test)
+- [FCBench](#fcbench)
 
 ## Compression Ratios Experiment
 
 ### ALP
 
-After building and setting up the data, and the `ALP_DATASET_DIR_PATH` env variable, run the following:
 
 ```sh
-./publication/source_code/bench_compression_ratio/bench_alp_compression_ratio
+./publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio
 ```
 
-This will execute the tests found in
-the [/publication/source_code/bench_compression_ratio/alp.cpp](/publication/source_code/bench_compression_ratio/alp.cpp)
-file, which will compress
-an entire binary file and write the resulting (estimated) compression ratio results (in bits/value) from the datasets
-in [double_columns.hpp](/data/include/double_columns.hpp), on the `publication` directory. One CSV file will be created
-for the datasets which use the `ALP` scheme and another one for the ones which use the `ALP_RD` scheme. Note that this
+This target will compress an entire binary file and write the
+resulting (estimated) compression ratio results (in bits/value)
+from the datasets in `double_columns.hpp` to the [publication directory](publication/results).
+One CSV file will be created for the datasets which use the ALP scheme
+and another one for those which use the ALP_RD scheme. Note that this
 is a dry compression (compressed data is not stored).
 
 ### Chimp, Chimp128, Gorillas, Patas, Zstd Compression Ratios
 
-After building and setting up the data, and the `ALP_DATASET_DIR_PATH` env variable, run the following:
+The following target
 `./publication/source_code/bench_compression_ratio/bench_{algorithm}_compression_ratio`, in which `algorithm` can be:
-`chimp|chimp128|gorillas|patas|zstd`. One CSV file will be created for each encoding and for each dataset on the
+`chimp|chimp128|gorillas|patas|zstd` will create a csv file for each encoding and for each dataset on the
 `publication` directory. Note that this is a dry compression (compressed data is not stored). For PDE and ELF, we used
 their own code for compression ratios.
 
@@ -174,3 +149,31 @@ We benchmarked PseudoDecimals within BtrBlocks. Results are located on `publicat
 ### ELF Speed Test
 
 We benchmarked Elf using their Java implementation.
+
+
+
+## How to benchmark with your own data
+
+## Build
+
+```shell
+cmake [OPTIONS] .
+make
+```
+
+### Setup Data
+
+Inside `data/include/double_columns.hpp` you can find an array containing information regarding the datasets used to
+benchmark ALP. Datasets information includes a path to a sample of one vector (1024 values) in CSV format (inside
+`/data/samples/`) and a path to the entire file in binary format.
+
+The binary file is used to benchmark ALP compression ratios, while the CSV sample is used to benchmark ALP speed. To
+ensure the correctness of the speed tests we also keep extra variables from each dataset, which include the number of
+exceptions and the bitwidth resulting after compression (unless the algorithm changes, these should remain consistent),
+and the factor/exponent indexes used to encode/decode the doubles into integers.
+
+To set up the data you want to run the test on, add or remove entries in the array found
+in [double_columns.hpp](/data/include/double_columns.hpp) and `make` again. The data needed for each entry is detailed
+in [column.hpp](/data/include/column.hpp). To replicate the compression ratio tests you only need to set the dataset id,
+name, and binary_file_path.
+
