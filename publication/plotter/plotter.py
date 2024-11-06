@@ -1,4 +1,6 @@
 from plot_maker import PlotMaker
+import warnings
+warnings.filterwarnings("ignore", message="findfont: Font family 'Droid Serif' not found")
         
 if __name__ == "__main__":
     pm = PlotMaker()
