@@ -1597,7 +1597,8 @@ static double GetCPUCyclesPerSecond(CPUInfo::Scaling scaling) {
 	// below.
 	if (bogo_clock >= 0.0) { return bogo_clock; }
 
-#elif defined BENCHMARK_HAS_SYSCTL
+
+#elif defined BENCHMARK_HAS_SYSCTL && !defined BENCHMARK_OS_MACOSX // disable SYSCTL on macos as well for now. todo enable this on mac os
 	constexpr auto* FreqStr =
 #if defined(BENCHMARK_OS_FREEBSD) || defined(BENCHMARK_OS_NETBSD)
 	    "machdep.tsc_freq";
