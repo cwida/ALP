@@ -12,7 +12,7 @@ green_echo "Setting up workspace variables..."
 WORKSPACE=$(pwd) # Assuming this is the workspace directory
 REPO_URL="https://github.com/cwida/ALP.git"
 TARGET_DIR="$WORKSPACE/ALP" # Define target directory for the clone
-BRANCH="repro"    # Branch to clone
+BRANCH="repro"              # Branch to clone
 
 green_echo "Cloning or updating repository..."
 # Clone the repository if it doesn't already exist
@@ -42,10 +42,15 @@ else
   green_echo "ALP_DATASET_DIR_PATH is set to $ALP_DATASET_DIR_PATH"
 fi
 
-green_echo "Determining toolchain file based on system architecture..."
-# Determine toolchain file based on system architecture
+green_echo "Determining system architecture and platform..."
+# Determine system architecture and platform
 ARCH=$(uname -m)
-if [ "$ARCH" == "arm64" ]; then
+PLATFORM=$(uname -s)
+
+if [ "$ARCH" == "arm64" ] && [ "$PLATFORM" == "Darwin" ]; then
+  TOOLCHAIN_FILE="$TARGET_DIR/toolchain/m1.cmake"
+  green_echo "Using M1 toolchain file..."
+elif [ "$ARCH" == "arm64" ]; then
   TOOLCHAIN_FILE="$TARGET_DIR/toolchain/arm64.cmake"
   green_echo "Using ARM64 toolchain file..."
 else
