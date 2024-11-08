@@ -10,6 +10,7 @@ option(ALP_BUILD_TESTING "Build Testing" OFF)
 option(ALP_BUILD_BENCHMARKING "Build Benchmarking" OFF)
 option(ALP_ENABLE_CLANG_TIDY "Enable clang_tidy on all targets" ON)
 option(ALP_BUILD_PUBLICATION "Build Availability and Reproducibility" OFF)
+option(ALP_ENABLE_VERBOSE_OUTPUT "Enable verbose output" OFF)
 
 #-----------------------------------------------------------------------------------------------------------------------
 include(FetchContent)
@@ -18,6 +19,28 @@ include(CMakePrintHelpers)
 # https://stackoverflow.com/questions/56089330/cmake-creates-lots-of-targets-i-didnt-specify
 set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
 include(CTest)
+
+# Verbose : ------------------------------------------------------------------------------------------------------------
+if (ALP_ENABLE_VERBOSE_OUTPUT)
+    message("---------------------------------------------------------------------------------------------------------")
+    message("-- ALP: Verbose Enabled:")
+
+    cmake_print_variables(
+            CMAKE_SYSTEM_PROCESSOR
+            CMAKE_SYSTEM_NAME
+            CMAKE_VERSION
+            CMAKE_BUILD_TYPE
+            CMAKE_CXX_COMPILER
+            CMAKE_CXX_COMPILER_VERSION
+            CMAKE_CXX_STANDARD
+            CMAKE_SYSTEM
+            CMAKE_HOST_SYSTEM_NAME
+            CMAKE_HOST_SYSTEM_PROCESSOR
+            CMAKE_GENERATOR
+            CMAKE_BINARY_DIR
+            CMAKE_SOURCE_DIR
+    )
+endif ()
 
 # Requirements : -------------------------------------------------------------------------------------------------------
 if (NOT "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
@@ -64,7 +87,7 @@ if (ALP_BUILD_TESTING OR ALP_BUILD_PUBLICATION OR ALP_BUILD_BENCHMARKING)
     FetchContent_Declare(googletest
             GIT_REPOSITORY https://github.com/google/googletest.git
             GIT_TAG e2239ee6043f73722e7aa812a459f54a28552929 # release-1.11.0
-    )
+            )
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
@@ -95,7 +118,6 @@ if (ALP_BUILD_BENCHMARKING)
     include_directories(${CMAKE_SOURCE_DIR}/benchmarks/include)
     add_subdirectory(benchmarks)
 endif ()
-
 
 # Paper : --------------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_PUBLICATION)
