@@ -15,6 +15,8 @@ option(ALP_BUILD_PUBLICATION "Build Availability and Reproducibility" OFF)
 include(FetchContent)
 include(CheckCXXCompilerFlag)
 include(CMakePrintHelpers)
+# https://stackoverflow.com/questions/56089330/cmake-creates-lots-of-targets-i-didnt-specify
+set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
 include(CTest)
 
 # Requirements : -------------------------------------------------------------------------------------------------------
