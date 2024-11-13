@@ -3,4 +3,5 @@ if (NOT DEFINED ENV{ALP_DATASET_DIR_PATH})
 else ()
     add_subdirectory(source_code)
 endif ()
+add_subdirectory(source_code)
 

@@ -23,7 +23,7 @@ inline int32_t answers[] = {1 * 256 * 1024 * 1024 * 2, //
                             3 * 256 * 1024 * 1024 * 2,
                             -1609039872};
 
-inline size_t threads_pool[] = {32, 16, 8, 1};
+inline size_t threads_pool[] = {1, 8, 16};
 
 //
 enum query_t : uint8_t {
@@ -57,7 +57,7 @@ inline alp_query sum         = {SUM};
 inline alp_query sum_simd    = {SUM_SIMD};
 inline alp_query compression = {COMPRESSION};
 
-inline std::vector<alp_query> query_vec = {scan, sum, compression};
+inline std::vector<alp_query> query_vec = {scan, sum};
 
 enum input_t : uint8_t {
 	BINARY = 0,
@@ -119,7 +119,6 @@ struct query_mtd {
 		result_str += std::to_string(compression_cycles) + ",";
 		result_str += std::to_string(cycles) + ",";
 
-		result_str += "\n";
 		return result_str;
 	}
 
