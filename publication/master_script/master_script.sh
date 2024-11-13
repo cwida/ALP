@@ -11,26 +11,26 @@ green_echo() {
 green_echo "Setting up workspace variables..."
 WORKSPACE=$(pwd) # Assuming this is the workspace directory
 REPO_URL="https://github.com/cwida/ALP.git"
-TARGET_DIR="$WORKSPACE/ALP" # Define target directory for the clone
+CLONED_DIR="$WORKSPACE/CLONED_ALP" # Define target directory for the clone
 BRANCH="repro"              # Branch to clone
 
 green_echo "Cloning or updating repository..."
 # Clone the repository if it doesn't already exist
-if [ -d "$TARGET_DIR" ]; then
+if [ -d "$CLONED_DIR" ]; then
   green_echo "Repository already exists, pulling the latest changes from branch $BRANCH..."
-  cd "$TARGET_DIR" && git pull origin "$BRANCH"
+  cd "$CLONED_DIR" && git pull origin "$BRANCH"
 else
   green_echo "Cloning the repository and checking out branch $BRANCH..."
-  git clone --branch "$BRANCH" "$REPO_URL" "$TARGET_DIR"
+  git clone --branch "$BRANCH" "$REPO_URL" "$CLONED_DIR"
 fi
 
 # Move to the cloned repository
 green_echo "Navigating to target directory..."
-cd "$TARGET_DIR"
+cd "$CLONED_DIR"
 
 # Create build directory
 green_echo "Creating build directory..."
-mkdir -p "$TARGET_DIR/build"
+mkdir -p "$CLONED_DIR/build"
 
 green_echo "Checking if ALP_DATASET_DIR_PATH is set..."
 # Check if ALP_DATASET_DIR_PATH is set
@@ -48,72 +48,73 @@ ARCH=$(uname -m)
 PLATFORM=$(uname -s)
 
 if [ "$ARCH" == "arm64" ] && [ "$PLATFORM" == "Darwin" ]; then
-  TOOLCHAIN_FILE="$TARGET_DIR/toolchain/m1.cmake"
+  TOOLCHAIN_FILE="$CLONED_DIR/toolchain/m1.cmake"
   green_echo "Using M1 toolchain file..."
 elif [ "$ARCH" == "arm64" ]; then
-  TOOLCHAIN_FILE="$TARGET_DIR/toolchain/arm64.cmake"
+  TOOLCHAIN_FILE="$CLONED_DIR/toolchain/arm64.cmake"
   green_echo "Using ARM64 toolchain file..."
 else
-  TOOLCHAIN_FILE="$TARGET_DIR/toolchain/x86.cmake"
+  TOOLCHAIN_FILE="$CLONED_DIR/toolchain/x86.cmake"
   green_echo "Using x86 toolchain file..."
 fi
 
 green_echo "Configuring CMake..."
 # Configure CMake with the selected toolchain file
-cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$TARGET_DIR" -B "$TARGET_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$CLONED_DIR" -B "$CLONED_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
 
 green_echo "Building the project..."
 # Build the project
-cmake --build "$TARGET_DIR/build" -j 16
+cmake --build "$CLONED_DIR/build" -j 16
+
+# End to end
+{
+  # Ensure the results directory exists
+  RESULT_DIR="../../end_to_end_result"
+  mkdir -p "$RESULT_DIR"
+
+  # Define the output file
+  OUTPUT_FILE="$RESULT_DIR/result.csv"
+
+  # Run the main script and save output to the results file
+  green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
+  export CLONED_DIR="$CLONED_DIR"
+  bash "$CLONED_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
+
+  green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
+}
 
 green_echo "Running compression benchmarks..."
 # Run compression benchmarks
-"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
-"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
-"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
-"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
-"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
-"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
-"$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
 
 green_echo "Running benchmarks based on system architecture..."
 # Run benchmarks based on system architecture
 if [ "$ARCH" == "arm64" ]; then
   green_echo "Running ARM64 benchmarks..."
-  "$TARGET_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
+  "$CLONED_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
 
 else
   green_echo "Running x86 benchmarks..."
-  "$TARGET_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
-  "$TARGET_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
+  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
 
   green_echo "Running speed benchmarks ..."
   {
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
-    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
-  }
-
-  # end to end
-  {
-    # Ensure the results directory exists
-    RESULT_DIR="../../end_to_end_result"
-    mkdir -p "$RESULT_DIR"
-
-    # Define the output file
-    OUTPUT_FILE="$RESULT_DIR/result.csv"
-
-    # Run the main script and save output to the results file
-    green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
-    bash "$TARGET_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
-
-    green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
   }
 
   green_echo "Cloning the new repository..."
@@ -160,11 +161,11 @@ green_echo "Setting up Python and installing dependencies..."
 # Set up Python and install dependencies
 {
   python -m pip install --upgrade pip
-  pip install -r "$TARGET_DIR/publication/plotter/requirements.txt"
+  pip install -r "$CLONED_DIR/publication/plotter/requirements.txt"
 }
 
 green_echo "Running the plotter script..."
 # Run the plotter script
-python3 "$TARGET_DIR/publication/plotter/plotter.py"
+python3 "$CLONED_DIR/publication/plotter/plotter.py"
 
 green_echo "Script execution complete. All logs saved to master_script.log."
