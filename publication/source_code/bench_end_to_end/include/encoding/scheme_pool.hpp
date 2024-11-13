@@ -7,11 +7,11 @@
 namespace encoding {
 
 inline std::vector<scheme> scheme_vec {
+    alp_scheme,
     patas_scheme,
     chimp128_scheme,
     chimp_scheme, /**/
     gorilla_scheme,
-    alp_scheme,
     zstd_scheme,
     uncompressed_scheme,
     pde_scheme,
