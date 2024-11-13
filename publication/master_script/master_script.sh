@@ -66,8 +66,8 @@ green_echo "Building the project..."
 # Build the project
 cmake --build "$TARGET_DIR/build" -j 16
 
-green_echo "Running general benchmarks..."
-# Run general benchmarks
+green_echo "Running compression benchmarks..."
+# Run compression benchmarks
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
@@ -75,15 +75,6 @@ green_echo "Running general benchmarks..."
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
 "$TARGET_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
-"$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
 
 green_echo "Running benchmarks based on system architecture..."
 # Run benchmarks based on system architecture
@@ -96,9 +87,34 @@ else
   "$TARGET_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
   "$TARGET_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
 
-  green_echo "Running end-to-end benchmarks..."
+  green_echo "Running speed benchmarks ..."
+  {
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
+    "$TARGET_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
+  }
+
   # end to end
-  "$TARGET_DIR/build/publication/source_code/bench_end_to_end/run_alp"
+  {
+    # Ensure the results directory exists
+    RESULT_DIR="../../end_to_end_result"
+    mkdir -p "$RESULT_DIR"
+
+    # Define the output file
+    OUTPUT_FILE="$RESULT_DIR/result.csv"
+
+    # Run the main script and save output to the results file
+    green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
+    bash "$TARGET_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
+
+    green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
+  }
 
   green_echo "Cloning the new repository..."
   # Clone the new repository

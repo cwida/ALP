@@ -26,15 +26,16 @@ inline int32_t answers[] = {1 * 256 * 1024 * 1024 * 2, //
 inline size_t threads_pool[] = {1, 8, 16};
 
 //
-enum query_t : uint8_t {
-	DEBUG       = 0, // ONLY FOR DEBUG
-	SCAN        = 1,
-	SUM         = 2,
-	SUM_SIMD    = 3,
-	COMPRESSION = 4,
+enum QueryT : uint8_t {
+	INVALID     = 0,
+	DEBUG       = 1, // ONLY FOR DEBUG
+	SCAN        = 2,
+	SUM         = 3,
+	SUM_SIMD    = 4,
+	COMPRESSION = 5,
 };
 
-inline std::string to_string(query_t q_t) {
+inline std::string to_string(QueryT q_t) {
 	switch (q_t) {
 	case DEBUG:
 		return "DEBUG";
@@ -46,18 +47,18 @@ inline std::string to_string(query_t q_t) {
 		return "SUM_SIMD";
 	case COMPRESSION:
 		return "COMPRESSION";
+	case INVALID:
+		return "INVALID";
 	}
 }
 struct alp_query {
-	query_t q_t;
+	QueryT q_t;
 };
 
 inline alp_query scan        = {SCAN};
 inline alp_query sum         = {SUM};
 inline alp_query sum_simd    = {SUM_SIMD};
 inline alp_query compression = {COMPRESSION};
-
-inline std::vector<alp_query> query_vec = {scan, sum};
 
 enum input_t : uint8_t {
 	BINARY = 0,
