@@ -12,7 +12,7 @@ green_echo "Setting up workspace variables..."
 WORKSPACE=$(pwd) # Assuming this is the workspace directory
 REPO_URL="https://github.com/cwida/ALP.git"
 CLONED_DIR="$WORKSPACE/CLONED_ALP" # Define target directory for the clone
-BRANCH="repro"              # Branch to clone
+BRANCH="repro"                     # Branch to clone
 
 green_echo "Cloning or updating repository..."
 # Clone the repository if it doesn't already exist
@@ -60,28 +60,11 @@ fi
 
 green_echo "Configuring CMake..."
 # Configure CMake with the selected toolchain file
-cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$CLONED_DIR" -B "$CLONED_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$CLONED_DIR/publication" -B "$CLONED_DIR/build/publication" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
 
 green_echo "Building the project..."
 # Build the project
 cmake --build "$CLONED_DIR/build" -j 16
-
-# End to end
-{
-  # Ensure the results directory exists
-  RESULT_DIR="../../end_to_end_result"
-  mkdir -p "$RESULT_DIR"
-
-  # Define the output file
-  OUTPUT_FILE="$RESULT_DIR/result.csv"
-
-  # Run the main script and save output to the results file
-  green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
-  export CLONED_DIR="$CLONED_DIR"
-  bash "$CLONED_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
-
-  green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
-}
 
 green_echo "Running compression benchmarks..."
 # Run compression benchmarks
@@ -103,6 +86,23 @@ else
   green_echo "Running x86 benchmarks..."
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+
+  # End to end
+  {
+    # Ensure the results directory exists
+    RESULT_DIR="../../end_to_end_result"
+    mkdir -p "$RESULT_DIR"
+
+    # Define the output file
+    OUTPUT_FILE="$RESULT_DIR/result.csv"
+
+    # Run the main script and save output to the results file
+    green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
+    export CLONED_DIR="$CLONED_DIR"
+    bash "$CLONED_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
+
+    green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
+  }
 
   green_echo "Running speed benchmarks ..."
   {
