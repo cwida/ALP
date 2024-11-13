@@ -288,21 +288,43 @@ endif ()
 #[[=====================================================================================================================
 FLS: [CHG] ]]
 
-add_executable(run_alp
+add_executable(run_all
         ${HYPER_TRANSLATORS}
-        src/benchmarks/alp/run.cpp
+        src/benchmarks/alp/run_all.cpp
         src/benchmarks/alp/queries/config.cpp
         src/benchmarks/alp/queries/q1.cpp)
 
-target_compile_options(run_alp PUBLIC -fno-builtin)
+target_compile_options(run_all PUBLIC -fno-builtin)
 
-target_include_directories(run_alp PUBLIC
+target_include_directories(run_all PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
         $<INSTALL_INTERFACE:data/include>
         PRIVATE src)
 
 
-target_link_libraries(run_alp PUBLIC gtest_main gflags btrblocks tpch hyper vectorwise common ${JEVENTSLIB} x86_64_avx512bw_intrinsic_1024_uf1_falp ALP libzstd)
+target_link_libraries(run_all PUBLIC gtest_main gflags btrblocks tpch hyper vectorwise common ${JEVENTSLIB} x86_64_avx512bw_intrinsic_1024_uf1_falp ALP libzstd)
+target_compile_options(run_all PUBLIC -mavx512dq)
 
-target_compile_options(run_alp PUBLIC -mavx512dq)
+
+#[[=====================================================================================================================
+FLS: [CHG] ]]
+
+add_executable(run_query
+        ${HYPER_TRANSLATORS}
+        src/benchmarks/alp/run_query.cpp
+        src/benchmarks/alp/queries/config.cpp
+        src/benchmarks/alp/queries/q1.cpp)
+
+target_compile_options(run_query PUBLIC -fno-builtin)
+
+target_include_directories(run_query PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+        $<INSTALL_INTERFACE:data/include>
+        PRIVATE src)
+
+
+target_link_libraries(run_query PUBLIC gtest_main gflags btrblocks tpch hyper vectorwise common ${JEVENTSLIB} x86_64_avx512bw_intrinsic_1024_uf1_falp ALP libzstd)
+
+target_compile_options(run_query PUBLIC -mavx512dq)
