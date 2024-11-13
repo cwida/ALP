@@ -11,8 +11,8 @@ green_echo() {
 green_echo "Setting up workspace variables..."
 WORKSPACE=$(pwd) # Assuming this is the workspace directory
 REPO_URL="https://github.com/cwida/ALP.git"
-CLONED_DIR="$WORKSPACE/CLONED_ALP" # Define target directory for the clone
-BRANCH="repro"                     # Branch to clone
+CLONED_DIR="$WORKSPACE/ALP" # Define target directory for the clone
+BRANCH="repro"                 # Branch to clone
 
 green_echo "Cloning or updating repository..."
 # Clone the repository if it doesn't already exist
