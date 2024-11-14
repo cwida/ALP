@@ -39,6 +39,7 @@ if (ALP_ENABLE_VERBOSE_OUTPUT)
             CMAKE_GENERATOR
             CMAKE_BINARY_DIR
             CMAKE_SOURCE_DIR
+            CMAKE_LINKER
     )
 endif ()
 

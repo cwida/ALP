@@ -70,7 +70,7 @@ fi
 
 green_echo "Configuring CMake..."
 # Configure CMake with the selected toolchain file
-cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$CLONED_DIR" -B "$CLONED_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+cmake -DALP_BUILD_PUBLICATION=ON -DALP_ENABLE_VERBOSE_OUTPUT=ON -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$CLONED_DIR" -B "$CLONED_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
 if [ $? -ne 0 ]; then
   red_echo "CMake configuration failed."
   exit 1
