@@ -255,15 +255,15 @@ int main() {
 					Database ALP_DB;
 					runtime::cur_q_mtd.compression_cycles = import_alp(col, ALP_DB, scheme);
 					//					if (tmp_time != 0) { runtime::cur_q_mtd.compression_cycles = import_alp(col,
-					//ALP_DB, scheme); }
+					// ALP_DB, scheme); }
 
 					//					 Verify
 					//					if (clear_cache) { clearOsCaches(); }
 					//					auto res_rel = alp_q(ALP_DB, thread_c, vector_c);
 					//					escape(&res_rel);
 					//					auto result                 =
-					//*reinterpret_cast<double*>(res_rel.attributes.at("aggr").data()); 					runtime::cur_q_mtd.validity =
-					//result;
+					//*reinterpret_cast<double*>(res_rel.attributes.at("aggr").data());
+					//runtime::cur_q_mtd.validity = result;
 
 					// Benchmark
 					runtime::cur_q_mtd.cycles = alp_profile(
