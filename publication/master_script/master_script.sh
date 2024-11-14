@@ -71,15 +71,15 @@ green_echo "Building the project..."
 # Build the project
 cmake --build "$CLONED_DIR/build" -j 16
 
-green_echo "Running compression benchmarks..."
+#green_echo "Running compression benchmarks..."
 # Run compression benchmarks
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
 
 # Run the Python script after the compression ratio benchmarks
 green_echo "Generating compression ratio table 4 ..."
@@ -94,9 +94,9 @@ if [ "$ARCH" == "arm64" ]; then
   "$CLONED_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
 
 else
-  green_echo "Running x86 benchmarks..."
-  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
-  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+#  green_echo "Running x86 benchmarks..."
+#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
+#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
 
   # End to end
   {
@@ -115,18 +115,18 @@ else
     green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
   }
 
-  green_echo "Running speed benchmarks ..."
-  {
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
-    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
-  }
+#  green_echo "Running speed benchmarks ..."
+#  {
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
+#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
+#  }
 
   green_echo "Cloning the new repository..."
   # Clone the new repository
