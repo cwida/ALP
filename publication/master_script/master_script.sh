@@ -10,7 +10,7 @@ green_echo() {
 
 brown_echo() {
   # Print to console only in brown (dark yellow)
-  echo -e "\033[33m-- $1\033[0m" >/dev/tty
+  echo -e "\033[33m $1\033[0m" >/dev/tty
 }
 
 green_echo "Setting up workspace variables..."
@@ -82,10 +82,10 @@ green_echo "Running compression benchmarks..."
 "$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
 
 # Run the Python script after the compression ratio benchmarks
-green_echo "Generating compression ratio table..."
+green_echo "Generating compression ratio table 4 ..."
 output=$(python3 "$CLONED_DIR/publication/master_script/draw_table_4.py")
 brown_echo "$output"
-green_echo "Markdown table also saved as 'compression_ratios_table.md."
+green_echo "tabl 4 also saved as compression_ratios_table.md."
 
 green_echo "Running benchmarks based on system architecture..."
 # Run benchmarks based on system architecture
