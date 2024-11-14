@@ -100,12 +100,8 @@ else
 
   # End to end
   {
-    # Ensure the results directory exists
-    RESULT_DIR="../../end_to_end_result"
-    mkdir -p "$RESULT_DIR"
-
     # Define the output file
-    OUTPUT_FILE="$RESULT_DIR/result.csv"
+    OUTPUT_FILE="end_to_end_result.csv"
 
     # Run the main script and save output to the results file
     green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
