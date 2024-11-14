@@ -8,11 +8,16 @@ green_echo() {
   echo -e "\033[32m-- $1\033[0m" >/dev/tty
 }
 
+brown_echo() {
+  # Print to console only in brown (dark yellow)
+  echo -e "\033[33m-- $1\033[0m" >/dev/tty
+}
+
 green_echo "Setting up workspace variables..."
 WORKSPACE=$(pwd) # Assuming this is the workspace directory
 REPO_URL="https://github.com/cwida/ALP.git"
 CLONED_DIR="$WORKSPACE/ALP" # Define target directory for the clone
-BRANCH="repro"                 # Branch to clone
+BRANCH="repro"              # Branch to clone
 
 green_echo "Cloning or updating repository..."
 # Clone the repository if it doesn't already exist
@@ -75,6 +80,12 @@ green_echo "Running compression benchmarks..."
 "$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
 "$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
 "$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
+
+# Run the Python script after the compression ratio benchmarks
+green_echo "Generating compression ratio table..."
+output=$(python3 "$CLONED_DIR/publication/master_script/draw_table_4.py")
+brown_echo "$output"
+green_echo "Markdown table also saved as 'compression_ratios_table.md."
 
 green_echo "Running benchmarks based on system architecture..."
 # Run benchmarks based on system architecture
