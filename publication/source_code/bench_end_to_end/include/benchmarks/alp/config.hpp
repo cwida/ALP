@@ -60,6 +60,9 @@ inline alp_query sum         = {SUM};
 inline alp_query sum_simd    = {SUM_SIMD};
 inline alp_query compression = {COMPRESSION};
 
+inline std::vector<alp_query> query_vec {scan, sum};
+
+
 enum input_t : uint8_t {
 	BINARY = 0,
 	CSV    = 1,
