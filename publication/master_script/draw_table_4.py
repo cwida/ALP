@@ -3,7 +3,7 @@ import glob
 
 def generate_markdown_table():
     # Define the path pattern for the CSV files in the parent directory
-    file_pattern = "../*_compression_ratio.csv"
+    file_pattern = "../../*_compression_ratio.csv"
     csv_files = glob.glob(file_pattern)
 
     # Define a dictionary to rename files to match the specified column names
