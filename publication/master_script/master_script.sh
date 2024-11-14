@@ -137,10 +137,11 @@ else
   #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
   #  }
 
-  green_echo "Cloning the new repository..."
+  green_echo "Cloning the BENCH_PED ..."
   # Clone the new repository
   NEW_REPO_URL="https://github.com/azimafroozeh/bench_ped.git" # New repository URL
   NEW_TARGET_DIR="$WORKSPACE/BENCH_PED"                        # Define new target directory for the clone
+  BRANCH="main"
 
   if [ -d "$NEW_TARGET_DIR" ]; then
     green_echo "New repository already exists, pulling the latest changes from branch $BRANCH..."
