@@ -78,8 +78,8 @@ fi
 
 green_echo "Building the project..."
 # Build the project
-cmake --build "$CLONED_DIR/build" -j 16
-if [ $? -ne 0 ]; then
+cmake --build "$CLONED_DIR/build" -j 6
+if [ $? -ne 0 ]; the
   red_echo "CMake build failed."
   exit 1
 fi
