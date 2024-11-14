@@ -13,6 +13,11 @@ brown_echo() {
   echo -e "\033[33m $1\033[0m" >/dev/tty
 }
 
+red_echo() {
+  # Print to console only in red
+  echo -e "\033[31mError: $1\033[0m" >/dev/tty
+}
+
 green_echo "Setting up workspace variables..."
 WORKSPACE=$(pwd) # Assuming this is the workspace directory
 REPO_URL="https://github.com/cwida/ALP.git"
@@ -40,8 +45,8 @@ mkdir -p "$CLONED_DIR/build"
 green_echo "Checking if ALP_DATASET_DIR_PATH is set..."
 # Check if ALP_DATASET_DIR_PATH is set
 if [ -z "$ALP_DATASET_DIR_PATH" ]; then
-  echo -e "\033[33mPlease download the dataset from: https://drive.google.com/drive/folders/167faTwZJjqJMKM9Yc6E7KF5LUbsitxJS?usp=sharing\033[0m" >&2
-  echo -e "\033[33mWarning: ALP_DATASET_DIR_PATH is not set!\033[0m" >&2
+  red_echo "Please download the dataset from: https://drive.google.com/drive/folders/167faTwZJjqJMKM9Yc6E7KF5LUbsitxJS?usp=sharing"
+  red_echo "Warning: ALP_DATASET_DIR_PATH is not set!"
   exit 1
 else
   green_echo "ALP_DATASET_DIR_PATH is set to $ALP_DATASET_DIR_PATH"
@@ -66,10 +71,18 @@ fi
 green_echo "Configuring CMake..."
 # Configure CMake with the selected toolchain file
 cmake -DALP_BUILD_PUBLICATION=ON -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$CLONED_DIR" -B "$CLONED_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+if [ $? -ne 0 ]; then
+  red_echo "CMake configuration failed."
+  exit 1
+fi
 
 green_echo "Building the project..."
 # Build the project
 cmake --build "$CLONED_DIR/build" -j 16
+if [ $? -ne 0 ]; then
+  red_echo "CMake build failed."
+  exit 1
+fi
 
 #green_echo "Running compression benchmarks..."
 # Run compression benchmarks
@@ -85,7 +98,7 @@ cmake --build "$CLONED_DIR/build" -j 16
 green_echo "Generating compression ratio table 4 ..."
 output=$(python3 "$CLONED_DIR/publication/master_script/draw_table_4.py")
 brown_echo "$output"
-green_echo "tabl 4 also saved as compression_ratios_table.md."
+green_echo "Table 4 also saved as compression_ratios_table.md."
 
 green_echo "Running benchmarks based on system architecture..."
 # Run benchmarks based on system architecture
@@ -94,9 +107,9 @@ if [ "$ARCH" == "arm64" ]; then
   "$CLONED_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
 
 else
-#  green_echo "Running x86 benchmarks..."
-#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
-#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+  #  green_echo "Running x86 benchmarks..."
+  #  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
+  #  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
 
   # End to end
   {
@@ -111,18 +124,18 @@ else
     green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
   }
 
-#  green_echo "Running speed benchmarks ..."
-#  {
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
-#    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
-#  }
+  #  green_echo "Running speed benchmarks ..."
+  #  {
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
+  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
+  #  }
 
   green_echo "Cloning the new repository..."
   # Clone the new repository
@@ -148,15 +161,32 @@ else
   green_echo "Configuring CMake for the new repository..."
   # Configure CMake for the new repository
   cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$NEW_TARGET_DIR" -B "$NEW_TARGET_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+  if [ $? -ne 0 ]; then
+    red_echo "CMake configuration for the new repository failed."
+    exit 1
+  fi
 
   green_echo "Building the project for the new repository..."
   # Build the project for the new repository
   cmake --build "$NEW_TARGET_DIR/build" -j 16
+  if [ $? -ne 0 ]; then
+    red_echo "CMake build for the new repository failed."
+    exit 1
+  fi
 
   green_echo "Running specific targets for the new repository..."
   # Run specific targets
   cmake --build "$NEW_TARGET_DIR/build" --target bench_ped -j 16
+  if [ $? -ne 0 ]; then
+    red_echo "Target bench_ped failed."
+    exit 1
+  fi
+
   cmake --build "$NEW_TARGET_DIR/build" --target test_ped -j 16
+  if [ $? -ne 0 ]; then
+    red_echo "Target test_ped failed."
+    exit 1
+  fi
 
   green_echo "Executing the new targets..."
   # Execute the new targets
