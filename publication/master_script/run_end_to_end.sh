@@ -1,6 +1,4 @@
 #!/bin/bash
-# Use $CLONED_DIR in your script
-echo "CLONED_DIR is $CLONED_DIR"
 
 $CLONED_DIR/build/publication/source_code/bench_end_to_end/run_query 1 scan alp
 #$CLONED_DIR/build/publication/source_code/bench_end_to_end/run_query 1 sum alp

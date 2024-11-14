@@ -166,15 +166,6 @@ else
     red_echo "CMake configuration for the new repository failed."
     exit 1
   fi
-
-  green_echo "Building the project for the new repository..."
-  # Build the project for the new repository
-  cmake --build "$NEW_TARGET_DIR/build" -j 16
-  if [ $? -ne 0 ]; then
-    red_echo "CMake build for the new repository failed."
-    exit 1
-  fi
-
   green_echo "Running specific targets for the new repository..."
   # Run specific targets
   cmake --build "$NEW_TARGET_DIR/build" --target bench_ped -j 16
