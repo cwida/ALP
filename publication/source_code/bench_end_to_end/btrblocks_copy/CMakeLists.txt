@@ -64,7 +64,9 @@ set(CMAKE_VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 include("${CMAKE_VENDOR_DIR}/fastpfor.cmake")
 include("${CMAKE_VENDOR_DIR}/fsst.cmake")
 #include("${CMAKE_VENDOR_DIR}/croaring.cmake")
-include("${CMAKE_VENDOR_DIR}/dynamic_bitset.cmake")
+#include("${CMAKE_VENDOR_DIR}/dynamic_bitset.cmake")
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 
 # TODO(open-sourcing) dependencies I'd like to remove from the core library
 #include("${CMAKE_VENDOR_DIR}/tbb.cmake")
