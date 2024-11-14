@@ -84,17 +84,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-#green_echo "Running compression benchmarks..."
-# Run compression benchmarks
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
-
-# Run the Python script after the compression ratio benchmarks
 green_echo "Generating compression ratio table 4 ..."
 output=$(python3 "$CLONED_DIR/publication/master_script/draw_table_4.py")
 brown_echo "$output"
@@ -107,74 +96,52 @@ if [ "$ARCH" == "arm64" ]; then
   "$CLONED_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
 
 else
-  #  green_echo "Running x86 benchmarks..."
-  #  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx2_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
-  #  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
-
   # End to end
-  {
-    # Define the output file
-    OUTPUT_FILE="end_to_end_result.csv"
+  OUTPUT_FILE="end_to_end_result.csv"
+  green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
+  export CLONED_DIR="$CLONED_DIR"
+  bash "$CLONED_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
 
-    # Run the main script and save output to the results file
-    green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
-    export CLONED_DIR="$CLONED_DIR"
-    bash "$CLONED_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
-
-    green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
-  }
-
-  #  green_echo "Running speed benchmarks ..."
-  #  {
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
-  #    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
-  #  }
+  green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
 
   green_echo "Cloning the BENCH_PED ..."
   # Clone the new repository
   NEW_REPO_URL="https://github.com/azimafroozeh/bench_ped.git" # New repository URL
-  NEW_TARGET_DIR="$WORKSPACE/BENCH_PED"                        # Define new target directory for the clone
+  PED_DIR="$WORKSPACE/BENCH_PED"                               # Define new target directory for the clone
   BRANCH="main"
 
-  if [ -d "$NEW_TARGET_DIR" ]; then
+  if [ -d "$PED_DIR" ]; then
     green_echo "New repository already exists, pulling the latest changes from branch $BRANCH..."
-    cd "$NEW_TARGET_DIR" && git pull origin "$BRANCH"
+    cd "$PED_DIR" && git pull origin "$BRANCH"
   else
     green_echo "Cloning the new repository and checking out branch $BRANCH..."
-    git clone --branch "$BRANCH" "$NEW_REPO_URL" "$NEW_TARGET_DIR"
+    git clone --branch "$BRANCH" "$NEW_REPO_URL" "$PED_DIR"
   fi
 
   green_echo "Navigating to new target directory..."
-  # shellcheck disable=SC2164
-  cd "$NEW_TARGET_DIR"
+  cd "$PED_DIR"
 
   green_echo "Creating build directory for the new repository..."
   # Create build directory
-  mkdir -p "$NEW_TARGET_DIR/build"
+  mkdir -p "$PED_DIR/build"
 
   green_echo "Configuring CMake for the new repository..."
   # Configure CMake for the new repository
-  cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$NEW_TARGET_DIR" -B "$NEW_TARGET_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+  cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$PED_DIR" -B "$PED_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
   if [ $? -ne 0 ]; then
     red_echo "CMake configuration for the new repository failed."
     exit 1
   fi
+
   green_echo "Running specific targets for the new repository..."
   # Run specific targets
-  cmake --build "$NEW_TARGET_DIR/build" --target bench_ped -j 16
+  cmake --build "$PED_DIR/build" --target bench_ped -j 1
   if [ $? -ne 0 ]; then
     red_echo "Target bench_ped failed."
     exit 1
   fi
 
-  cmake --build "$NEW_TARGET_DIR/build" --target test_ped -j 16
+  cmake --build "$PED_DIR/build" --target test_ped -j 1
   if [ $? -ne 0 ]; then
     red_echo "Target test_ped failed."
     exit 1
@@ -182,8 +149,8 @@ else
 
   green_echo "Executing the new targets..."
   # Execute the new targets
-  "$NEW_TARGET_DIR/build/bench_ped"
-  "$NEW_TARGET_DIR/build/test_ped"
+  "$PED_DIR/build/bench_ped"
+  "$PED_DIR/build/test_ped"
 fi
 
 green_echo "Setting up Python and installing dependencies..."
