@@ -118,18 +118,18 @@ else
     git clone --branch "$BRANCH" "$NEW_REPO_URL" "$PED_DIR"
   fi
 
-  green_echo "Navigating to new target directory..."
+  green_echo "Navigating to PED directory..."
   cd "$PED_DIR"
 
-  green_echo "Creating build directory for the new repository..."
+  green_echo "Creating build directory for PED repository..."
   # Create build directory
   mkdir -p "$PED_DIR/build"
 
-  green_echo "Configuring CMake for the new repository..."
+  green_echo "Configuring CMake for PED repository..."
   # Configure CMake for the new repository
   cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$PED_DIR" -B "$PED_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
   if [ $? -ne 0 ]; then
-    red_echo "CMake configuration for the new repository failed."
+    red_echo "CMake configuration for PED repository failed."
     exit 1
   fi
 
