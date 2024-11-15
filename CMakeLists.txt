@@ -68,7 +68,7 @@ endif ()
 
 
 # CMAKE_SOURCE_DIR: ----------------------------------------------------------------------------------------------------
-add_compile_definitions(CMAKE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+add_compile_definitions(CMAKE_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Include --------------------------------------------------------------------------------------------------------------
 include_directories(include)
