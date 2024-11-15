@@ -2,6 +2,7 @@
 #define ENCODING_HPP
 
 #include <string>
+#include <cstdint>
 
 namespace encoding {
 
