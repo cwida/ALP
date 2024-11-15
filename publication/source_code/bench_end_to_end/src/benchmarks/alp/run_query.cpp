@@ -1,4 +1,5 @@
 #include "benchmarks/alp/queries.hpp"
+#include "column.hpp"
 #include "common/runtime/Import.hpp"
 #include <cerrno>
 #include <cstdlib>
@@ -208,16 +209,31 @@ double alp_profile(std::function<void()> fn, uint64_t rep_c, uint64_t warmup_rep
 	return end - start;
 }
 
+alp_bench::Column& get_dataset(const std::string& col_name) {
+	static std::unordered_map<std::string, alp_bench::Column> ALP_END_TO_END_DATASET = {
+	    {"food_prices", {0, "food_prices_tw", "", "", 16, 12, 46, 20}},
+	    {"city_temperature_f", {1, "city_temperature_f_tw", "", "", 14, 13, 0, 11}},
+	    {"bitcoin_transactions_f", {2, "bitcoin_transactions_f_tw", "", "", 14, 10, 10, 25}},
+	    {"gov26", {3, "gov26_tw", "", "", 18, 18, 0, 0}},
+	    {"nyc29", {4, "nyc29_tw", "", "", 14, 1, 5, 42}}};
+
+	auto it = ALP_END_TO_END_DATASET.find(col_name);
+	if (it != ALP_END_TO_END_DATASET.end()) { return it->second; }
+
+	throw std::runtime_error("Invalid column name: " + col_name);
+}
+
 int main(int argc, char* argv[]) {
-	if (argc < 4) {
-		std::cerr << "Usage: " << argv[0] << " <THREAD> <QUERY> <SCHEME>" << std::endl;
+	if (argc < 5) {
+		std::cerr << "Usage: " << argv[0] << " <THREAD> <QUERY> <SCHEME> <dataset>" << std::endl;
 		return 1;
 	}
 
 	// Parse command-line arguments
-	int              thread        = std::stoi(argv[1]);
-	std::string      query_string  = argv[2];
-	std::string      scheme_string = argv[3];
+	int              thread         = std::stoi(argv[1]);
+	std::string      query_string   = argv[2];
+	std::string      scheme_string  = argv[3];
+	std::string      dataset_string = argv[4];
 	cfg::alp_query   query {cfg::QueryT::INVALID};
 	encoding::scheme encoding_scheme;
 
@@ -255,41 +271,43 @@ int main(int argc, char* argv[]) {
 		throw std::runtime_error("Wrong Scheme Type.");
 	}
 
+	alp_bench::Column& col = get_dataset(dataset_string);
+
 	runtime::cur_q_mtd.repetition         = cfg::rep_c;
 	runtime::cur_q_mtd.warm_up_repetition = cfg::warmup_rep_c;
 
 	// ALL COLUMNS
-	for (auto& col : alp_bench::get_alp_end_to_end()) { // TODO
-		runtime::cur_q_mtd.col_name = col.name;
+	runtime::cur_q_mtd.col_name = col.name;
 
-		/* Extension. */
-		if (!experiment::is_expanded(col)) { experiment::expand_binary_x_times(col, cfg::ext_c); }
+	/* Extension. */
+	if (!experiment::is_expanded(col)) { experiment::expand_binary_x_times(col, cfg::ext_c); }
 
-		runtime::cur_q_mtd.scheme = encoding_scheme;
-		runtime::cur_q_mtd.thr_c  = thread;
-		runtime::cur_q_mtd.query  = query;
+	runtime::cur_q_mtd.scheme = encoding_scheme;
+	runtime::cur_q_mtd.thr_c  = thread;
+	runtime::cur_q_mtd.query  = query;
 
-		size_t                          thread_c    = thread;
-		size_t                          vector_c    = cfg::vec_tup_c;
-		bool                            clear_cache = false;
-		std::unordered_set<std::string> q           = {};
-		std::string                     name;
+	size_t                          thread_c    = thread;
+	size_t                          vector_c    = cfg::vec_tup_c;
+	bool                            clear_cache = false;
+	std::unordered_set<std::string> q           = {};
+	std::string                     name;
 
-		/* Init execution. */
-		Database alp_db;
-		runtime::cur_q_mtd.compression_cycles = import_alp(col, alp_db, encoding_scheme);
+	/* Init execution. */
+	Database alp_db;
+	runtime::cur_q_mtd.compression_cycles = import_alp(col, alp_db, encoding_scheme);
 
-		// Benchmark
-		runtime::cur_q_mtd.cycles = alp_profile(
-		    [&]() {
-			    if (clear_cache) { clearOsCaches(); }
-			    auto result = alp_q(alp_db, thread_c, vector_c);
-			    escape(&result);
-		    },
-		    cfg::rep_c,
-		    cfg::warmup_rep_c);
+	// Benchmark
+	runtime::cur_q_mtd.cycles = alp_profile(
+	    [&]() {
+		    if (clear_cache) { clearOsCaches(); }
+		    auto result = alp_q(alp_db, thread_c, vector_c);
+		    escape(&result);
+	    },
+	    cfg::rep_c,
+	    cfg::warmup_rep_c);
 
-		std::cout << runtime::cur_q_mtd.get_csv_row() << std::endl;
-	}
-	return 0;
+	std::cout << runtime::cur_q_mtd.get_csv_row() << std::endl;
+	/* removal. */
+	experiment::clean_compressed_data(col, encoding_scheme);
+	experiment::remove_binary_file(col);
 }

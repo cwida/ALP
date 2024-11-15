@@ -1125,7 +1125,7 @@ void expand_binary_x_times(alp_bench::Column& col, size_t x) {
 
 	//	std::cout << __FUNCTION__ << " : Extension of " << col_file_path << " has been started!" << std::endl;
 
-	double* double_arr = new double[1024 * 1024 * 1024];
+	auto* double_arr = new double[1024 * 1024 * 1024];
 	for (size_t i {0}; i < x; ++i) {
 		std::memcpy(double_arr + (i * cfg::morsel_c), data_runvec.data(), cfg::morsel_c * sizeof(double));
 	}
