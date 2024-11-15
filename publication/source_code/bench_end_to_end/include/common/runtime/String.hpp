@@ -5,6 +5,8 @@
 #include <experimental/string_view>
 #include <iostream>
 #include <string>
+#include <cstdint>
+
 
 class SmallStringView {
  public:
