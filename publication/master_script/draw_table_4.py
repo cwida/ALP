@@ -8,7 +8,7 @@ def generate_markdown_table():
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Define the path pattern for the CSV files relative to the script's directory
-    file_pattern = os.path.join(script_dir, "../*_compression_ratio.csv")
+    file_pattern = os.path.join(script_dir, "../compression_ratio_result/double/*.csv")
     csv_files = glob.glob(file_pattern)
 
     # Define a dictionary to rename files to match the specified column names
