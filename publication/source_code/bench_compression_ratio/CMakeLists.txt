@@ -2,7 +2,7 @@ if (NOT DEFINED ENV{ALP_DATASET_DIR_PATH})
     message(WARNING "You must set ALP_DATASET_DIR_PATH environment variable")
 endif ()
 
-add_executable(publication_bench_alp_compression_ratio bench_alp_compression_ratio.cpp)
+add_executable(publication_bench_alp_compression_ratio alp.cpp)
 target_link_libraries(publication_bench_alp_compression_ratio PUBLIC ALP gtest_main)
 gtest_discover_tests(publication_bench_alp_compression_ratio)
 
