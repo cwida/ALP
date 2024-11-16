@@ -13,6 +13,11 @@ brown_echo() {
   echo -e "\033[33m $1\033[0m" >/dev/tty
 }
 
+black_echo() {
+  # Print to console only in black
+  echo -e "\033[30m $1\033[0m" >/dev/tty
+}
+
 red_echo() {
   # Print to console only in red
   echo -e "\033[31mError: $1\033[0m" >/dev/tty
@@ -86,7 +91,7 @@ fi
 
 green_echo "Generating compression ratio tables ..."
 output=$(python3 "$CLONED_DIR/publication/master_script/generate_tables.py")
-brown_echo "$output"
+black_echo "$output"
 
 green_echo "Running benchmarks based on system architecture..."
 # Run benchmarks based on system architecture

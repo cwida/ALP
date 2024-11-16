@@ -58,26 +58,40 @@ def generate_markdown_table(input_folder, output_file, column_order, table_name)
                   df_combined.columns]
     total_width = sum(col_widths) + (len(col_widths) - 1) * 3  # Account for separator widths
 
+    # ANSI escape codes for color
+    BLACK = "\033[30m"
+    GREEN = "\033[32m"
+    RESET = "\033[0m"
+
     # Create a compact header with everything on one line
     header_line = "=" * (total_width + 4)
-    print(header_line)
-    print(f"{table_name.center(total_width + 4)}")
-    print(header_line)
+    print(BLACK + header_line + RESET)
+    print(BLACK + f"{table_name.center(total_width + 4)}" + RESET)
+    print(BLACK + header_line + RESET)
 
     # Print the table header
     header = " | ".join(f"{col:{col_widths[i]}}" for i, col in enumerate(df_combined.columns))
     separator = "-+-".join("-" * width for width in col_widths)
 
-    print(header)
-    print(separator)
+    print(BLACK + header + RESET)
+    print(BLACK + separator + RESET)
 
     # Print each row with aligned columns
     for _, row in df_combined.iterrows():
-        row_data = " | ".join(f"{str(value):{col_widths[i]}}" for i, value in enumerate(row))
-        print(row_data)
+        row_values = row[1:].apply(pd.to_numeric, errors='coerce')  # Convert to numeric for comparison
+        min_value = row_values.min(skipna=True)
+        row_data = []
+        for i, value in enumerate(row):
+            if i == 0:  # First column (Dataset) remains black
+                row_data.append(f"{BLACK}{value:{col_widths[i]}}{RESET}")
+            elif value == min_value and pd.notna(value):  # Highlight the lowest value in green
+                row_data.append(f"{GREEN}{value:{col_widths[i]}}{RESET}")
+            else:  # Other values remain black
+                row_data.append(f"{BLACK}{value:{col_widths[i]}}{RESET}")
+        print(" | ".join(row_data))
 
     # Add a bottom-line border for the table
-    print(header_line)
+    print(BLACK + header_line + RESET)
 
     # Write the Markdown table to a file
     markdown_table = "| " + " | ".join(column_order) + " |\n"
