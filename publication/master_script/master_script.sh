@@ -97,13 +97,15 @@ if [ "$ARCH" == "arm64" ]; then
 
 else
   # End to end
-  green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
+  # Get the directory where the script is located
   SCRIPT_DIR=$(dirname "$(realpath "$0")")
+
+  # Define the output file path
   OUTPUT_FILE="$SCRIPT_DIR/end_to_end_result.csv"
+
+  green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
   export CLONED_DIR="$CLONED_DIR"
   bash "$CLONED_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
-  green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
-
   green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
 
   green_echo "Cloning the BENCH_PED ..."
