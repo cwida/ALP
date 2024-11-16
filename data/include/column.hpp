@@ -19,12 +19,12 @@ struct Column {
 };
 
 struct paths {
-	std::string generated_columns_csv_path  = std::string {CMAKE_SOURCE_DIR} + "/data/generated/";
-	std::string alp_dataset_csv_path        = std::string {CMAKE_SOURCE_DIR} + "/data/samples/";
-	std::string edge_dataset_csv_path       = std::string {CMAKE_SOURCE_DIR} + "/data/edge_case/";
-	std::string result_dir_path             = std::string {CMAKE_SOURCE_DIR} + "/publication/";
-	std::string evalimplsts_csv_path        = std::string {CMAKE_SOURCE_DIR} + "/data/evalimplsts/";
-	std::string alp_dataset_binary_dir_path = std::string {CMAKE_SOURCE_DIR} + "/data/full_data/";
+	std::string generated_columns_csv_path  = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/generated/";
+	std::string alp_dataset_csv_path        = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/samples/";
+	std::string edge_dataset_csv_path       = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/edge_case/";
+	std::string result_dir_path             = std::string {ALP_CMAKE_SOURCE_DIR} + "/publication/";
+	std::string evalimplsts_csv_path        = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/evalimplsts/";
+	std::string alp_dataset_binary_dir_path = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/full_data/";
 
 	explicit paths() {
 		const auto v = std::getenv("ALP_DATASET_DIR_PATH");
