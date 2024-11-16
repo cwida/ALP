@@ -2,6 +2,7 @@ import pandas as pd
 import glob
 import os
 
+
 def generate_markdown_table():
     # Define the path pattern for the CSV files in the parent directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,7 +57,8 @@ def generate_markdown_table():
     df_combined = df_combined.fillna("")
 
     # Generate the console-friendly table with aligned columns
-    col_widths = [max(len(str(value)) for value in df_combined[col].astype(str).tolist() + [col]) + 2 for col in df_combined.columns]
+    col_widths = [max(len(str(value)) for value in df_combined[col].astype(str).tolist() + [col]) + 2 for col in
+                  df_combined.columns]
     header = " | ".join(f"{col:{col_widths[i]}}" for i, col in enumerate(df_combined.columns))
     separator = "-+-".join("-" * width for width in col_widths)
 
@@ -75,8 +77,13 @@ def generate_markdown_table():
     for _, row in df_combined.iterrows():
         markdown_table += "| " + " | ".join(map(str, row)) + " |\n"
 
-    with open("compression_ratios_table.md", "w") as f:
+    # Define the path pattern for the CSV files in the parent directory
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_file = os.path.join(script_dir, "../tables/table_4.md")
+
+    with open(output_file, "w") as f:
         f.write(markdown_table)
+
 
 if __name__ == "__main__":
     generate_markdown_table()
