@@ -18,6 +18,7 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
         "pde": "PDE",
         "elf": "Elf",
         "alp": "Alp",
+        "alp_rd": "Alp_rd",
         "lwc_alp": "LWC+Alp",
         "zstd": "Zstd"
     }
@@ -41,6 +42,11 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
     # Reset the index and rename it to "Dataset" for the final table
     df_combined.reset_index(inplace=True)
     df_combined.rename(columns={"dataset": "Dataset"}, inplace=True)
+
+    # Combine Alp and Alp_rd into a single column, taking the non-null value
+    if "Alp" in df_combined.columns and "Alp_rd" in df_combined.columns:
+        df_combined["Alp"] = df_combined["Alp"].combine_first(df_combined["Alp_rd"])
+        df_combined.drop(columns=["Alp_rd"], inplace=True)
 
     # Ensure all expected columns are included in the specified order
     for col in column_order:
