@@ -14,6 +14,7 @@
 - **libcurl** (required for PED benchmarks)
 - **g++** (required for PED benchmarks)
 - **pandas** (required for plots)
+- **seaborn** (required for plots)
 
 ## 3. Hardware Requirements
 - [Intel Ice Lake](https://en.wikipedia.org/wiki/Ice_Lake_(microprocessor)) (x86_64, AVX512): We recommend AWS instances like M6i and C6i.
