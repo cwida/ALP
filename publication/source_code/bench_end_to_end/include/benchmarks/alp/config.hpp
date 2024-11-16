@@ -7,9 +7,9 @@
 
 namespace dataset {
 struct paths {
-	static std::string get_cache_dir_path() { return CMAKE_SOURCE_DIR "/data/cached/"; }
-	static std::string get_1_rg_dir_path() { return CMAKE_SOURCE_DIR "/data/1_rg_data_sample/"; }
-	static std::string get_128_1024_rg_dir_path() { return CMAKE_SOURCE_DIR "/data/128_1024_rg_data_sample/"; }
+	static std::string get_cache_dir_path() { return ALP_CMAKE_SOURCE_DIR "/data/cached/"; }
+	static std::string get_1_rg_dir_path() { return ALP_CMAKE_SOURCE_DIR "/data/1_rg_data_sample/"; }
+	static std::string get_128_1024_rg_dir_path() { return ALP_CMAKE_SOURCE_DIR "/data/128_1024_rg_data_sample/"; }
 };
 } // namespace dataset
 
