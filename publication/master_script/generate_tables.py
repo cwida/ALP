@@ -3,7 +3,7 @@ import glob
 import os
 
 
-def generate_markdown_table(input_folder, output_file, column_order):
+def generate_markdown_table(input_folder, output_file, column_order, table_name):
     # Define the path pattern for the CSV files relative to the script's directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_pattern = os.path.join(script_dir, f"../compression_ratio_result/{input_folder}/*.csv")
@@ -56,10 +56,16 @@ def generate_markdown_table(input_folder, output_file, column_order):
     # Generate the console-friendly table with aligned columns
     col_widths = [max(len(str(value)) for value in df_combined[col].astype(str).tolist() + [col]) + 2 for col in
                   df_combined.columns]
+    total_width = sum(col_widths) + (len(col_widths) - 1) * 3  # Account for separator widths
+
+    # Print the table name in a single-cell row
+    print(f"| {table_name.center(total_width)} |")
+    print(f"|{'-' * (total_width + 2)}|")
+
+    # Print the table header
     header = " | ".join(f"{col:{col_widths[i]}}" for i, col in enumerate(df_combined.columns))
     separator = "-+-".join("-" * width for width in col_widths)
 
-    # Print the table header
     print(header)
     print(separator)
 
@@ -85,7 +91,8 @@ def generate_table_4():
     generate_markdown_table(
         input_folder="double",
         output_file=output_file,
-        column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "PDE", "Elf", "Alp", "LWC+Alp", "Zstd"]
+        column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "PDE", "Elf", "Alp", "LWC+Alp", "Zstd"],
+        table_name="Table 4: Compression Ratios for Double Datasets"
     )
 
 
@@ -95,7 +102,8 @@ def generate_table_7():
     generate_markdown_table(
         input_folder="float",
         output_file=output_file,
-        column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "Alp", "Zstd"]
+        column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "Alp", "Zstd"],
+        table_name="Table 7: Compression Ratios for Float Datasets"
     )
 
 
