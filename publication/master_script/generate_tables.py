@@ -80,17 +80,21 @@ def generate_markdown_table(input_folder, output_file, column_order):
 
 
 def generate_table_4():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_file = os.path.join(script_dir, "../tables/table_4.md")
     generate_markdown_table(
         input_folder="double",
-        output_file="../tables/table_4.md",
+        output_file=output_file,
         column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "PDE", "Elf", "Alp", "LWC+Alp", "Zstd"]
     )
 
 
 def generate_table_7():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_file = os.path.join(script_dir, "../tables/table_7.md")
     generate_markdown_table(
         input_folder="float",
-        output_file="../tables/table_7.md",
+        output_file=output_file,
         column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "Alp", "Zstd"]
     )
 
