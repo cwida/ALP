@@ -3,7 +3,7 @@ import glob
 import os
 
 
-def generate_markdown_table(input_folder, output_file, column_order, table_name):
+def generate_sorted_markdown_table(input_folder, output_file, column_order, row_order, table_name):
     # Define the path pattern for the CSV files relative to the script's directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_pattern = os.path.join(script_dir, f"../compression_ratio_result/{input_folder}/*.csv")
@@ -47,11 +47,26 @@ def generate_markdown_table(input_folder, output_file, column_order, table_name)
         if col not in df_combined.columns:
             df_combined[col] = ""  # Add empty columns if missing
 
+    # Add missing rows with empty values
+    for dataset in row_order:
+        if dataset not in df_combined["Dataset"].values:
+            empty_row = {col: "" for col in column_order}
+            empty_row["Dataset"] = dataset
+            df_combined = pd.concat([df_combined, pd.DataFrame([empty_row])], ignore_index=True)
+
+    # Reorder rows to match the order of `row_order`
+    df_combined["Dataset"] = pd.Categorical(df_combined["Dataset"], categories=row_order, ordered=True)
+    df_combined = df_combined.sort_values("Dataset").reset_index(drop=True)
+
+    # Add empty string as a valid category to avoid the TypeError
+    if isinstance(df_combined["Dataset"].dtype, pd.CategoricalDtype):
+        df_combined["Dataset"] = df_combined["Dataset"].cat.add_categories([""])
+
+    # Fill NaN or missing values with an empty string
+    df_combined = df_combined.fillna("")
+
     # Reorder the columns to match the specified order
     df_combined = df_combined[column_order]
-
-    # Fill NaN with an empty string for better readability in terminal
-    df_combined = df_combined.fillna("")
 
     # Generate the console-friendly table with aligned columns
     col_widths = [max(len(str(value)) for value in df_combined[col].astype(str).tolist() + [col]) + 2 for col in
@@ -107,10 +122,18 @@ def generate_markdown_table(input_folder, output_file, column_order, table_name)
 def generate_table_4():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_file = os.path.join(script_dir, "../tables/table_4.md")
-    generate_markdown_table(
+    generate_sorted_markdown_table(
         input_folder="double",
         output_file=output_file,
         column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "PDE", "Elf", "Alp", "LWC+Alp", "Zstd"],
+        row_order=[
+            "Air-Pressure", "Basel-Temp", "Basel-Wind", "Bird-Mig", "Btc-Price",
+            "City-Temp", "Dew-Temp", "Bio-Temp", "PM10-dust", "Stocks-DE",
+            "Stocks-UK", "Stocks-USA", "Wind-dir", "Arade/4", "Blockchain",
+            "CMS/1", "CMS/25", "CMS/9", "Food-prices", "Gov/10", "Gov/26",
+            "Gov/30", "Gov/31", "Gov/40", "Medicare/1", "Medicare/9", "NYC/29",
+            "POI-lat", "POI-lon", "SD-bench"
+        ],
         table_name="Table 4: Compression Ratios for Double Datasets"
     )
 
@@ -118,10 +141,11 @@ def generate_table_4():
 def generate_table_7():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_file = os.path.join(script_dir, "../tables/table_7.md")
-    generate_markdown_table(
+    generate_sorted_markdown_table(
         input_folder="float",
         output_file=output_file,
         column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "Alp", "Zstd"],
+        row_order=["Dino-Vitb16", "GPT2", "Grammarly-lg", "W2V Tweets"],
         table_name="Table 7: Compression Ratios for Float Datasets"
     )
 
