@@ -288,7 +288,7 @@ inline std::array<Column, 30> get_alp_dataset() {
 
 inline std::array<Column, 1> get_double_test_dataset() {
 	static std::array<Column, 1> DOUBLE_TEST_DATASET = {{
-	    {0, "test_0", CMAKE_SOURCE_DIR "/data/double/test_0.csv", "", 0, 0, 0, 0},
+	    {0, "test_0", ALP_CMAKE_SOURCE_DIR "/data/double/test_0.csv", "", 0, 0, 0, 0},
 	}};
 
 	return DOUBLE_TEST_DATASET;
