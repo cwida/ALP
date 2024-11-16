@@ -84,10 +84,9 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-green_echo "Generating compression ratio table 4 ..."
-output=$(python3 "$CLONED_DIR/publication/master_script/draw_table_4.py")
+green_echo "Generating compression ratio tables ..."
+output=$(python3 "$CLONED_DIR/publication/master_script/generate_tables.py")
 brown_echo "$output"
-green_echo "Table 4 also saved as compression_ratios_table.md."
 
 green_echo "Running benchmarks based on system architecture..."
 # Run benchmarks based on system architecture
