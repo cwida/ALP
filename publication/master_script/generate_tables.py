@@ -58,9 +58,11 @@ def generate_markdown_table(input_folder, output_file, column_order, table_name)
                   df_combined.columns]
     total_width = sum(col_widths) + (len(col_widths) - 1) * 3  # Account for separator widths
 
-    # Print the table name in a single-cell row
-    print(f"| {table_name.center(total_width)} |")
-    print(f"|{'-' * (total_width + 2)}|")
+    # Create a compact header with everything on one line
+    header_line = "=" * (total_width + 4)
+    print(header_line)
+    print(f"{table_name.center(total_width + 4)}")
+    print(header_line)
 
     # Print the table header
     header = " | ".join(f"{col:{col_widths[i]}}" for i, col in enumerate(df_combined.columns))
@@ -73,6 +75,9 @@ def generate_markdown_table(input_folder, output_file, column_order, table_name)
     for _, row in df_combined.iterrows():
         row_data = " | ".join(f"{str(value):{col_widths[i]}}" for i, value in enumerate(row))
         print(row_data)
+
+    # Add a bottom-line border for the table
+    print(header_line)
 
     # Write the Markdown table to a file
     markdown_table = "| " + " | ".join(column_order) + " |\n"
