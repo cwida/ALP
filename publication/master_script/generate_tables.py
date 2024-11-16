@@ -3,12 +3,10 @@ import glob
 import os
 
 
-def generate_markdown_table():
-    # Define the path pattern for the CSV files in the parent directory
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
+def generate_markdown_table(input_folder, output_file, column_order):
     # Define the path pattern for the CSV files relative to the script's directory
-    file_pattern = os.path.join(script_dir, "../compression_ratio_result/double/*.csv")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    file_pattern = os.path.join(script_dir, f"../compression_ratio_result/{input_folder}/*.csv")
     csv_files = glob.glob(file_pattern)
 
     # Define a dictionary to rename files to match the specified column names
@@ -30,7 +28,7 @@ def generate_markdown_table():
     # Load data from each file and insert it into the correct column
     for file in csv_files:
         # Extract the prefix of the file to use as the column name
-        prefix = file.split("/")[-1].split("_compression_ratio.csv")[0].lower()
+        prefix = file.split("/")[-1].split(".csv")[0].lower()
         if prefix in file_to_column:
             column_name = file_to_column[prefix]
             df = pd.read_csv(file)
@@ -45,7 +43,6 @@ def generate_markdown_table():
     df_combined.rename(columns={"dataset": "Dataset"}, inplace=True)
 
     # Ensure all expected columns are included in the specified order
-    column_order = ["Dataset", "Gor", "Ch", "Ch128", "Patas", "PDE", "Elf", "Alp", "LWC+Alp", "Zstd"]
     for col in column_order:
         if col not in df_combined.columns:
             df_combined[col] = ""  # Add empty columns if missing
@@ -77,13 +74,27 @@ def generate_markdown_table():
     for _, row in df_combined.iterrows():
         markdown_table += "| " + " | ".join(map(str, row)) + " |\n"
 
-    # Define the path pattern for the CSV files in the parent directory
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_file = os.path.join(script_dir, "../tables/table_4.md")
-
+    # Write the Markdown table to the specified output file
     with open(output_file, "w") as f:
         f.write(markdown_table)
 
 
+def generate_table_4():
+    generate_markdown_table(
+        input_folder="double",
+        output_file="../tables/table_4.md",
+        column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "PDE", "Elf", "Alp", "LWC+Alp", "Zstd"]
+    )
+
+
+def generate_table_7():
+    generate_markdown_table(
+        input_folder="float",
+        output_file="../tables/table_7.md",
+        column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "Alp", "Zstd"]
+    )
+
+
 if __name__ == "__main__":
-    generate_markdown_table()
+    generate_table_4()
+    generate_table_7()
