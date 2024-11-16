@@ -328,7 +328,7 @@ public:
  * This test will output and write a file with the estimated bits/value after compression with alp
  */
 TEST_F(alp_test, test_alp_on_whole_datasets) {
-	std::ofstream ofile(alp_bench::get_paths().result_dir_path + "compression_ratio_result/double/alp_rd.csv", std::ios::out);
+	std::ofstream ofile(alp_bench::get_paths().result_dir_path + "compression_ratio_result/double/alp.csv", std::ios::out);
 	ofile << "dataset,size,rowgroups_count,vectors_count\n";
 
 	for (auto& dataset : alp_bench::get_alp_dataset()) {
