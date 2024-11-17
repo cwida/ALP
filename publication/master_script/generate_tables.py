@@ -51,12 +51,12 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
     # Ensure all expected columns are included in the specified order
     for col in column_order:
         if col not in df_combined.columns:
-            df_combined[col] = ""  # Add empty columns if missing
+            df_combined[col] = 64  # Add columns with default value 64 if missing
 
-    # Add missing rows with empty values
+    # Add missing rows with default values
     for dataset in row_order:
         if dataset not in df_combined["Dataset"].values:
-            empty_row = {col: "" for col in column_order}
+            empty_row = {col: 64 for col in column_order}
             empty_row["Dataset"] = dataset
             df_combined = pd.concat([df_combined, pd.DataFrame([empty_row])], ignore_index=True)
 
@@ -64,12 +64,9 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
     df_combined["Dataset"] = pd.Categorical(df_combined["Dataset"], categories=row_order, ordered=True)
     df_combined = df_combined.sort_values("Dataset").reset_index(drop=True)
 
-    # Add empty string as a valid category to avoid the TypeError
-    if isinstance(df_combined["Dataset"].dtype, pd.CategoricalDtype):
-        df_combined["Dataset"] = df_combined["Dataset"].cat.add_categories([""])
-
-    # Fill NaN or missing values with an empty string
-    df_combined = df_combined.fillna("")
+    # Replace NaN values with 64 in numeric columns
+    numeric_columns = df_combined.columns.difference(["Dataset"])
+    df_combined[numeric_columns] = df_combined[numeric_columns].apply(pd.to_numeric, errors='coerce').fillna(64)
 
     # Reorder the columns to match the specified order
     df_combined = df_combined[column_order]
