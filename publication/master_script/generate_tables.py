@@ -32,7 +32,7 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
         prefix = file.split("/")[-1].split(".csv")[0].lower()
         if prefix in file_to_column:
             column_name = file_to_column[prefix]
-            df = pd.read_csv(file)
+            df = pd.read_csv(file, usecols=["dataset", "size"])  # Only load the necessary columns
             df = df.rename(columns={"size": column_name})
             df.set_index("dataset", inplace=True)
 
@@ -68,7 +68,17 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
     numeric_columns = df_combined.columns.difference(["Dataset"])
     df_combined[numeric_columns] = df_combined[numeric_columns].apply(pd.to_numeric, errors='coerce').fillna(64)
 
-    # Reorder the columns to match the specified order
+    # Check if "Wind-dir" exists before calculating TS AVG.
+    if "Wind-dir" in df_combined["Dataset"].values:
+        wind_dir_index = df_combined[df_combined["Dataset"] == "Wind-dir"].index[0]
+        ts_avg = df_combined.iloc[:wind_dir_index + 1, 1:].mean().round(1)
+        ts_avg_row = pd.DataFrame([["TS AVG."] + ts_avg.tolist()], columns=df_combined.columns)
+
+        # Insert TS AVG. row below "Wind-dir"
+        df_combined = pd.concat([df_combined.iloc[:wind_dir_index + 1], ts_avg_row, df_combined.iloc[wind_dir_index + 1:]],
+                                ignore_index=True)
+
+    # Keep only the columns specified in column_order
     df_combined = df_combined[column_order]
 
     # Generate the console-friendly table with aligned columns
