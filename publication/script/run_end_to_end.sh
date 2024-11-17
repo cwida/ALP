@@ -1,9 +1,11 @@
 #!/bin/bash
 
 declare -a datasets=("food_prices" "city_temperature_f" "bitcoin_transactions_f" "gov26" "nyc29")
-declare -a schemes=("alp" "pde" "patas" "gorilla" "alp_rd" "ztsd" "chimp" "chimp128")
+declare -a schemes=("ztsd" "chimp" "chimp128")
 declare -a queries=("scan" "sum")
 declare -a threads=("1" "8" "16")
+
+#declare -a schemes=("alp" "pde" "patas" "gorilla" "ztsd" "chimp" "chimp128")
 
 #declare -a datasets=("food_prices")
 #declare -a schemes=("alp")
@@ -23,7 +25,6 @@ for scheme in "${schemes[@]}"; do
       for dataset in "${datasets[@]}"; do
         # Skip specific combination
         if [[ "$scheme" == "pde" && "$dataset" == "nyc29" ]]; then
-          echo "Skipping combination: scheme='$scheme', dataset='$dataset'."
           continue
         fi
 
