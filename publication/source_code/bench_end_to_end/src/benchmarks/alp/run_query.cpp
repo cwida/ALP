@@ -308,6 +308,6 @@ int main(int argc, char* argv[]) {
 
 	std::cout << runtime::cur_q_mtd.get_csv_row() << std::endl;
 	/* removal. */
-	experiment::clean_compressed_data(col, encoding_scheme);
-	experiment::remove_binary_file(col);
+//	experiment::clean_compressed_data(col, encoding_scheme);
+//	experiment::remove_binary_file(col);
 }
