@@ -97,7 +97,7 @@ fi
 
 # Build the project
 green_echo "Building the project..."
-cmake --build "$CLONED_DIR/build" -j 6
+cmake --build "$CLONED_DIR/build" -j 16
 if [ $? -ne 0 ]; then
   red_echo "CMake build failed."
   exit 1
@@ -161,7 +161,7 @@ else
     red_echo "CMake configuration failed for BENCH_PED."
     exit 1
   fi
-  cmake --build "$PED_DIR/build" -j 6
+  cmake --build "$PED_DIR/build" -j 16
   if [ $? -ne 0 ]; then
     red_echo "Build failed for BENCH_PED."
     exit 1
