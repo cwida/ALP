@@ -68,7 +68,7 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
     numeric_columns = df_combined.columns.difference(["Dataset"])
     df_combined[numeric_columns] = df_combined[numeric_columns].apply(pd.to_numeric, errors='coerce').fillna(64)
 
-    # Add TS AVG. and NON-TS rows only if required
+    # Add TS AVG., NON-TS, and ALL AVG rows only if required
     if calculate_extra_rows:
         if "Wind-dir" in df_combined["Dataset"].values:
             wind_dir_index = df_combined[df_combined["Dataset"] == "Wind-dir"].index[0]
@@ -86,6 +86,12 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
             non_ts_row = pd.DataFrame([["NON-TS"] + non_ts_avg.tolist()], columns=df_combined.columns)
             df_combined = pd.concat([df_combined, non_ts_row], ignore_index=True)
 
+        # Calculate ALL AVG excluding TS AVG. and NON-TS
+        avg_rows = df_combined[~df_combined["Dataset"].isin(["TS AVG.", "NON-TS"])]
+        all_avg = avg_rows.iloc[:, 1:].mean().round(1)
+        all_avg_row = pd.DataFrame([["ALL AVG."] + all_avg.tolist()], columns=df_combined.columns)
+        df_combined = pd.concat([df_combined, all_avg_row], ignore_index=True)
+
     # Keep only the columns specified in column_order
     df_combined = df_combined[column_order]
 
@@ -94,9 +100,10 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
                   df_combined.columns]
     total_width = sum(col_widths) + (len(col_widths) - 1) * 3  # Account for separator widths
 
-    # ANSI escape codes for color
+    # ANSI escape codes for color and formatting
     BLACK = "\033[30m"
     GREEN = "\033[32m"
+    BOLD = "\033[1m"
     RESET = "\033[0m"
 
     # Print header
@@ -116,13 +123,17 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
         row_values = row[1:].apply(pd.to_numeric, errors='coerce')  # Convert to numeric for comparison
         min_value = row_values.min(skipna=True)
         row_data = []
+        bold_row = row["Dataset"] in ["TS AVG.", "NON-TS", "ALL AVG."]  # Check if the row is bold
         for i, value in enumerate(row):
             if i == 0:  # First column (Dataset) remains black
-                row_data.append(f"{BLACK}{value:{col_widths[i]}}{RESET}")
+                row_text = f"{value:{col_widths[i]}}"
+                row_data.append(f"{BOLD}{row_text}{RESET}" if bold_row else f"{BLACK}{row_text}{RESET}")
             elif value == min_value and pd.notna(value):  # Highlight the lowest value in green
-                row_data.append(f"{GREEN}{value:{col_widths[i]}}{RESET}")
+                row_text = f"{value:{col_widths[i]}}"
+                row_data.append(f"{GREEN}{row_text}{RESET}")
             else:  # Other values remain black
-                row_data.append(f"{BLACK}{value:{col_widths[i]}}{RESET}")
+                row_text = f"{value:{col_widths[i]}}"
+                row_data.append(f"{BOLD}{row_text}{RESET}" if bold_row else f"{BLACK}{row_text}{RESET}")
         print(" | ".join(row_data))
 
     # Add a bottom-line border for the table
