@@ -22,7 +22,7 @@ There are two toolchain files in the [toolchain directory](toolchain). Adjust th
 
 ### 4. Run the Benchmark Script
 
-Run the [master_script.sh](publication/master_script/master_script.sh) on the following architectures:
+Run the [master_script.sh](publication/script/master_script.sh) on the following architectures:
 
 - **Intel Ice Lake (x86_64, AVX512):** M6i and C6i instances
 - **AMD Zen3 (x86_64, AVX2):** M6a and C6a instances
