@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Redirect all command output to master_script.log
-exec >master_script.log 2>&1
+# Redirect all command output to script.log
+exec >script.log 2>&1
 
 # Define colored output functions
 green_echo() {
@@ -105,7 +105,7 @@ fi
 
 # Generate compression ratio tables
 green_echo "Generating compression ratio tables..."
-output=$(python3 "$CLONED_DIR/publication/master_script/generate_tables.py")
+output=$(python3 "$CLONED_DIR/publication/script/generate_tables.py")
 black_echo "$output"
 
 # Run benchmarks based on system architecture
@@ -119,7 +119,7 @@ else
   OUTPUT_FILE="$SCRIPT_DIR/end_to_end_result.csv"
   green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
   export CLONED_DIR="$CLONED_DIR"
-  bash "$CLONED_DIR/publication/master_script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
+  bash "$CLONED_DIR/publication/script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
   green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
 
   # Clone and build the BENCH_PED repository
@@ -177,4 +177,4 @@ pip install -r "$CLONED_DIR/publication/plotter/requirements.txt"
 green_echo "Running the plotter script..."
 python3 "$CLONED_DIR/publication/plotter/plotter.py"
 
-green_echo "Script execution complete. All logs saved to master_script.log."
+green_echo "Script execution complete. All logs saved to script.log."
