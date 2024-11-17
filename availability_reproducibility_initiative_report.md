@@ -16,6 +16,8 @@
 - **pandas** (required for plots)
 - **seaborn** (required for plots)
 
+**This [script](/publication/script/install_dependencies.sh) can be used to install all necessary dependencies on Ubuntu.**
+
 ## 3. Hardware Requirements
 - **[Intel Ice Lake](https://en.wikipedia.org/wiki/Ice_Lake_(microprocessor))** (x86_64, AVX512): Recommended AWS instance type: [i4i.4xlarge](https://aws.amazon.com/ec2/instance-types/i4i/), with at least 16 cores.
 - **[AMD Zen 3](https://en.wikipedia.org/wiki/Zen_3)** (x86_64, AVX2): Recommended AWS instance types: M6a and C6a.
