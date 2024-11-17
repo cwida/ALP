@@ -21,8 +21,15 @@ for scheme in "${schemes[@]}"; do
   for query in "${queries[@]}"; do
     for thread in "${threads[@]}"; do
       for dataset in "${datasets[@]}"; do
+        # Skip specific combination
+        if [[ "$scheme" == "pde" && "$dataset" == "nyc29" ]]; then
+          echo "Skipping combination: scheme='$scheme', dataset='$dataset'."
+          continue
+        fi
+
         # Execute the command
         "$CLONED_DIR/build/publication/source_code/bench_end_to_end/run_query" "$thread" "$query" "$scheme" "$dataset"
+
         # Check for errors
         if [ $? -ne 0 ]; then
           echo "Error: Command failed for dataset='$dataset', scheme='$scheme', query='$query', thread='$thread'."
@@ -32,4 +39,3 @@ for scheme in "${schemes[@]}"; do
     done
   done
 done
-
