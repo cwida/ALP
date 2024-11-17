@@ -3,7 +3,7 @@ import glob
 import os
 
 
-def generate_sorted_markdown_table(input_folder, output_file, column_order, row_order, table_name):
+def generate_sorted_markdown_table(input_folder, output_file, column_order, row_order, table_name, calculate_extra_rows=False):
     # Define the path pattern for the CSV files relative to the script's directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_pattern = os.path.join(script_dir, f"../compression_ratio_result/{input_folder}/*.csv")
@@ -28,20 +28,20 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
 
     # Load data from each file and insert it into the correct column
     for file in csv_files:
-        # Extract the prefix of the file to use as the column name
         prefix = file.split("/")[-1].split(".csv")[0].lower()
         if prefix in file_to_column:
             column_name = file_to_column[prefix]
             df = pd.read_csv(file, usecols=["dataset", "size"])  # Only load the necessary columns
             df = df.rename(columns={"size": column_name})
             df.set_index("dataset", inplace=True)
-
-            # Combine this DataFrame with the main DataFrame
             df_combined = df_combined.combine_first(df) if not df_combined.empty else df
 
-    # Reset the index and rename it to "Dataset" for the final table
+    # Reset the index and rename it to "Dataset"
     df_combined.reset_index(inplace=True)
     df_combined.rename(columns={"dataset": "Dataset"}, inplace=True)
+
+    # Filter out rows with missing dataset names
+    df_combined = df_combined[df_combined["Dataset"].notna()]
 
     # Combine Alp and Alp_rd into a single column, taking the non-null value
     if "Alp" in df_combined.columns and "Alp_rd" in df_combined.columns:
@@ -68,15 +68,23 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
     numeric_columns = df_combined.columns.difference(["Dataset"])
     df_combined[numeric_columns] = df_combined[numeric_columns].apply(pd.to_numeric, errors='coerce').fillna(64)
 
-    # Check if "Wind-dir" exists before calculating TS AVG.
-    if "Wind-dir" in df_combined["Dataset"].values:
-        wind_dir_index = df_combined[df_combined["Dataset"] == "Wind-dir"].index[0]
-        ts_avg = df_combined.iloc[:wind_dir_index + 1, 1:].mean().round(1)
-        ts_avg_row = pd.DataFrame([["TS AVG."] + ts_avg.tolist()], columns=df_combined.columns)
+    # Add TS AVG. and NON-TS rows only if required
+    if calculate_extra_rows:
+        if "Wind-dir" in df_combined["Dataset"].values:
+            wind_dir_index = df_combined[df_combined["Dataset"] == "Wind-dir"].index[0]
+            ts_avg = df_combined.iloc[:wind_dir_index + 1, 1:].mean().round(1)
+            ts_avg_row = pd.DataFrame([["TS AVG."] + ts_avg.tolist()], columns=df_combined.columns)
+            df_combined = pd.concat(
+                [df_combined.iloc[:wind_dir_index + 1], ts_avg_row, df_combined.iloc[wind_dir_index + 1:]],
+                ignore_index=True
+            )
 
-        # Insert TS AVG. row below "Wind-dir"
-        df_combined = pd.concat([df_combined.iloc[:wind_dir_index + 1], ts_avg_row, df_combined.iloc[wind_dir_index + 1:]],
-                                ignore_index=True)
+        if "Arade/4" in df_combined["Dataset"].values and "SD-bench" in df_combined["Dataset"].values:
+            arade_index = df_combined[df_combined["Dataset"] == "Arade/4"].index[0]
+            sd_bench_index = df_combined[df_combined["Dataset"] == "SD-bench"].index[0]
+            non_ts_avg = df_combined.iloc[arade_index:sd_bench_index + 1, 1:].mean().round(1)
+            non_ts_row = pd.DataFrame([["NON-TS"] + non_ts_avg.tolist()], columns=df_combined.columns)
+            df_combined = pd.concat([df_combined, non_ts_row], ignore_index=True)
 
     # Keep only the columns specified in column_order
     df_combined = df_combined[column_order]
@@ -91,18 +99,17 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
     GREEN = "\033[32m"
     RESET = "\033[0m"
 
-    # Create a compact header with everything on one line
-    header_line = "=" * (total_width + 4)
-    print(BLACK + header_line + RESET)
-    print(BLACK + f"{table_name.center(total_width + 4)}" + RESET)
-    print(BLACK + header_line + RESET)
+    # Print header
+    print("=" * (total_width + 4))
+    print(f"{table_name.center(total_width + 4)}")
+    print("=" * (total_width + 4))
 
     # Print the table header
     header = " | ".join(f"{col:{col_widths[i]}}" for i, col in enumerate(df_combined.columns))
     separator = "-+-".join("-" * width for width in col_widths)
 
-    print(BLACK + header + RESET)
-    print(BLACK + separator + RESET)
+    print(header)
+    print(separator)
 
     # Print each row with aligned columns
     for _, row in df_combined.iterrows():
@@ -119,7 +126,7 @@ def generate_sorted_markdown_table(input_folder, output_file, column_order, row_
         print(" | ".join(row_data))
 
     # Add a bottom-line border for the table
-    print(BLACK + header_line + RESET)
+    print("=" * (total_width + 4))
 
     # Write the Markdown table to a file
     markdown_table = "| " + " | ".join(column_order) + " |\n"
@@ -147,7 +154,8 @@ def generate_table_4():
             "Gov/30", "Gov/31", "Gov/40", "Medicare/1", "Medicare/9", "NYC/29",
             "POI-lat", "POI-lon", "SD-bench"
         ],
-        table_name="Table 4: Compression Ratios for Double Datasets"
+        table_name="Table 4: Compression Ratios for Double Datasets",
+        calculate_extra_rows=True
     )
 
 
@@ -159,7 +167,8 @@ def generate_table_7():
         output_file=output_file,
         column_order=["Dataset", "Gor", "Ch", "Ch128", "Patas", "Alp", "Zstd"],
         row_order=["Dino-Vitb16", "GPT2", "Grammarly-lg", "W2V Tweets"],
-        table_name="Table 7: Compression Ratios for Float Datasets"
+        table_name="Table 7: Compression Ratios for Float Datasets",
+        calculate_extra_rows=False  # Skip extra rows for Table 7
     )
 
 
