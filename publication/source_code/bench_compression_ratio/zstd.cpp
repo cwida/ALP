@@ -64,7 +64,7 @@ public:
 				    ZSTD_compress(enc_dbl_arr, enc_size_upper_bound, dbl_arr, input_size, 3); // Level 3
 
 				// SUM COMPRESSED SIZE
-				compressed_data_size += ENC_SIZE * sizeof(T);
+				compressed_data_size += ENC_SIZE * 8;
 
 				// Decode
 				ZSTD_decompress(dec_dbl_arr, dec_size, enc_dbl_arr, ENC_SIZE);
