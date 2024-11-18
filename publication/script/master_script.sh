@@ -104,13 +104,13 @@ if [ $? -ne 0 ]; then
 fi
 
 green_echo "Running compression ratio benchmarks..."
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
-"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
+#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
 
 # Generate compression ratio tables
 green_echo "Generating compression ratio tables..."
@@ -126,17 +126,17 @@ else
 
   # 4xLarge benchmarks
   green_echo "Running I4I_4XLarge speed benchmarks..."
-  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
-  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
-  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
+#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
+#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
 
   # End-to-end benchmark
   SCRIPT_DIR=$(dirname "$(realpath "$0")")
