@@ -11,7 +11,7 @@ bench_decode_zstd(alp_bench::Column& dataset, void* enc_arr, size_t enc_size, vo
 	int benchmark_number = dataset.id;
 
 #ifdef NDEBUG
-	uint64_t iterations = 300000;
+	uint64_t iterations = 300000 / 128;
 #else
 	uint64_t iterations = 1;
 #endif
@@ -36,7 +36,7 @@ bench_encode_zstd(alp_bench::Column& dataset, double* dbl_arr, void* enc_arr) {
 	int benchmark_number = dataset.id;
 
 #ifdef NDEBUG
-	uint64_t iterations = 300000;
+	uint64_t iterations = 300000 / 128;
 #else
 	uint64_t iterations = 1;
 #endif
@@ -70,17 +70,9 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 	for (auto& dataset : alp_bench::get_alp_dataset()) {
 
 		size_t tup_c;
-
-		std::cout << dataset.binary_file_path << "\n";
-
 		const auto* col = mapper::mmap_file<double>(tup_c, dataset.binary_file_path);
-
-		double num = 0.0;
-		// keep storing values from the text file so long as data exists:
-		size_t c {0};
-		for (size_t i = 0; i < tup_c; i++) {
-			num        = col[i];
-			dbl_arr[c] = num;
+		for (size_t i = 0; i < 131072; i++) {
+			dbl_arr[i] = col[i];
 		}
 
 		// Benchmark encoding
@@ -92,7 +84,7 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 
 		// To store ENC_SIZE
 		size_t const ENC_SIZE = ZSTD_compress(enc_arr, ENC_SIZE_UPPER_BOUND, dbl_arr, INPUT_SIZE, 3);
-		printf("%6u -> %7u\n", (unsigned)INPUT_SIZE, (unsigned)ENC_SIZE);
+		//		printf("%6u -> %7u\n", (unsigned)INPUT_SIZE, (unsigned)ENC_SIZE);
 
 		// Benchmark decoding
 		benchmark.Run(bench_decode_zstd(dataset, enc_arr, ENC_SIZE, dec_arr));
