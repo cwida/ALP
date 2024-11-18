@@ -103,6 +103,15 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+green_echo "Running compression ratio benchmarks..."
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
+
 # Generate compression ratio tables
 green_echo "Generating compression ratio tables..."
 output=$(python3 "$CLONED_DIR/publication/script/generate_tables.py")
@@ -111,14 +120,23 @@ black_echo "$output"
 # Run benchmarks based on system architecture
 green_echo "Running benchmarks based on system architecture..."
 if [ "$ARCH" == "arm64" ]; then
-  green_echo "Running ARM64 benchmarks..."
+  green_echo "Running ARM64 speed benchmarks..."
   "$CLONED_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
 else
 
   # 4xLarge benchmarks
-  green_echo "Running i4i_4xlarge benchmarks..."
+  green_echo "Running I4I_4XLarge speed benchmarks..."
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
+  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
 
   # End-to-end benchmark
   SCRIPT_DIR=$(dirname "$(realpath "$0")")
