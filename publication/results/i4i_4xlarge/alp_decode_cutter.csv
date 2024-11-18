@@ -1,4 +1,3 @@
 benchmark_number,name,iterations,cycles_per_tuple
-0,air_sensor_f_decode,300000,1.66781
-25,poi_lat_decode,300000,1.74289
-26,poi_lon_decode,300000,1.69417
+24,POI-lat_decode,300000,2.64548
+25,POI-lon_decode,300000,2.51721
