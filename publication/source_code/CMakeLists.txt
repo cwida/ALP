@@ -7,8 +7,9 @@ endif ()
 
 FetchContent_Declare(
         zstd
-        GIT_REPOSITORY https://github.com/facebook/zstd
-        GIT_TAG 794ea1b0afca0f020f4e57b6732332231fb23c70)
+        GIT_REPOSITORY https://github.com/facebook/zstd.git
+        GIT_TAG v1.5.5
+)
 
 FetchContent_MakeAvailable(zstd)
 
