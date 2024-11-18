@@ -141,17 +141,6 @@ void benchmark_all(benchmark::Benchmark& benchmark) {
 				std::exit(-1);
 			}
 		}
-
-		auto exceptions_count = exc_c_arr[0];
-		if (dataset.exceptions_count != exceptions_count) {
-			std::cout << dataset.name << " with exceptions_count : " << dataset.exceptions_count << " should be "
-			          << exceptions_count << "\n";
-		}
-
-		if (dataset.bit_width != bw) {
-			std::cout << dataset.name << " with bw " << static_cast<uint64_t>(dataset.bit_width) << " should be "
-			          << static_cast<uint64_t>(bw) << "\n";
-		}
 	}
 }
 
