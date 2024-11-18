@@ -47,7 +47,7 @@ public:
 
 		alp_bench::patas::PatasCompressionState<INNERTYPE, false> patas_state;
 		INNERTYPE*                                                uint64_p;
-		auto*                                                     dbl_arr = new double[1024];
+		auto*                                                     dbl_arr = new T[1024];
 		T*                                                        dec_dbl_p;
 		auto*                                                     dec_arr = new INNERTYPE[1024];
 
@@ -61,7 +61,7 @@ public:
 
 			size_t tuples_count;
 			auto*  data_column = mapper::mmap_file<T>(tuples_count, dataset.binary_file_path);
-			double value_to_encode {0.0};
+			T value_to_encode {0.0};
 			size_t vector_idx {0};
 			size_t rowgroup_offset {0};
 			size_t vectors_count = {0};

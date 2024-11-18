@@ -50,4 +50,4 @@ target_include_directories(publication_bench_gorillas PRIVATE ${CMAKE_CURRENT_BI
 configure_file(${CMAKE_SOURCE_DIR}/benchmarks/fls_bench/fls_bench.hpp ${CMAKE_CURRENT_BINARY_DIR}/bench_zstd.hpp)
 add_executable(publication_bench_zstd bench_zstd.cpp)
 target_include_directories(publication_bench_zstd PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(publication_bench_zstd PRIVATE libzstd)
+target_link_libraries(publication_bench_zstd PRIVATE libzstd_shared)
