@@ -1,7 +1,8 @@
 #!/bin/bash
 
 declare -a datasets=("food_prices" "city_temperature_f" "bitcoin_transactions_f" "gov26" "nyc29")
-declare -a schemes=("alp" "pde" "patas" "gorilla" "ztsd" "chimp" "chimp128")
+#declare -a schemes=("alp" "pde" "patas" "gorilla" "ztsd" "chimp" "chimp128" "uncompressed")
+declare -a schemes=("uncompressed")
 declare -a queries=("scan" "sum")
 declare -a threads=("1" "8" "16")
 
