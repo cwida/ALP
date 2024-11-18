@@ -268,7 +268,7 @@ int main(int argc, char* argv[]) {
 	} else if (scheme_string == "chimp128") {
 		encoding_scheme = {encoding::chimp128_scheme};
 	} else if (scheme_string == "uncompressed") {
-		encoding_scheme = {encoding::uncompressed_scheme``};
+		encoding_scheme = {encoding::uncompressed_scheme};
 	} else {
 		throw std::runtime_error("Wrong Scheme Type.");
 	}
