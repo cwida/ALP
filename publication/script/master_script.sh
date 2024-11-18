@@ -83,7 +83,7 @@ elif [ "$ARCH" == "arm64" ]; then
   TOOLCHAIN_FILE="$CLONED_DIR/toolchain/arm64.cmake"
   green_echo "Using ARM64 toolchain file..."
 else
-  TOOLCHAIN_FILE="$CLONED_DIR/toolchain/x86.cmake"
+  TOOLCHAIN_FILE="$CLONED_DIR/toolchain/i4i_4xlarge.cmake"
   green_echo "Using x86 toolchain file..."
 fi
 
@@ -114,6 +114,12 @@ if [ "$ARCH" == "arm64" ]; then
   green_echo "Running ARM64 benchmarks..."
   "$CLONED_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
 else
+
+  # 4xLarge benchmarks
+  green_echo "Running i4i_4xlarge benchmarks..."
+  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
+
   # End-to-end benchmark
   SCRIPT_DIR=$(dirname "$(realpath "$0")")
   OUTPUT_FILE="$SCRIPT_DIR/end_to_end_result.csv"
