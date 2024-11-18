@@ -303,7 +303,7 @@ target_include_directories(run_all PUBLIC
         PRIVATE src)
 
 
-target_link_libraries(run_all PUBLIC gtest_main gflags btrblocks tpch hyper vectorwise common ${JEVENTSLIB} x86_64_avx512bw_intrinsic_1024_uf1_falp ALP libzstd)
+target_link_libraries(run_all PUBLIC gtest_main gflags btrblocks tpch hyper vectorwise common ${JEVENTSLIB} x86_64_avx512bw_intrinsic_1024_uf1_falp ALP libzstd_shared)
 target_compile_options(run_all PUBLIC -mavx512dq)
 
 
