@@ -10,25 +10,22 @@ public:
 	void*  dec_dbl_arr;
 	size_t zstd_vector_size =
 	    alp::config::ROWGROUP_SIZE; // For Zstd we compress rowgroups since it would be unfair to compress small vectors
-	size_t enc_size_upper_bound = zstd_vector_size * 8;
-	size_t input_size           = zstd_vector_size * 8;
-	size_t dec_size             = input_size;
 
-	void SetUp() override {
-		enc_dbl_arr = malloc(input_size);
-		dec_dbl_arr = malloc(input_size);
-	}
+	void SetUp() override {}
 
-	~zstd_test() override {
-		free(enc_dbl_arr);
-		free(dec_dbl_arr);
-	}
+	~zstd_test() override {}
 
 	template <typename T, int N_DATASETS>
 	void bench_compression_ratio(const std::array<alp_bench::Column, N_DATASETS>& datasets, const std::string& path) {
 		if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v != nullptr) {
 			alp_bench::get_paths().alp_dataset_binary_dir_path = *v;
 		}
+
+		size_t enc_size_upper_bound = zstd_vector_size * sizeof(T);
+		size_t input_size           = zstd_vector_size * sizeof(T);
+		size_t dec_size             = input_size;
+		enc_dbl_arr                 = malloc(input_size);
+		dec_dbl_arr                 = malloc(input_size);
 
 		std::ofstream ofile(path, std::ios::out);
 		ofile << "dataset,size\n";
@@ -48,8 +45,8 @@ public:
 
 			if (tuples_count < zstd_vector_size) {
 				zstd_vector_size     = tuples_count;
-				input_size           = zstd_vector_size * 8;
-				enc_size_upper_bound = zstd_vector_size * 8;
+				input_size           = zstd_vector_size * sizeof(T);
+				enc_size_upper_bound = zstd_vector_size * sizeof(T);
 			}
 
 			/* Encode - Decode - Validate. */
@@ -67,7 +64,7 @@ public:
 				    ZSTD_compress(enc_dbl_arr, enc_size_upper_bound, dbl_arr, input_size, 3); // Level 3
 
 				// SUM COMPRESSED SIZE
-				compressed_data_size += ENC_SIZE * 8;
+				compressed_data_size += ENC_SIZE * sizeof(T);
 
 				// Decode
 				ZSTD_decompress(dec_dbl_arr, dec_size, enc_dbl_arr, ENC_SIZE);
@@ -83,10 +80,12 @@ public:
 
 			auto compression_ratio = (double)compressed_data_size / processed_tuples;
 
-			ofile << std::fixed << std::setprecision(2) << dataset.name << "," << compression_ratio << "\n";
+			ofile << std::fixed << std::setprecision(2) << dataset.name << "," << compression_ratio << std::endl;
 		}
 
 		delete[] dbl_arr;
+		free(enc_dbl_arr);
+		free(dec_dbl_arr);
 	}
 };
 

@@ -13,7 +13,7 @@ gtest_discover_tests(publication_bench_alp32_compression_ratio)
 
 # Test ZSTD: ----------------------------------------------------------------------------------------------------------
 add_executable(publication_bench_zstd_compression_ratio zstd.cpp)
-target_link_libraries(publication_bench_zstd_compression_ratio PRIVATE gtest_main libzstd)
+target_link_libraries(publication_bench_zstd_compression_ratio PRIVATE gtest_main libzstd_shared)
 gtest_discover_tests(publication_bench_zstd_compression_ratio)
 
 # Test Chimp: ----------------------------------------------------------------------------------------------------------
