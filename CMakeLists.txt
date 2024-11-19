@@ -74,7 +74,11 @@ add_compile_definitions(ALP_CMAKE_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories(include)
 
 # Src: -----------------------------------------------------------------------------------------------------------------
-add_subdirectory(src)
+if (TRUE)
+    message("---------------------------------------------------------------------------------------------------------")
+    message("-- ALP: build library:")
+    add_subdirectory(src)
+endif ()
 
 # Data: ----------------------------------------------------------------------------------------------------------------
 if (ALP_BUILD_TESTING OR ALP_BUILD_PUBLICATION OR ALP_BUILD_BENCHMARKING)
