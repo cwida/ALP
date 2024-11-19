@@ -29,3 +29,10 @@ target_link_libraries(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench PRIVATE x86_
 target_link_libraries(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench PRIVATE ALP)
 target_include_directories(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 add_alp_benchmark(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench)
+#------------------------------------------------------------------------------------------------------
+configure_file(${CMAKE_SOURCE_DIR}/benchmarks/fls_bench/fls_bench.hpp ${CMAKE_CURRENT_BINARY_DIR}/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw.hpp)
+add_executable(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw.cpp)
+target_link_libraries(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw PRIVATE x86_64_avx512bw_intrinsic_1024_uf1_falp)
+target_link_libraries(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw PRIVATE ALP)
+target_include_directories(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+add_alp_benchmark(x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw)
