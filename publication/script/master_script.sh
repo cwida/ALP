@@ -127,6 +127,7 @@ else
   # 4xLarge benchmarks
   green_echo "Running I4I_4XLarge speed benchmarks..."
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw"
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/fallback_scalar_aav_1024_uf1_falp_bench"
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/fallback_scalar_nav_1024_uf1_falp_bench"
