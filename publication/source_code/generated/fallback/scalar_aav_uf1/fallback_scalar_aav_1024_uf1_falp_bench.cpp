@@ -1,6 +1,7 @@
-#include "fallback_scalar_aav_1024_uf1_falp_bench.hpp"
 #include "alp.hpp"
 #include "data.hpp"
+#include "fallback_scalar_aav_1024_uf1_falp_bench.hpp"
+
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_fused_decode(alp_bench::Column& dataset,
                                                                                           int64_t*           ffor_arr,
                                                                                           uint8_t            bw,

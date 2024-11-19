@@ -129,6 +129,7 @@ else
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
   "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/fallback_scalar_aav_1024_uf1_falp_bench"
+  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/fallback_scalar_nav_1024_uf1_falp_bench"
   "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
   "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
   "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
