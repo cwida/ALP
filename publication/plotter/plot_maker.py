@@ -4,9 +4,15 @@ import matplotlib.font_manager as font_manager
 import matplotlib
 import numpy as np
 import seaborn as sns
+import os
+import warnings
+import matplotlib as mpl
+from matplotlib.ticker import AutoMinorLocator
 
 from constants import *
 
+warnings.filterwarnings("ignore", category=pd.errors.SettingWithCopyWarning)
+warnings.filterwarnings("ignore", category=UserWarning, message="The PostScript backend does not support transparency")
 
 class PlotMaker:
 
@@ -16,13 +22,31 @@ class PlotMaker:
     def __init__(self, results_directory='publication/results', out_directory='publication/figures'):
         self.results_directory = results_directory
         self.out_directory = out_directory
+        self.main_arch_directory = 'i4i_4xlarge'
 
     def get_dataset_name(self, name):
         for datasetName in DATASET_NAMES:
             nameProcessed = '_'.join(name.split('_')[:-1])
             if name == datasetName or nameProcessed == datasetName:
                 return DATASET_NAMES[datasetName]
-        return 'hmm'
+        return name
+    
+    def map_encoding_name(self, name):
+        if name in ENCODINGS_MAPPING:
+            return ENCODINGS_MAPPING[name]
+        return name
+
+    def clean_end_to_end_file(self, file_path):
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+        cleaned_lines = [line.rstrip(',\n') + '\n' for line in lines]
+        cleaned_lines.append( # TODO: Nasty hack to fill 0 in PDE which cannot compress NYC
+            'nyc29_tw,4,0,PDE,1,SCAN,0.000000,0.000000,0.000000,-1.000000,0,0\n'
+        )
+        cleaned_file_path = file_path + '_cleaned'
+        with open(cleaned_file_path, 'w') as file:
+            file.writelines(cleaned_lines)
+        return cleaned_file_path
 
 
     def get_encoding_process(self, name):
@@ -40,7 +64,7 @@ class PlotMaker:
 
 
     def plot_speed(self):
-        architecture = 'i4i'
+        architecture = self.main_arch_directory
         basePath = self.results_directory + '/' + architecture + '/'
 
         patas = pd.read_csv(basePath + 'patas.csv')
@@ -48,12 +72,13 @@ class PlotMaker:
         chimp128 = pd.read_csv(basePath + 'chimp128.csv')
         pde = pd.read_csv(basePath + 'ped.csv')
         alp1 = pd.read_csv(basePath + 'x86_64_avx512bw_intrinsic_1024_uf1_falp.csv')
+        alp1 = alp1[~(alp1['name'].str.contains('POI-'))]
         alp1 = alp1[~(alp1['name'].str.contains('poi_'))]
-        alp2 = pd.read_csv(basePath + 'alp_encode.csv')
+        alp2 = pd.read_csv(basePath + 'alp_encode_pde.csv')
         alp3 = pd.read_csv(basePath + 'alp_encode_cutter.csv')
         alp4 = pd.read_csv(basePath + 'alp_decode_cutter.csv')
         gorilla = pd.read_csv(basePath + 'gorillas.csv')
-        elf = pd.read_csv(basePath + 'elf.csv')
+        # elf = pd.read_csv(basePath + 'elf.csv')
         zstd = pd.read_csv(basePath + 'zstd.csv')
 
         alp1 = alp1[(alp1['name'].str.contains('fused')) | alp1['name'].str.contains('decode')]
@@ -74,7 +99,7 @@ class PlotMaker:
         benchmarks = {
             'ALP': alp,
             'PDE': pde, 
-            'ELF': elf,
+            # 'ELF': elf,
             'Zstd': zstd,
             'Patas': patas, 
             'Chimp128': chimp128, 
@@ -107,29 +132,6 @@ class PlotMaker:
         font = {'size': 8}
         matplotlib.rc('font', **font)
 
-
-        colors = {
-            'Chimp': '#f6b26b',
-            'Chimp128': 'red',
-            'Patas': 'orchid',
-            'PDE': '#eb9fa0', 
-            'ALP': '#59b872',
-            'Gorilla': '#4b8bf5',
-            'ELF': '#a9b7c6',
-            'Zstd': '#2B3D41',
-        }
-
-        markers = {
-            'Chimp': 'D',
-            'Chimp128': 'p',
-            'Patas': '+',
-            'PDE': 'X',
-            'ALP': '*',
-            'Gorilla': 's',
-            'ELF': 'd',
-            'Zstd': 'O'
-        }
-
         fig, (ax1) = plt.subplots(1, 1)
         fig.set_size_inches(4.5, 2.2)
 
@@ -142,20 +144,18 @@ class PlotMaker:
             marker=".",
             linewidth=0.4,
             hue='algorithm',
-            palette=colors,
+            palette=ALGORITHM_COLORS,
             alpha=1
         )  
 
         ax1.xaxis.grid(
             linewidth=0.5,
             color='#ededed',
-            #alpha=0.2
         )
 
         ax1.yaxis.grid(
             linewidth=0.5,
             color='#ededed',
-            #alpha=0.2
         )
 
         ax1.set_xlabel('Compression Speed\nas Tuples per CPU Cycle (Log Scale)', fontdict={"size": 8})
@@ -168,65 +168,65 @@ class PlotMaker:
 
         ax1.text(
             0.05, 0.01,
-            "1.7x", #"38.1",
+            "1.7x", 
             fontsize=8,
             horizontalalignment='right',
             fontweight='bold',
-            color=colors['Chimp']
+            color=ALGORITHM_COLORS['Chimp']
         )
 
         ax1.text(
             0.12, 0.03,
-            "2.2x", #"29.3",
+            "2.2x", 
             fontsize=8,
             horizontalalignment='right',
             fontweight='bold',
-            color=colors['Chimp128']
+            color=ALGORITHM_COLORS['Chimp128']
         )
 
         ax1.text(
             0.07, 0.40,
-            "1.8x", #"36.4",
+            "1.8x", 
             fontsize=8,
             horizontalalignment='right',
             fontweight='bold',
-            color=colors['Patas']
+            color=ALGORITHM_COLORS['Patas']
         )
 
         ax1.text(
             0.003, 0.14,
-            "2.0x",#"33.1",
+            "2.0x",
             fontsize=8,
             horizontalalignment='right',
             fontweight='bold',
-            color=colors['PDE']
+            color=ALGORITHM_COLORS['PDE']
         )
 
         ax1.text(
             0.04, 0.06,
-            "1.5x",#"33.1",
+            "1.5x",
             fontsize=8,
             horizontalalignment='right',
             fontweight='bold',
-            color=colors['Gorilla']
+            color=ALGORITHM_COLORS['Gorilla']
         )
 
-        ax1.text(
-            0.004, 0.01,
-            "2.8x", #
-            fontsize=8,
-            horizontalalignment='right',
-            fontweight='bold',
-            color=colors['ELF']
-        )
+        # ax1.text(
+        #     0.004, 0.01,
+        #     "2.8x",
+        #     fontsize=8,
+        #     horizontalalignment='right',
+        #     fontweight='bold',
+        #     color=ALGORITHM_COLORS['ELF']
+        # )
 
         ax1.text(
             0.011, 0.09,
-            "3.1x", #
+            "3.1x",
             fontsize=8,
             horizontalalignment='right',
             fontweight='bold',
-            color=colors['Zstd']
+            color=ALGORITHM_COLORS['Zstd']
         )
 
         ax1.text(
@@ -235,18 +235,15 @@ class PlotMaker:
             fontsize=8.5,
             horizontalalignment='right',
             fontweight='bold',
-            color=colors['ALP']
+            color=ALGORITHM_COLORS['ALP']
         )
 
 
         handles, labels = ax1.get_legend_handles_labels()
-        #  ['Patas', 'Chimp', 'Chimp128', 'PDE', 'ALP', 'Gorilla'])
         handles, labels
         order = [4,3,0,2,1,5]
-        #ax.legend()
 
         ax1.legend(
-        #     [handles[idx] for idx in order],[labels[idx] for idx in order],
             loc="upper left",
             prop={'size': 6.5},
             frameon=False,
@@ -260,19 +257,19 @@ class PlotMaker:
 
 
     def plot_fused_unfused(self):
-        df_bw = pd.read_csv(f'{self.results_directory}/i4i/x86_64_avx512bw_intrinsic_1024_uf1_falp.csv')
+        df_bw = pd.read_csv(f'{self.results_directory}/{self.main_arch_directory}/x86_64_avx512bw_intrinsic_1024_uf1_falp.csv')
         df_bw = df_bw[df_bw['name'].str.contains('bw')]
         df_bw['process'] = df_bw['name'].apply(self.get_fused_process)
         df_bw['tuples_per_cycle'] = 1 / df_bw['cycles_per_tuple']
         df_bw = df_bw[['tuples_per_cycle', 'process', 'benchmark_number']]
         
-        df = pd.read_csv(f'{self.results_directory}/i4i/x86_64_avx512bw_intrinsic_1024_uf1_falp.csv')
+        df = pd.read_csv(f'{self.results_directory}/{self.main_arch_directory}/x86_64_avx512bw_intrinsic_1024_uf1_falp.csv')
         df = df[~df['name'].str.contains('bw')]
         df['tuples_per_cycle'] = 1 / df['cycles_per_tuple']
         df['process'] = df['name'].apply(self.get_fused_process)
-        # df = df[
-        #     ~df['name'].str.contains('gov')
-        # ]
+        df = df[
+            ~df['name'].str.contains('POI-')
+        ]
         df = df[
             ~df['name'].str.contains('poi_')
         ]
@@ -287,11 +284,6 @@ class PlotMaker:
 
         font = {'size': 8}
         matplotlib.rc('font', **font)
-
-        colors = {
-            'Fused': '#4b8bf5',
-            'Non-Fused': '#f6b26b'
-        }
 
         fig, (ax1u, ax1d, ax2u, ax2d) = plt.subplots(4, 1, constrained_layout=False, gridspec_kw={'height_ratios': [1, 3, 1, 3]})
         fig.set_size_inches(4.5, 3.4)
@@ -308,7 +300,7 @@ class PlotMaker:
             #style='process',
             linewidth=0.3,
             edgecolor='white',
-            palette=colors
+            palette=F_NF_COLORS
         )
 
         sns.scatterplot(
@@ -321,7 +313,7 @@ class PlotMaker:
             #style='process',
             linewidth=0.3,
             edgecolor='white',
-            palette=colors
+            palette=F_NF_COLORS
         )
 
         ax1u.spines['bottom'].set_visible(False)
@@ -357,7 +349,7 @@ class PlotMaker:
             ax=ax2u,
             linewidth=0.6,
             markers=False,
-            palette=colors,
+            palette=F_NF_COLORS,
             dashes=False,
             legend=False
         )
@@ -372,7 +364,7 @@ class PlotMaker:
             marker=".",
             linewidth=0.2,
             edgecolor='white',
-            palette=colors
+            palette=F_NF_COLORS
         )
 
         sns.lineplot(
@@ -383,7 +375,7 @@ class PlotMaker:
             ax=ax2d,
             linewidth=0.6,
             markers=False,
-            palette=colors,
+            palette=F_NF_COLORS,
             dashes=False,
             legend=False
         )
@@ -398,7 +390,7 @@ class PlotMaker:
             marker=".",
             linewidth=0.2,
             edgecolor='white',
-            palette=colors
+            palette=F_NF_COLORS
         )
 
         ax2u.spines['bottom'].set_visible(False)
@@ -526,9 +518,9 @@ class PlotMaker:
             pd.read_csv(f'{self.results_directory}/c7g/arm64v8_neon_intrinsic_1024_uf1_falp.csv')# SIMDized
         ]
         icelake = [
-            pd.read_csv(f'{self.results_directory}/i4i/fallback_scalar_aav_1024_uf1_falp.csv'),   # Auto-Vectorized
-            pd.read_csv(f'{self.results_directory}/i4i/fallback_scalar_nav_1024_uf1_falp.csv'),   # Scalar
-            pd.read_csv(f'{self.results_directory}/i4i/x86_64_avx512bw_intrinsic_1024_uf1_falp.csv')# SIMDized
+            pd.read_csv(f'{self.results_directory}/i4i_4xlarge/fallback_scalar_aav_1024_uf1_falp.csv'),   # Auto-Vectorized
+            pd.read_csv(f'{self.results_directory}/i4i_4xlarge/fallback_scalar_nav_1024_uf1_falp.csv'),   # Scalar
+            pd.read_csv(f'{self.results_directory}/i4i_4xlarge/x86_64_avx512bw_intrinsic_1024_uf1_falp.csv')# SIMDized
         ]
         m1 = [
             pd.read_csv(f'{self.results_directory}/m1/fallback_scalar_aav_1024_uf1_falp.csv'),   # Auto-Vectorized
@@ -563,12 +555,6 @@ class PlotMaker:
         font = {'size': 8}
         matplotlib.rc('font', **font)
 
-        colors = {
-            'Auto-Vectorized': '#e06666',
-            'Scalar': '#f6b26b',
-            'SIMDized': '#4b8bf5'
-        }
-
         fig, (ax1) = plt.subplots(1, 1, constrained_layout=True)
         fig.set_size_inches(4.5, 1.8)
 
@@ -583,7 +569,7 @@ class PlotMaker:
             marker=".",
             linewidth=0.3,
             edgecolor='white',
-            palette=colors
+            palette=CODE_COLORS
         )
 
         ax1.xaxis.grid(linewidth=0.5, color='#ededed')
@@ -604,3 +590,197 @@ class PlotMaker:
 
         plt.savefig(f'{self.out_directory}/Architectures.eps', format='eps', dpi=800, bbox_inches='tight')
         plt.savefig(f'{self.out_directory}/Architectures.png', format='png', dpi=800, bbox_inches='tight')
+
+    def plot_end_to_end(self):
+        mpl.rcParams['hatch.linewidth'] = 0.2
+        mpl.rcParams['axes.linewidth'] = 0.5 
+
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(script_dir, "../end_to_end_bench/result")
+        cleaned_file_path = self.clean_end_to_end_file(file_path)
+
+        column_names = [
+            'dataset', 'repetition', 'warmup_repetition', 'scheme', 'thread_n',
+            'query', 'time(s)', 'result(tpc)', 'corrected_result(tpc)', 'validity',
+            'compression_cycles', 'cycles'
+        ]
+
+        benchmarked_data = pd.read_csv(cleaned_file_path, names=column_names, header=0)
+        scan_sum_data = benchmarked_data[['dataset', 'scheme', 'thread_n', 'cycles', 'repetition', 'query']].copy()
+        scan_sum_data['cycles'] = pd.to_numeric(scan_sum_data['cycles'], errors='coerce')
+
+        scan_sum_data_w_cycles = scan_sum_data.copy()
+        scan_sum_data_w_cycles['cpt'] = ((scan_sum_data_w_cycles['cycles'] / scan_sum_data_w_cycles['repetition'])) * scan_sum_data_w_cycles['thread_n']
+        scan_sum_data_w_cycles['tpc'] = 1 / scan_sum_data_w_cycles['cpt']
+
+        comp_data = pd.read_csv(cleaned_file_path, names=column_names, header=0)
+        comp_data = comp_data[
+            (comp_data['thread_n'] == 1) & 
+            (comp_data['query'] == 'SCAN')
+        ]
+        comp_data['cycles'] = pd.to_numeric(comp_data['compression_cycles'], errors='coerce')
+        comp_data['cpt'] = ((comp_data['cycles'] / comp_data['repetition'])) * comp_data['thread_n']
+        comp_data['tpc'] = 1 / comp_data['cpt']
+        comp_data['query'] = 'COMP'
+
+        benchmarked_data = pd.concat([scan_sum_data_w_cycles, comp_data])
+        benchmarked_data['dataset'] = benchmarked_data['dataset'].apply(self.get_dataset_name)
+        benchmarked_data['scheme'] = benchmarked_data['scheme'].apply(self.map_encoding_name)
+        benchmarked_data['query'] = benchmarked_data['query'] + benchmarked_data['thread_n'].astype(str)
+        benchmarked_data = benchmarked_data[['dataset', 'scheme', 'query', 'tpc', 'cpt']]
+        benchmarked_data = benchmarked_data.sort_values('scheme')
+
+        # Table 6 Generation (City-Temp end-to-end speed)
+        METRIC_FOR_TABLE = 'cpt'
+        city_temp_data = benchmarked_data.copy()
+        city_temp_data = city_temp_data.sort_values(['scheme', 'dataset', 'query'])
+        city_temp_data = city_temp_data.set_index(['scheme', 'dataset'])[['query', METRIC_FOR_TABLE]].pivot(columns=['query'])
+        city_temp_data = city_temp_data.droplevel(0, axis=1)
+        city_temp_data = city_temp_data.reset_index()
+        city_temp_data = city_temp_data.fillna(0)
+        city_temp_data = city_temp_data[city_temp_data['dataset'] == 'City-Temp']
+        city_temp_data = city_temp_data.set_index('scheme')
+        city_temp_data = city_temp_data[['SCAN1', 'SCAN8', 'SCAN16', 'SUM1', 'SUM8',  'SUM16', 'COMP1']]
+        print('Table 6 with Raw cycle values', city_temp_data)
+        city_temp_data.loc[:,:] = city_temp_data.loc[:,:].div(city_temp_data.iloc[0, :])
+        city_temp_data.loc[['ALP', 'Uncompressed', 'PDE', 'Patas', 'Gorilla', 'Chimp', 'Chimp128', 'Zstd']]
+        print('Table 6 normalized', city_temp_data)
+        city_temp_data = city_temp_data.astype(str)
+        city_temp_data = city_temp_data.map(lambda x: x[:4]) # 4 precision digits
+        city_temp_data.iloc[1] = city_temp_data.iloc[1].astype(str) + 'x Slower than ALP ↓'
+        output_file = os.path.join(script_dir, "../tables/table_6.md")
+        city_temp_data.to_markdown(output_file)
+        ################
+        
+        METRIC_TO_PLOT = 'cpt'
+        benchmarked_data = benchmarked_data.sort_values(['scheme', 'dataset', 'query'])
+        benchmarked_data = benchmarked_data.set_index(['scheme', 'dataset'])[['query', METRIC_TO_PLOT]].pivot(columns=['query'])
+        benchmarked_data = benchmarked_data.droplevel(0, axis=1)
+        benchmarked_data = benchmarked_data.reset_index()
+        benchmarked_data = benchmarked_data.fillna(0)
+        data_for_plots = benchmarked_data.copy()
+        data_for_plots['SUM-SCAN1'] = data_for_plots['SUM1'] - data_for_plots['SCAN1']
+        data_for_plots['SUM-SCAN8'] = (data_for_plots['SUM8'] - data_for_plots['SCAN8'])
+        data_for_plots['SUM-SCAN16'] = (data_for_plots['SUM16'] - data_for_plots['SCAN16'])
+
+        datasets_of_interest = [
+            "Gov/26",
+            "City-Temp",
+            "Food-prices",
+            "Blockchain-tr",
+            "NYC/29"
+        ]
+
+        datasets_bits_value = [
+            "0.4",
+            "10.7",
+            "23.7",
+            "36.2",
+            "40.4"
+        ]
+
+        data_for_plots = data_for_plots[data_for_plots['dataset'].isin(
+            datasets_of_interest
+        )]
+
+        fig, ((ax1, ax2, ax3, ax4, ax5)) = plt.subplots(1, 5, constrained_layout=False)
+        fig.set_size_inches(11, 1.2)
+
+        all_axes = [ax1, ax2, ax3, ax4, ax5]
+
+        data_for_plots = data_for_plots.set_index('dataset')
+
+        queries = ['SUM1', 'SCAN1', 'SUM8', 'SCAN8', 'SUM16', 'SCAN16', 'COMP1']
+        alg_order = ['ALP', 'Uncompressed', 'PDE', 'Patas', 'Gorilla', 'Chimp', 'Chimp128', 'Zstd']
+        labels_for_plot = ['ALP', 'Unc.', 'PDE', 'Patas', 'Gor.', 'Ch.', 'Ch.128', 'Zstd']
+
+        for i in range(len(all_axes)):
+            query = queries[i]
+            ax = all_axes[i]
+            cur_dataset_name = datasets_of_interest[i]
+            
+            cur_dataset = data_for_plots.loc[cur_dataset_name, :]
+            cur_dataset = cur_dataset.set_index('scheme')
+            cur_dataset = cur_dataset.loc[alg_order]
+            
+            cur_dataset_real_sum = cur_dataset[['SUM-SCAN1', 'SUM-SCAN8', 'SUM-SCAN16']]
+            cur_dataset_sum = cur_dataset[['SUM1', 'SUM8', 'SUM16']]
+            
+            cur_dataset_sum.plot.bar(
+                ax=ax,
+                color=END_TO_END_COLORS,
+                linewidth=0.2,
+                edgecolor='black',
+            )
+            
+            cur_dataset_real_sum.plot.bar(
+                ax=ax,
+                color=END_TO_END_COLORS,
+                linewidth=0.2,
+                edgecolor='black',
+                hatch='///////'
+            )
+            
+            minor_locator = AutoMinorLocator(2)
+            ax.xaxis.set_minor_locator(minor_locator)
+            
+            ax.xaxis.grid(
+                which='minor',
+                color='#e6e6e6',
+                linewidth=0.5,
+                alpha=1
+            )
+            ax.tick_params(axis='x', which='minor', colors='white')
+            
+            ax.yaxis.grid(
+                color='#e6e6e6',
+                linewidth=0.5,
+                alpha=1
+            )
+
+            ax.set_xlabel('')
+            ax.set_ylabel('')
+            ax.tick_params(axis='x', labelrotation=0, labelsize=5)
+            ax.set_xticklabels(labels_for_plot)
+            ax.tick_params(axis='y', labelsize=6)
+            
+            if i == 0:
+                subplot_title = cur_dataset_name + " (" + datasets_bits_value[i] + " bits/value on ALP)"
+            else:
+                subplot_title = cur_dataset_name + " (" + datasets_bits_value[i] + " bits/value)"
+            
+            ax.set_title(subplot_title, size=7)
+            ax.set_axisbelow(True)
+            
+            if i != 0:
+                ax.get_legend().remove()
+            
+            # PDE cannot compress NYC/29
+            if (cur_dataset_name == 'NYC/29'):
+                ax.plot(2, 1.5, marker='x', color='red')
+                
+            ax.set_ylim(ymin=0)
+            
+        fig.supylabel('CPU Cycles\n[$\it{Lower=Better}$]\n(Log Scale)', size=8, ha='center')
+        fig.supylabel('CPU Cycles\n[$\it{Lower=Better}$]', size=8, ha='center')
+
+        plt.subplots_adjust(left=0.06, hspace=0.4)
+
+        handles, labels = ax1.get_legend_handles_labels()
+        new_labels = ['SCAN 1 thread', 'SCAN 8 threads', 'SCAN 16 threads', 'SUM']
+        ax1.legend(
+            handles[0:5],
+            new_labels,
+            loc="upper left",
+            prop={'size': 5},
+            frameon=False,
+            ncols=1,
+            handlelength=0.7
+        )
+
+        figures_dir = os.path.join(script_dir, "../figures")
+        output_path_png = os.path.join(figures_dir, "EndToEnd.png")
+        output_path_eps = os.path.join(figures_dir, "EndToEnd.eps")
+
+        plt.savefig(output_path_png, format='png', dpi=600, bbox_inches='tight')
+        plt.savefig(output_path_eps, format='eps', dpi=800, bbox_inches='tight')
