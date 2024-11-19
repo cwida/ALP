@@ -257,7 +257,7 @@ class PlotMaker:
 
 
     def plot_fused_unfused(self):
-        df_bw = pd.read_csv(f'{self.results_directory}/{self.main_arch_directory}/x86_64_avx512bw_intrinsic_1024_uf1_falp.csv')
+        df_bw = pd.read_csv(f'{self.results_directory}/{self.main_arch_directory}/x86_64_avx512bw_intrinsic_1024_uf1_falp_bw.csv')
         df_bw = df_bw[df_bw['name'].str.contains('bw')]
         df_bw['process'] = df_bw['name'].apply(self.get_fused_process)
         df_bw['tuples_per_cycle'] = 1 / df_bw['cycles_per_tuple']
