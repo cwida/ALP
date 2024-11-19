@@ -252,8 +252,8 @@ class PlotMaker:
 
         ax1.set_ylim((0, 13))
 
-        plt.savefig(f'{self.out_directory}/Speed.eps', format='eps', dpi=800, bbox_inches='tight')
-        plt.savefig(f'{self.out_directory}/Speed.png', format='png', dpi=800, bbox_inches='tight')
+        plt.savefig(f'{self.out_directory}/figure_1_Speed.eps', format='eps', dpi=800, bbox_inches='tight')
+        plt.savefig(f'{self.out_directory}/figure_1_Speed.png', format='png', dpi=800, bbox_inches='tight')
 
 
     def plot_fused_unfused(self):
@@ -502,8 +502,8 @@ class PlotMaker:
         ax2u.tick_params(axis='x', colors='white')
 
         ax2d.set_xlabel('Bitwidth of Vector', fontsize=8)
-        plt.savefig(f'{self.out_directory}/Fusing.eps', format='eps', dpi=800, bbox_inches='tight')
-        plt.savefig(f'{self.out_directory}/Fusing.png', format='png', dpi=800, bbox_inches='tight')
+        plt.savefig(f'{self.out_directory}/figure_5_fusing.eps', format='eps', dpi=800, bbox_inches='tight')
+        plt.savefig(f'{self.out_directory}/figure_5_fusing.png', format='png', dpi=800, bbox_inches='tight')
 
 
     def plot_architectures(self):
@@ -588,8 +588,8 @@ class PlotMaker:
         ax1.set_ylabel('Decompression Speed\nTuples per CPU Cycle')
         ax1.set_xlabel('Architectures')
 
-        plt.savefig(f'{self.out_directory}/Architectures.eps', format='eps', dpi=800, bbox_inches='tight')
-        plt.savefig(f'{self.out_directory}/Architectures.png', format='png', dpi=800, bbox_inches='tight')
+        plt.savefig(f'{self.out_directory}/figure_4_Architectures.eps', format='eps', dpi=800, bbox_inches='tight')
+        plt.savefig(f'{self.out_directory}/figure_4_Architectures.png', format='png', dpi=800, bbox_inches='tight')
 
     def plot_end_to_end(self):
         mpl.rcParams['hatch.linewidth'] = 0.2
@@ -779,8 +779,8 @@ class PlotMaker:
         )
 
         figures_dir = os.path.join(script_dir, "../figures")
-        output_path_png = os.path.join(figures_dir, "EndToEnd.png")
-        output_path_eps = os.path.join(figures_dir, "EndToEnd.eps")
+        output_path_png = os.path.join(figures_dir, "figure_6_EndToEnd.png")
+        output_path_eps = os.path.join(figures_dir, "figure_6_EndToEnd.eps")
 
         plt.savefig(output_path_png, format='png', dpi=600, bbox_inches='tight')
         plt.savefig(output_path_eps, format='eps', dpi=800, bbox_inches='tight')
