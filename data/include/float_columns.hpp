@@ -17,7 +17,7 @@ inline auto get_sp_datasets() {
 	     0,
 	     0,
 	     true},
-	    {4, "WAV2VEC", "", get_paths().alp_dataset_binary_dir_path + "sp_wav2vec2_base_960h.bin", 0, 0, 0, 0, true},
+	    {4, "W2VEC", "", get_paths().alp_dataset_binary_dir_path + "sp_w2v.bin", 0, 0, 0, 0, true},
 
 	}};
 
