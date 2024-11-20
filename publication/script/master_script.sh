@@ -183,19 +183,19 @@ else
   fi
 
   # Navigate to PDE directory and build
-  green_echo "Building the BENCH_PDE repository..."
-  cd "$PDE_DIR"
-  mkdir -p build
-  cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$PDE_DIR" -B "$PDE_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
-  if [ $? -ne 0 ]; then
-    red_echo "CMake configuration failed for BENCH_PDE."
-    exit 1
-  fi
-  cmake --build "$PDE_DIR/build" -j 16
-  if [ $? -ne 0 ]; then
-    red_echo "Build failed for BENCH_PDE."
-    exit 1
-  fi
+#  green_echo "Building the BENCH_PDE repository..."
+#  cd "$PDE_DIR"
+#  mkdir -p build
+#  cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$PDE_DIR" -B "$PDE_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+#  if [ $? -ne 0 ]; then
+#    red_echo "CMake configuration failed for BENCH_PDE."
+#    exit 1
+#  fi
+#  cmake --build "$PDE_DIR/build" -j 16
+#  if [ $? -ne 0 ]; then
+#    red_echo "Build failed for BENCH_PDE."
+#    exit 1
+#  fi
 
   "$PDE_DIR/build/test_pde"
   "$PDE_DIR/build/bench_pde"
@@ -205,7 +205,7 @@ fi
 
 # Set up Python and install dependencies
 green_echo "Setting up Python and installing dependencies..."
-python -m pip install --upgrade pip
+python3 -m pip install --upgrade pip
 pip install -r "$CLONED_DIR/publication/plotter/requirements.txt"
 
 # Run the plotter script
