@@ -152,15 +152,15 @@ else
 #  echo -e "$HEADER\n$(cat "$OUTPUT_FILE")" >"$OUTPUT_FILE"
 #  green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
 
-  # Clone and build the BENCH_PED repository
-  green_echo "Cloning the BENCH_PED repository..."
+  # Clone and build the BENCH_PDE repository
+  green_echo "Cloning the BENCH_PDE repository..."
   NEW_REPO_URL="https://github.com/azimafroozeh/bench_ped.git"
-  PED_DIR="$WORKSPACE/BENCH_PED"
+  PDE_DIR="$WORKSPACE/BENCH_PDE"
   BRANCH="main"
 
-  if [ -d "$PED_DIR" ]; then
+  if [ -d "$PDE_DIR" ]; then
     green_echo "Repository already exists. Pulling the latest changes..."
-    cd "$PED_DIR"
+    cd "$PDE_DIR"
     git fetch origin "$BRANCH"
     git_status=$(git status -uno)
     if echo "$git_status" | grep -q "up to date"; then
@@ -175,27 +175,32 @@ else
     fi
   else
     green_echo "Cloning the repository..."
-    git clone --branch "$BRANCH" "$NEW_REPO_URL" "$PED_DIR"
+    git clone --branch "$BRANCH" "$NEW_REPO_URL" "$PDE_DIR"
     if [ $? -ne 0 ]; then
       red_echo "Failed to clone the repository."
       exit 1
     fi
   fi
 
-  # Navigate to PED directory and build
-  green_echo "Building the BENCH_PED repository..."
-  cd "$PED_DIR"
+  # Navigate to PDE directory and build
+  green_echo "Building the BENCH_PDE repository..."
+  cd "$PDE_DIR"
   mkdir -p build
-  cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$PED_DIR" -B "$PED_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+  cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$PDE_DIR" -B "$PDE_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
   if [ $? -ne 0 ]; then
-    red_echo "CMake configuration failed for BENCH_PED."
+    red_echo "CMake configuration failed for BENCH_PDE."
     exit 1
   fi
-  cmake --build "$PED_DIR/build" -j 16
+  cmake --build "$PDE_DIR/build" -j 16
   if [ $? -ne 0 ]; then
-    red_echo "Build failed for BENCH_PED."
+    red_echo "Build failed for BENCH_PDE."
     exit 1
   fi
+
+  "$PDE_DIR/build/test_pde"
+  "$PDE_DIR/build/bench_pde"
+
+
 fi
 
 # Set up Python and install dependencies
