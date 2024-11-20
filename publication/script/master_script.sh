@@ -143,10 +143,13 @@ else
 
   # End-to-end benchmark
   SCRIPT_DIR=$(dirname "$(realpath "$0")")
-  OUTPUT_FILE="$SCRIPT_DIR/end_to_end_result.csv"
+  OUTPUT_FILE="$SCRIPT_DIR/publication/end_to_end_bench/result"
+  HEADER="dataset,repetition,warmup_repetition,scheme,thread_n,query,time(s),result(tpc),corrected_result(tpc),validity,compression_cycles,cycles"
   green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
   export CLONED_DIR="$CLONED_DIR"
   bash "$CLONED_DIR/publication/script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
+  # Ensure the header line is at the start of the file
+  echo -e "$HEADER\n$(cat "$OUTPUT_FILE")" >"$OUTPUT_FILE"
   green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
 
   # Clone and build the BENCH_PED repository
