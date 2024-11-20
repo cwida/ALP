@@ -62,14 +62,14 @@ public:
 			size_t compressed_data_size = 0;
 
 			size_t tuples_count;
-			auto*  data_column = mapper::mmap_file<double>(tuples_count, dataset.binary_file_path);
-			double value_to_encode {0.0};
+			auto*  data_column = mapper::mmap_file<T>(tuples_count, dataset.binary_file_path);
+			T value_to_encode {0.0};
 			size_t vector_idx {0};
 			size_t rowgroup_offset {0};
 			size_t vectors_count = {0};
 			/* Encode - Decode - Validate. */
 			for (size_t i = 0; i < tuples_count; i++) {
-				value_to_encode     = data_column[i];
+ 				value_to_encode     = data_column[i];
 				dbl_arr[vector_idx] = value_to_encode;
 				vector_idx          = vector_idx + 1;
 				rowgroup_offset     = rowgroup_offset + 1;
