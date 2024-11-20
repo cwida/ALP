@@ -104,13 +104,13 @@ if [ $? -ne 0 ]; then
 fi
 
 green_echo "Running compression ratio benchmarks..."
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
-#"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_zstd_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_chimp128_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_gorillas_compression_ratio"
+"$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_patas_compression_ratio"
 
 # Generate compression ratio tables
 green_echo "Generating compression ratio tables..."
@@ -124,33 +124,33 @@ if [ "$ARCH" == "arm64" ]; then
   "$CLONED_DIR/build/publication/source_code/generated/arm64v8/neon_intrinsic_uf1/arm64v8_neon_intrinsic_1024_uf1_falp_bench"
 else
 
-#  # 4xLarge benchmarks
-#  green_echo "Running I4I_4XLarge speed benchmarks..."
-#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
-#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw"
-#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
-#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/fallback_scalar_aav_1024_uf1_falp_bench"
-#  "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/fallback_scalar_nav_1024_uf1_falp_bench"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
-#  "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
-#
-#  # End-to-end benchmark
-#  SCRIPT_DIR=$(dirname "$(realpath "$0")")
-#  OUTPUT_FILE="$SCRIPT_DIR/publication/end_to_end_bench/result"
-#  HEADER="dataset,repetition,warmup_repetition,scheme,thread_n,query,time(s),result(tpc),corrected_result(tpc),validity,compression_cycles,cycles"
-#  green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
-#  export CLONED_DIR="$CLONED_DIR"
-#  bash "$CLONED_DIR/publication/script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
-#  # Ensure the header line is at the start of the file
-#  echo -e "$HEADER\n$(cat "$OUTPUT_FILE")" >"$OUTPUT_FILE"
-#  green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
+    # 4xLarge benchmarks
+    green_echo "Running I4I_4XLarge speed benchmarks..."
+    "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench"
+    "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx512bw_intrinsic_1024_uf1_falp_bench_bw"
+    "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/x86_64_avx2_intrinsic_1024_uf1_falp_bench"
+    "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/fallback_scalar_aav_1024_uf1_falp_bench"
+    "$CLONED_DIR/build/publication/source_code/generated/x86_64/avx512bw_intrinsic_uf1/fallback_scalar_nav_1024_uf1_falp_bench"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_decode"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_cutter_encode"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_encode"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_alp_without_sampling"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_chimp128"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_gorillas"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_patas"
+    "$CLONED_DIR/build/publication/source_code/bench_speed/publication_bench_zstd"
+
+    # End-to-end benchmark
+    SCRIPT_DIR=$(dirname "$(realpath "$0")")
+    OUTPUT_FILE="$SCRIPT_DIR/publication/end_to_end_bench/result"
+    HEADER="dataset,repetition,warmup_repetition,scheme,thread_n,query,time(s),result(tpc),corrected_result(tpc),validity,compression_cycles,cycles"
+    green_echo "Running end-to-end benchmark and saving results to $OUTPUT_FILE ..."
+    export CLONED_DIR="$CLONED_DIR"
+    bash "$CLONED_DIR/publication/script/run_end_to_end.sh" >"$OUTPUT_FILE" 2>&1
+    # Ensure the header line is at the start of the file
+    echo -e "$HEADER\n$(cat "$OUTPUT_FILE")" >"$OUTPUT_FILE"
+    green_echo "Benchmark completed. Results are saved in $OUTPUT_FILE."
 
   # Clone and build the BENCH_PDE repository
   green_echo "Cloning the BENCH_PDE repository..."
@@ -183,23 +183,22 @@ else
   fi
 
   # Navigate to PDE directory and build
-#  green_echo "Building the BENCH_PDE repository..."
-#  cd "$PDE_DIR"
-#  mkdir -p build
-#  cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$PDE_DIR" -B "$PDE_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
-#  if [ $? -ne 0 ]; then
-#    red_echo "CMake configuration failed for BENCH_PDE."
-#    exit 1
-#  fi
-#  cmake --build "$PDE_DIR/build" -j 16
-#  if [ $? -ne 0 ]; then
-#    red_echo "Build failed for BENCH_PDE."
-#    exit 1
-#  fi
+  green_echo "Building the BENCH_PDE repository..."
+  cd "$PDE_DIR"
+  mkdir -p build
+  cmake -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -S "$PDE_DIR" -B "$PDE_DIR/build" -DCMAKE_BUILD_TYPE=Release -DCXX=clang++
+  if [ $? -ne 0 ]; then
+    red_echo "CMake configuration failed for BENCH_PDE."
+    exit 1
+  fi
+  cmake --build "$PDE_DIR/build" -j 16
+  if [ $? -ne 0 ]; then
+    red_echo "Build failed for BENCH_PDE."
+    exit 1
+  fi
 
   "$PDE_DIR/build/test_pde"
   "$PDE_DIR/build/bench_pde"
-
 
 fi
 
