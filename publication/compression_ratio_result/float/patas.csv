@@ -2,4 +2,4 @@ dataset,size,vectors_count
 Dino-Vitb16,45.81,84364
 GPT2,45.63,121523
 Grammarly-lg,45.51,764739
-W2VEC,45.60,404
+W2V Tweets,45.60,404

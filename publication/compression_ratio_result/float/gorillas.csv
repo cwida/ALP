@@ -1,5 +1,5 @@
 dataset,size,vectors_count
-Dino-Vitb16,32.89,42182
-GPT2,32.24,60761
-Grammarly-lg,32.19,382369
-W2VEC,32.32,202
+Dino-Vitb16,34.11,84364
+GPT2,34.11,121523
+Grammarly-lg,34.11,764739
+W2V Tweets,32.32,202
