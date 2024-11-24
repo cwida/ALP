@@ -173,7 +173,7 @@ exceptions and the bitwidth resulting after compression (unless the algorithm ch
 and the factor/exponent indexes used to encode/decode the doubles into integers.
 
 To set up the data you want to run the test on, add or remove entries in the array found
-in [double_columns.hpp](/data/include/double_columns.hpp) and `make` again. The data needed for each entry is detailed
+in [double_columns.hpp](/data/include/double/double_dataset.hpp) and `make` again. The data needed for each entry is detailed
 in [column.hpp](/data/include/column.hpp). To replicate the compression ratio tests you only need to set the dataset id,
 name, and binary_file_path.
 

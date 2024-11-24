@@ -1,0 +1,5 @@
+idx,dataset,size,alp_scheme,rowgroups_count,vectors_count
+1,Dino-Vitb16,28.78,ALP_RD,844,168728
+2,GPT2,28.01,ALP_RD,1216,243046
+3,Grammarly-lg,29.16,ALP_RD,7648,1529478
+4,W2V Tweets,28.86,ALP_RD,5,808
