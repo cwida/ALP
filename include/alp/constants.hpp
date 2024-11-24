@@ -8,6 +8,7 @@
 namespace alp {
 
 enum class Scheme : uint8_t {
+	INVALID,
 	ALP_RD,
 	ALP,
 };

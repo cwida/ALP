@@ -25,10 +25,15 @@ struct paths {
 	std::string result_dir_path             = std::string {ALP_CMAKE_SOURCE_DIR} + "/publication/";
 	std::string evalimplsts_csv_path        = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/evalimplsts/";
 	std::string alp_dataset_binary_dir_path = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/full_data/";
+	std::string alp_result_dir_path         = std::string {ALP_CMAKE_SOURCE_DIR} + "/benchmarks/result/";
+	std::string hs                          = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/full_data/";
 
 	explicit paths() {
-		const auto v = std::getenv("ALP_DATASET_DIR_PATH");
-		if (v) { alp_dataset_binary_dir_path = v; }
+		const auto alp_dataset_dir_path_env_variable = std::getenv("ALP_DATASET_DIR_PATH");
+		if (alp_dataset_dir_path_env_variable) { alp_dataset_binary_dir_path = alp_dataset_dir_path_env_variable; }
+
+		const auto hs_env_variable = std::getenv("HURRICANE_ISABEL_DATASET_DIR_PATH");
+		if (hs_env_variable) { hs = hs_env_variable; }
 	}
 };
 

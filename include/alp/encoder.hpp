@@ -37,7 +37,7 @@ struct state {
 	using UT = typename inner_t<PT>::ut;
 	using ST = typename inner_t<PT>::st;
 
-	Scheme   scheme {Scheme::ALP};
+	Scheme   scheme {Scheme::INVALID};
 	uint16_t vector_size {config::VECTOR_SIZE};
 	uint16_t exceptions_count {0};
 	size_t   sampled_values_n {0};
