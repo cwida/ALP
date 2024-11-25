@@ -5,7 +5,7 @@
 
 namespace alp_bench {
 inline auto get_generated_cols() {
-	static std::array<Column, 65> GENERATED_COLS = {
+	static std::array<ALPColumnDescriptor, 65> GENERATED_COLS = {
 	    {
 	        //
 	        {0, "bw0", get_paths().generated_columns_csv_path + "generated_doubles_bw0.csv", "", 0, 0, 0, 0},

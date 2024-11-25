@@ -16,7 +16,7 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_enc
                                                                                     int64_t*            ffor_arr,
                                                                                     int64_t*            base_arr,
                                                                                     alp::state<double>& stt,
-                                                                                    alp_bench::Column&  dataset) {
+                                                                                    alp_bench::ALPColumnDescriptor&  dataset) {
 
 	int benchmark_number = dataset.id;
 
@@ -48,7 +48,7 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_enc
                                                                                              int64_t*      encoded_arr,
                                                                                              uint8_t       fac,
                                                                                              uint8_t       exp,
-                                                                                             alp_bench::Column& dataset,
+                                                                                             alp_bench::ALPColumnDescriptor& dataset,
                                                                                              uint8_t&           bw,
                                                                                              int64_t* base_arr,
                                                                                              int64_t* ffor_arr) {

@@ -5,7 +5,7 @@
 
 namespace alp_bench {
 inline auto get_sp_datasets() {
-	static std::array<Column, 4> SP_DATASETS = {{
+	static std::array<ALPColumnDescriptor, 4> SP_DATASETS = {{
 	    {1, "Dino-Vitb16", "", get_paths().alp_dataset_binary_dir_path + "sp_dino_vitb16.bin", 0, 0, 0, 0, true},
 	    {2, "GPT2", "", get_paths().alp_dataset_binary_dir_path + "sp_gpt2.bin", 0, 0, 0, 0, true},
 	    {3,

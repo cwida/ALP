@@ -6,7 +6,7 @@
 namespace alp_bench {
 
 inline auto get_edge_case() {
-	static std::array<Column, 1> EDGE_CASE = {{
+	static std::array<ALPColumnDescriptor, 1> EDGE_CASE = {{
 	    {1, "edge_case", get_paths().edge_dataset_csv_path + "edge_case.csv", "", 0, 0, 12, 0, true},
 
 	}};

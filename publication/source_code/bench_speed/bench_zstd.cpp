@@ -6,7 +6,7 @@
 // NOLINTBEGIN
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_decode_zstd(alp_bench::Column& dataset, void* enc_arr, size_t enc_size, void* dec_arr) {
+bench_decode_zstd(alp_bench::ALPColumnDescriptor& dataset, void* enc_arr, size_t enc_size, void* dec_arr) {
 
 	int benchmark_number = dataset.id;
 
@@ -31,7 +31,7 @@ bench_decode_zstd(alp_bench::Column& dataset, void* enc_arr, size_t enc_size, vo
 }
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_encode_zstd(alp_bench::Column& dataset, double* dbl_arr, void* enc_arr) {
+bench_encode_zstd(alp_bench::ALPColumnDescriptor& dataset, double* dbl_arr, void* enc_arr) {
 
 	int benchmark_number = dataset.id;
 

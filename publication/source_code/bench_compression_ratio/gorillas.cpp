@@ -31,7 +31,7 @@ public:
 	double gorillas_overhead_per_vector {static_cast<double>(16 + 16 + 16)};
 
 	template <typename T, int N_DATASETS>
-	void bench_compression_ratio(const std::array<alp_bench::Column, N_DATASETS>& datasets, const std::string& path) {
+	void bench_compression_ratio(const std::array<alp_bench::ALPColumnDescriptor, N_DATASETS>& datasets, const std::string& path) {
 		if (const auto v = std::getenv("ALP_DATASET_DIR_PATH"); v != nullptr) {
 			alp_bench::get_paths().alp_dataset_binary_dir_path = *v;
 		}

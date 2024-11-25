@@ -19,6 +19,7 @@ struct VectorMetadata {
 	uint64_t                                   right_bit_width {0};
 	uint64_t                                   left_bit_width {0};
 	std::vector<std::pair<uint16_t, uint64_t>> repetition_vec;
+	alp::Scheme                                scheme;
 };
 
 inline std::string to_str(double val) {

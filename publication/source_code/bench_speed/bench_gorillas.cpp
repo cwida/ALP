@@ -3,7 +3,7 @@
 #include "gorillas/gorillas.hpp"
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_decode_gorillas(alp_bench::Column&                                   dataset,
+bench_decode_gorillas(alp_bench::ALPColumnDescriptor&                                   dataset,
                       alp_bench::GorillasDecompressionState<uint64_t>      gorillas_de_state,
                       alp_bench::FlagBuffer<false>                         flag_buffer,
                       alp_bench::GorillasConstants::Flags*                 flags,
@@ -44,7 +44,7 @@ bench_decode_gorillas(alp_bench::Column&                                   datas
 }
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_encode_gorillas(alp_bench::Column&                                   dataset,
+bench_encode_gorillas(alp_bench::ALPColumnDescriptor&                                   dataset,
                       alp_bench::GorillasCompressionState<uint64_t, false> state,
                       uint8_t*                                             data_arr,
                       uint8_t*                                             flags_arr,

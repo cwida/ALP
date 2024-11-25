@@ -47,7 +47,7 @@ public:
 	}
 
 	template <typename T, int N_DATASETS>
-	void bench_compression_ratio(const std::array<alp_bench::Column, N_DATASETS>& datasets, const std::string& path) {
+	void bench_compression_ratio(const std::array<alp_bench::ALPColumnDescriptor, N_DATASETS>& datasets, const std::string& path) {
 		using INNERTYPE =
 		    typename std::conditional_t<std::is_same_v<T, double>,
 		                                uint64_t,
