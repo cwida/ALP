@@ -5,8 +5,8 @@
 
 namespace alp_bench {
 
-inline std::array<Column, 30> get_alp_dataset() {
-	static std::array<Column, 30> ALP_DATASET = {{
+inline std::array<ALPColumnDescriptor, 30> get_alp_dataset() {
+	static std::array<ALPColumnDescriptor, 30> ALP_DATASET = {{
 
 	    {1,
 	     "Air-Pressure",
@@ -286,8 +286,8 @@ inline std::array<Column, 30> get_alp_dataset() {
 	return ALP_DATASET;
 };
 
-inline std::array<Column, 1> get_double_test_dataset() {
-	static std::array<Column, 1> DOUBLE_TEST_DATASET = {{
+inline std::array<ALPColumnDescriptor, 1> get_double_test_dataset() {
+	static std::array<ALPColumnDescriptor, 1> DOUBLE_TEST_DATASET = {{
 	    {0, "test_0", ALP_CMAKE_SOURCE_DIR "/data/double/test_0.csv", "", 0, 0, 0, 0},
 	}};
 

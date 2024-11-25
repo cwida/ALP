@@ -3,7 +3,7 @@
 #include "data.hpp"
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_decode_chimp(alp_bench::Column&                                dataset,
+bench_decode_chimp(alp_bench::ALPColumnDescriptor&                                dataset,
                    idx_t                                             leading_zero_block_size,
                    uint32_t                                          leading_zero_index,
                    alp_bench::ChimpDecompressionState<uint64_t>      chimp_de_state,
@@ -60,7 +60,7 @@ bench_decode_chimp(alp_bench::Column&                                dataset,
 }
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_encode_chimp(alp_bench::Column&                                dataset,
+bench_encode_chimp(alp_bench::ALPColumnDescriptor&                                dataset,
                    alp_bench::ChimpCompressionState<uint64_t, false> state,
                    uint8_t*                                          data_arr,
                    uint8_t*                                          flags_arr,

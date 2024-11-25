@@ -12,7 +12,7 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const d
                                                                          int64_t*            ffor_arr,
                                                                          int64_t*            base_arr,
                                                                          alp::state<double>& stt,
-                                                                         alp_bench::Column&  dataset) {
+                                                                         alp_bench::ALPColumnDescriptor&  dataset) {
 
 	int benchmark_number = dataset.id;
 

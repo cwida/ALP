@@ -175,7 +175,7 @@ public:
 		delete[] unffor_left_arr;
 	}
 
-	void bench_alp_compression_ratio(const alp_bench::Column& dataset, std::ofstream& ofile) {
+	void bench_alp_compression_ratio(const alp_bench::ALPColumnDescriptor& dataset, std::ofstream& ofile) {
 		if (dataset.suitable_for_cutting) { return; }
 
 		std::cout << dataset.name << std::endl;
@@ -238,7 +238,7 @@ public:
 		}
 	}
 
-	void bench_alp_rd_compression_ratio(const alp_bench::Column& dataset, std::ofstream& ofile) {
+	void bench_alp_rd_compression_ratio(const alp_bench::ALPColumnDescriptor& dataset, std::ofstream& ofile) {
 		if (!dataset.suitable_for_cutting) { return; }
 		std::cout << dataset.name << std::endl;
 

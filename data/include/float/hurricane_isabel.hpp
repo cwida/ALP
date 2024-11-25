@@ -5,8 +5,10 @@
 
 namespace alp_bench {
 
-inline std::array<Column, 20> get_hurricane_isabel_dataset() {
-	static std::array<Column, 20> HURRICANE_ISABEL = {{
+constexpr size_t N_HURRICANE_ISABEL_COLUMNS = 20;
+
+inline std::array<ALPColumnDescriptor, N_HURRICANE_ISABEL_COLUMNS> get_hurricane_isabel_dataset() {
+	static std::array<ALPColumnDescriptor, N_HURRICANE_ISABEL_COLUMNS> HURRICANE_ISABEL = {{
 	    {1, "CLOUDf48", "", get_paths().hs + "CLOUDf48.bin.f32", 0, 0, 0, 0},
 	    {2, "CLOUDf48-log10", "", get_paths().hs + "CLOUDf48.log10.bin.f32", 0, 0, 0, 0},
 	    {3, "PRECIPf48", "", get_paths().hs + "PRECIPf48.bin.f32", 0, 0, 0, 0},

@@ -10,15 +10,17 @@
 #include <fstream>
 
 namespace alp_data {
+
 // we prefer the binary_path over csv_path
 template <typename PT>
-inline void read_data(std::vector<PT>& data, const std::string& csv_file_path, const std::string& bin_file_path) {
-	if (!bin_file_path.empty()) {
+inline void read_data(std::vector<PT>& data, const alp_bench::ColumnDescriptor& column_descriptor) {
+	switch (column_descriptor.file_type) {
 
+	case alp_bench::FileType::BINARY: {
 		// Open the binary file in input mode
-		std::ifstream file(bin_file_path, std::ios::binary | std::ios::in);
+		std::ifstream file(column_descriptor.path, std::ios::binary | std::ios::in);
 
-		if (!file) { throw std::runtime_error("Failed to open file: " + bin_file_path); }
+		if (!file) { throw std::runtime_error("Failed to open file: " + column_descriptor.path); }
 
 		// Get the size of the file
 		file.seekg(0, std::ios::end);
@@ -38,10 +40,9 @@ inline void read_data(std::vector<PT>& data, const std::string& csv_file_path, c
 
 		// Close the file
 		file.close();
-		return;
-	}
-	if (!csv_file_path.empty()) {
-		const auto&   path = csv_file_path;
+	} break;
+	case alp_bench::FileType::CSV: {
+		const auto&   path = column_descriptor.path;
 		std::ifstream file(path);
 
 		if (!file) { throw std::runtime_error("Failed to open file: " + path); }
@@ -61,9 +62,12 @@ inline void read_data(std::vector<PT>& data, const std::string& csv_file_path, c
 		}
 
 		file.close();
-		return;
+	} break;
+	case alp_bench::FileType::INVALID:
+	default: {
+		throw std::runtime_error("No bin or csv file specified");
 	}
-	throw std::runtime_error("No bin or csv file specified");
+	}
 }
 
 } // namespace alp_data

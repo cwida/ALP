@@ -3,7 +3,7 @@
 #include "patas/patas.hpp"
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_decoding_patas(alp_bench::Column&                         dataset,
+bench_decoding_patas(alp_bench::ALPColumnDescriptor&                         dataset,
                      uint16_t*                                  packed_metadata,
                      uint8_t*                                   data_arr,
                      uint64_t*                                  dec_arr,
@@ -46,7 +46,7 @@ bench_decoding_patas(alp_bench::Column&                         dataset,
 }
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_encoding_patas(alp_bench::Column&                                       dataset,
+bench_encoding_patas(alp_bench::ALPColumnDescriptor&                                       dataset,
                      alp_bench::patas::PatasCompressionState<uint64_t, false> patas_state,
                      uint8_t*                                                 data_arr,
                      uint16_t*                                                packed_metadata,

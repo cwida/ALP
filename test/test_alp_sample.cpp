@@ -95,7 +95,7 @@ public:
 	}
 
 	template <typename PT>
-	void test_column(const alp_bench::Column& column) {
+	void test_column(const alp_bench::ALPColumnDescriptor& column) {
 		using UT = typename alp::inner_t<PT>::ut;
 		using ST = typename alp::inner_t<PT>::st;
 

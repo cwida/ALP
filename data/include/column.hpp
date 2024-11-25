@@ -6,7 +6,28 @@
 #include <string>
 
 namespace alp_bench {
-struct Column {
+
+enum class DataType : uint8_t {
+	INVALID = 0,
+	DOUBLE  = 1,
+	FLOAT   = 2,
+};
+
+enum class FileType : uint8_t {
+	INVALID = 0,
+	BINARY  = 1,
+	CSV     = 2,
+};
+
+struct ColumnDescriptor {
+	int         id;
+	DataType    data_type;
+	std::string name;
+	std::string path;
+	FileType    file_type;
+};
+
+struct ALPColumnDescriptor {
 	uint64_t          id;
 	std::string       name;
 	const std::string csv_file_path;

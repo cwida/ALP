@@ -3,7 +3,7 @@
 #include "alp.hpp"
 #include "data.hpp"
 
-static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_fused_decode(alp_bench::Column& dataset,
+static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_fused_decode(alp_bench::ALPColumnDescriptor& dataset,
                                                                                           int64_t*           ffor_arr,
                                                                                           uint8_t            bw,
                                                                                           int64_t*           base_arr,
@@ -39,7 +39,7 @@ static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_fus
 	return benchmark::BenchmarkReporter::Run(
 	    benchmark_number, benchmark_name, iterations, double(cycles) / (double(iterations) * 1024));
 }
-static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_decode(alp_bench::Column& dataset,
+static __attribute__((noinline)) benchmark::BenchmarkReporter::Run bench_alp_decode(alp_bench::ALPColumnDescriptor& dataset,
                                                                                     int64_t*            ffor_arr,
                                                                                     int64_t*            unffor_arr,
                                                                                     uint8_t             bw,

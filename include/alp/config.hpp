@@ -9,8 +9,10 @@
 namespace alp::config {
 /// ALP Vector size (We recommend against changing this; it should be constant)
 inline constexpr size_t VECTOR_SIZE = 1024;
+/// number of vectors per rowgroup
+inline constexpr size_t N_VECTORS_PER_ROWGROUP = 100UL;
 /// Rowgroup size
-inline constexpr size_t ROWGROUP_SIZE = 100UL * VECTOR_SIZE;
+inline constexpr size_t ROWGROUP_SIZE = N_VECTORS_PER_ROWGROUP * VECTOR_SIZE;
 /// Vectors from the rowgroup from which to take samples; this will be used to then calculate the jumps
 inline constexpr size_t ROWGROUP_VECTOR_SAMPLES = 8;
 /// We calculate how many equidistant vector we must jump within a rowgroup
