@@ -149,31 +149,3 @@ We benchmarked PseudoDecimals within BtrBlocks. Results are located on `publicat
 ### ELF Speed Test
 
 We benchmarked Elf using their Java implementation.
-
-
-
-## How to benchmark with your own data
-
-## Build
-
-```shell
-cmake [OPTIONS] .
-make
-```
-
-### Setup Data
-
-Inside `data/include/double_columns.hpp` you can find an array containing information regarding the datasets used to
-benchmark ALP. Datasets information includes a path to a sample of one vector (1024 values) in CSV format (inside
-`/data/samples/`) and a path to the entire file in binary format.
-
-The binary file is used to benchmark ALP compression ratios, while the CSV sample is used to benchmark ALP speed. To
-ensure the correctness of the speed tests we also keep extra variables from each dataset, which include the number of
-exceptions and the bitwidth resulting after compression (unless the algorithm changes, these should remain consistent),
-and the factor/exponent indexes used to encode/decode the doubles into integers.
-
-To set up the data you want to run the test on, add or remove entries in the array found
-in [double_columns.hpp](/data/include/double/double_dataset.hpp) and `make` again. The data needed for each entry is detailed
-in [column.hpp](/data/include/column.hpp). To replicate the compression ratio tests you only need to set the dataset id,
-name, and binary_file_path.
-
