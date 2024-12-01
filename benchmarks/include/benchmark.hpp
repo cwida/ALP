@@ -1,5 +1,4 @@
 #include "alp.hpp"
-#include "alp_result.hpp"
 #include "data.hpp"
 #include "gtest/gtest.h"
 #include <unordered_map>
@@ -10,6 +9,7 @@
 using namespace alp::config;
 using namespace alp_bench;
 
+namespace alp_bench {
 // ALP overhead per vector : bit_width + factor-idx + exponent-idx + ffor base;
 template <typename PT>
 PT get_overhead_per_vector() {
@@ -18,6 +18,18 @@ PT get_overhead_per_vector() {
 	                       8 +               // exponent-idx
 	                       (sizeof(PT) * 8)) // ffor base
 	       / VECTOR_SIZE;
+};
+
+struct VectorMetadata {
+	uint8_t                                    bit_width {0};
+	uint16_t                                   exceptions_count {0};
+	uint64_t                                   unq_c {0};
+	uint16_t                                   freq {0};
+	double                                     size {0};
+	uint64_t                                   right_bit_width {0};
+	uint64_t                                   left_bit_width {0};
+	std::vector<std::pair<uint16_t, uint64_t>> repetition_vec;
+	alp::Scheme                                scheme;
 };
 
 std::string get_alp_scheme_string(alp::Scheme& scheme) {
@@ -61,19 +73,16 @@ std::unordered_map<std::string, FileType> file_type_map = {
 // Helper Function to Convert String to Lowercase
 std::string to_lower(const std::string& input) {
 	std::string result = input;
-	std::transform(result.begin(), result.end(), result.begin(),
-	               [](unsigned char c) { return std::tolower(c); });
+	std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
 	return result;
 }
 
 // Parse Function
 std::vector<ColumnDescriptor> parse_column_records(const std::string& filename) {
 	std::vector<ColumnDescriptor> records;
-	std::ifstream file(filename);
+	std::ifstream                 file(filename);
 
-	if (!file.is_open()) {
-		throw std::runtime_error("Could not open file: " + filename);
-	}
+	if (!file.is_open()) { throw std::runtime_error("Could not open file: " + filename); }
 
 	std::string line;
 	// Skip the header line
@@ -81,7 +90,7 @@ std::vector<ColumnDescriptor> parse_column_records(const std::string& filename) 
 
 	while (std::getline(file, line)) {
 		std::istringstream stream(line);
-		std::string id, column_name, data_type, path, file_type;
+		std::string        id, column_name, data_type, path, file_type;
 
 		// Parse each column
 		std::getline(stream, id, ',');
@@ -91,10 +100,10 @@ std::vector<ColumnDescriptor> parse_column_records(const std::string& filename) 
 		std::getline(stream, file_type, ',');
 
 		// Convert strings to lowercase and map to enums
-		DataType data_type_enum = data_type_map.count(to_lower(data_type)) ? data_type_map[to_lower(data_type)]
-		                                                                   : DataType::INVALID;
-		FileType file_type_enum = file_type_map.count(to_lower(file_type)) ? file_type_map[to_lower(file_type)]
-		                                                                     : FileType::INVALID;
+		DataType data_type_enum =
+		    data_type_map.count(to_lower(data_type)) ? data_type_map[to_lower(data_type)] : DataType::INVALID;
+		FileType file_type_enum =
+		    file_type_map.count(to_lower(file_type)) ? file_type_map[to_lower(file_type)] : FileType::INVALID;
 
 		// Add to records
 		records.push_back({
@@ -248,10 +257,10 @@ public:
 
 		size_t n_vecs      = n_tuples / VECTOR_SIZE;
 		auto   n_rowgroups = static_cast<size_t>(std::ceil(static_cast<double>(n_tuples) / ROWGROUP_SIZE));
-		std::vector<alp_bench::VectorMetadata> compression_metadata;
-		PT                                     value_to_encode {0.0};
-		size_t                                 rowgroup_counter {0};
-		alp::state<PT>                         stt;
+		std::vector<VectorMetadata> compression_metadata;
+		PT                          value_to_encode {0.0};
+		size_t                      rowgroup_counter {0};
+		alp::state<PT>              stt;
 
 		/* Encode - Decode - Validate. */
 		double compression_ratio {0};
@@ -259,8 +268,19 @@ public:
 			/* Init */
 			PT* cur_rg_p = get_data(rg_idx, data_column);
 
-			auto n_vec_per_current_rg =
-			    (rg_idx == n_rowgroups - 1) ? n_vecs % N_VECTORS_PER_ROWGROUP : N_VECTORS_PER_ROWGROUP;
+			size_t n_vec_per_current_rg;
+
+			if (n_rowgroups == 1) {
+				// Single row group: all vectors belong to it
+				n_vec_per_current_rg = n_vecs;
+			} else if (rg_idx == n_rowgroups - 1) {
+				// Last row group: remainder vectors
+				n_vec_per_current_rg = n_vecs % N_VECTORS_PER_ROWGROUP;
+			} else {
+				// Regular row groups
+				n_vec_per_current_rg = N_VECTORS_PER_ROWGROUP;
+			}
+
 			auto n_values_per_current_rg = n_vec_per_current_rg * VECTOR_SIZE;
 			alp::encoder<PT>::init(cur_rg_p, rg_idx, n_values_per_current_rg, sample_arr, stt);
 
@@ -290,7 +310,7 @@ public:
 						ASSERT_EQ(cur_vec_p[j], dbl_glue_arr[j]);
 					}
 
-					alp_bench::VectorMetadata vector_metadata;
+					VectorMetadata vector_metadata;
 					vector_metadata.right_bit_width  = stt.right_bit_width;
 					vector_metadata.left_bit_width   = stt.left_bit_width;
 					vector_metadata.exceptions_count = stt.exceptions_count;
@@ -319,7 +339,7 @@ public:
 						ASSERT_EQ(data_p[j], decoded_arr[j]);
 					}
 
-					alp_bench::VectorMetadata vector_metadata;
+					VectorMetadata vector_metadata;
 					vector_metadata.bit_width        = bit_width;
 					vector_metadata.exceptions_count = exc_c_arr[0];
 					vector_metadata.scheme           = alp::Scheme::ALP;
@@ -340,8 +360,7 @@ public:
 	}
 
 	template <typename PT, size_t N_COLS>
-	void typed_bench_dataset(std::array<alp_bench::ALPColumnDescriptor, N_COLS> columns,
-	                         const std::string&                                 result_file_path) {
+	void typed_bench_dataset(std::array<ALPColumnDescriptor, N_COLS> columns, const std::string& result_file_path) {
 
 		std::ofstream ofile(result_file_path, std::ios::out);
 		write_result_header(ofile);
@@ -353,7 +372,7 @@ public:
 	}
 
 	template <typename PT>
-	double calculate_alp_compression_size(std::vector<alp_bench::VectorMetadata>& vector_metadatas) {
+	double calculate_alp_compression_size(std::vector<VectorMetadata>& vector_metadatas) {
 		double avg_bits_per_value {0};
 		for (auto& vector_metadata : vector_metadatas) {
 			switch (vector_metadata.scheme) {
@@ -376,7 +395,7 @@ public:
 	}
 
 	template <typename PT>
-	double calculate_alp_pde_compression_size(alp_bench::VectorMetadata& vector_metadata) {
+	double calculate_alp_pde_compression_size(VectorMetadata& vector_metadata) {
 		double avg_bits_per_value {0};
 		avg_bits_per_value = avg_bits_per_value + vector_metadata.bit_width;
 		avg_bits_per_value = avg_bits_per_value +
@@ -389,7 +408,7 @@ public:
 
 	double alprd_overhead_per_vector {static_cast<double>(MAX_RD_DICTIONARY_SIZE * 16) / ROWGROUP_SIZE};
 
-	double calculate_alprd_compression_size(alp_bench::VectorMetadata& vector_metadata) {
+	double calculate_alprd_compression_size(VectorMetadata& vector_metadata) {
 		double avg_bits_per_value {0};
 		avg_bits_per_value = avg_bits_per_value + vector_metadata.right_bit_width + vector_metadata.left_bit_width +
 		                     static_cast<double>(vector_metadata.exceptions_count *
@@ -410,23 +429,24 @@ public:
 		std::ofstream ofile(result_file_path, std::ios::out);
 		write_result_header(ofile);
 
-			std::vector<ColumnDescriptor> columns = parse_column_records(dataset_description_file);
-			for (const auto& column : columns) {
-				switch (column.data_type) {
-				case DataType::DOUBLE: {
-					typed_bench_column<double>(column, ofile);
-					break;
-				}
-				case DataType::FLOAT: {
-					typed_bench_column<float>(column, ofile);
-					break;
-				}
-				case DataType::INVALID:
-				default:
-					throw std::runtime_error("NOT supported type.");
-				}
+		std::vector<ColumnDescriptor> columns = parse_column_records(dataset_description_file);
+		for (const auto& column : columns) {
+			switch (column.data_type) {
+			case DataType::DOUBLE: {
+				typed_bench_column<double>(column, ofile);
+				break;
 			}
+			case DataType::FLOAT: {
+				typed_bench_column<float>(column, ofile);
+				break;
+			}
+			case DataType::INVALID:
+			default:
+				throw std::runtime_error("NOT supported type.");
+			}
+		}
 	}
 };
+} // namespace alp_bench
 
 #endif // ALP_BENCH_ALP_HPP

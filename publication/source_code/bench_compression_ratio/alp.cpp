@@ -260,7 +260,7 @@ public:
 		/* Init */
 		alp::encoder<double>::init(data_column, rowgroup_offset, n_tuples, sample_buf, stt);
 
-		ASSERT_EQ(stt.scheme, alp::Scheme::ALP_RD);
+		ASSERT_EQ(stt.scheme, alp::Scheme::ALP_RD) << "this dataset is suitable for encoding by ALP, not ALP_RD";
 
 		alp::rd_encoder<double>::init(data_column, rowgroup_offset, n_tuples, sample_buf, stt);
 

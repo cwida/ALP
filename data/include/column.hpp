@@ -48,6 +48,7 @@ struct paths {
 	std::string alp_dataset_binary_dir_path = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/full_data/";
 	std::string alp_result_dir_path         = std::string {ALP_CMAKE_SOURCE_DIR} + "/benchmarks/result/";
 	std::string hs                          = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/full_data/";
+	std::string issue_24_dataset_dir_path   = std::string {ALP_CMAKE_SOURCE_DIR} + "/data/issue/";
 
 	explicit paths() {
 		const auto alp_dataset_dir_path_env_variable = std::getenv("ALP_DATASET_DIR_PATH");
