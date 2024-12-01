@@ -15,3 +15,9 @@ TEST_F(ALPBench, bench_alp_on_hurricane_isabel) {
 	    alp_bench::get_paths().alp_result_dir_path + "compression_ratio/float/hurricane_isabel_dataset.csv";
 	typed_bench_dataset<float>(alp_bench::get_hurricane_isabel_dataset(), result_path);
 }
+
+TEST_F(ALPBench, bench_alp_on_issue_24) {
+	auto result_path =
+	    alp_bench::get_paths().alp_result_dir_path + "compression_ratio/double/issue_24.csv";
+	typed_bench_dataset<double>(alp_bench::get_issue_dataset(), result_path);
+}
