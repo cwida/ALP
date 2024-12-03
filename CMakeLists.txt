@@ -40,6 +40,9 @@ if (ALP_ENABLE_VERBOSE_OUTPUT)
             CMAKE_BINARY_DIR
             CMAKE_SOURCE_DIR
             CMAKE_LINKER
+            CMAKE_CXX_FLAGS
+            CMAKE_C_FLAGS
+            CMAKE_CROSSCOMPILING
     )
 endif ()
 

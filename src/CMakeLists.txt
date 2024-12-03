@@ -7,17 +7,20 @@ check_cxx_compiler_flag("-mavx512dq" COMPILER_SUPPORTS_AVX512)
 if (COMPILER_SUPPORTS_AVX512)
     message(STATUS "Compiler supports AVX512.")
 
-    # Step 2: Create a test program for AVX-512
+    # Write the test program
     file(WRITE "${CMAKE_BINARY_DIR}/check_avx512.cpp"
             "#include <immintrin.h>
-        int main() {
-            __m512i x = _mm512_set1_epi32(1); // AVX-512 instruction
-            return _mm512_reduce_add_epi32(x);
-        }")
+            int main() {
+                __m512i x = _mm512_set1_epi32(1);
+                return 0;
+            }"
+            )
 
-    # Step 3: Try to compile and run the program
-    try_compile(HAS_AVX512_SUPPORT "${CMAKE_BINARY_DIR}" "${CMAKE_BINARY_DIR}/check_avx512.cpp"
-            CMAKE_FLAGS "-DCMAKE_CXX_FLAGS=-mavx512dq")
+    try_compile(HAS_AVX512_SUPPORT
+            "${CMAKE_BINARY_DIR}"
+            "${CMAKE_BINARY_DIR}/check_avx512.cpp"
+            COMPILE_DEFINITIONS -mavx512dq
+            )
 
     if (HAS_AVX512_SUPPORT)
         message(STATUS "Hardware supports AVX-512. Adding AVX-512 flags.")
@@ -30,7 +33,8 @@ else ()
 endif ()
 
 # Define the library
-add_library(ALP SHARED
+add_library(ALP
+        SHARED
         falp.cpp
         fastlanes_generated_unffor.cpp
         fastlanes_generated_ffor.cpp
