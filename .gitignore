@@ -123,3 +123,18 @@ plot/*.tex
 *.out
 *.app
 
+
+# Java stuff
+/.idea/
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+target
+
+# idea ignore
+.idea
+*.iml

@@ -103,6 +103,11 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# ELF
+green_echo "Running ELF benchmarks..."
+mvn -f "$CLONED_DIR/publication/source_code/extern/elf/pom.xml" clean
+mvn -f "$CLONED_DIR/publication/source_code/extern/elf/pom.xml" test
+
 green_echo "Running compression ratio benchmarks..."
 "$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp_compression_ratio"
 "$CLONED_DIR/build/publication/source_code/bench_compression_ratio/publication_bench_alp32_compression_ratio"
