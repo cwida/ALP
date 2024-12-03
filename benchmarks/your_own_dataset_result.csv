@@ -1,1 +1,1 @@
-idx,column,data_type,size,rowgroups_count,vectors_count
+idx,column,data_type,size,rowgroups_count,vectors_count,decompression_speed(cycles_per_value),compression_speed(cycles_per_value),

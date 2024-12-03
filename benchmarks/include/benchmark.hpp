@@ -32,7 +32,7 @@ struct VectorMetadata {
 	alp::Scheme                                scheme;
 };
 
-std::string get_alp_scheme_string(alp::Scheme& scheme) {
+inline std::string get_alp_scheme_string(alp::Scheme& scheme) {
 	switch (scheme) {
 	case alp::Scheme::ALP:
 		return "ALP_PDE";
@@ -44,9 +44,9 @@ std::string get_alp_scheme_string(alp::Scheme& scheme) {
 }
 
 template <typename PT>
-PT* get_data(size_t rg_idx, PT* data_column, size_t vector_idx) {
-	size_t offset = (rg_idx * N_VECTORS_PER_ROWGROUP + vector_idx) * VECTOR_SIZE;
-	PT*    data_p = data_column + offset;
+const PT* get_data(const size_t rg_idx, const PT* data_column, const size_t vector_idx) {
+	size_t    offset = (rg_idx * N_VECTORS_PER_ROWGROUP + vector_idx) * VECTOR_SIZE;
+	const PT* data_p = data_column + offset;
 	return data_p;
 }
 
@@ -58,27 +58,27 @@ PT* get_data(size_t rg_idx, PT* data_column) {
 }
 
 // Mapping Definitions
-std::unordered_map<std::string, DataType> data_type_map = {
+inline std::unordered_map<std::string, DataType> data_type_map = {
     {"invalid", DataType::INVALID},
     {"double", DataType::DOUBLE},
     {"float", DataType::FLOAT},
 };
 
-std::unordered_map<std::string, FileType> file_type_map = {
+inline std::unordered_map<std::string, FileType> file_type_map = {
     {"invalid", FileType::INVALID},
     {"binary", FileType::BINARY},
     {"csv", FileType::CSV},
 };
 
 // Helper Function to Convert String to Lowercase
-std::string to_lower(const std::string& input) {
+inline std::string to_lower(const std::string& input) {
 	std::string result = input;
 	std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
 	return result;
 }
 
 // Parse Function
-std::vector<ColumnDescriptor> parse_column_records(const std::string& filename) {
+inline std::vector<ColumnDescriptor> parse_column_records(const std::string& filename) {
 	std::vector<ColumnDescriptor> records;
 	std::ifstream                 file(filename);
 
@@ -130,7 +130,7 @@ std::string get_type_string() {
 	}
 }
 
-void write_result_header(std::ofstream& ofile) { ofile << "idx,column,data_type,size,rowgroups_count,vectors_count\n"; }
+void write_result_header(std::ofstream& ofile);
 
 template <typename PT>
 ColumnDescriptor extract_column_descriptor(const ALPColumnDescriptor& alp_column) {
@@ -162,9 +162,15 @@ ColumnDescriptor extract_column_descriptor(const ALPColumnDescriptor& alp_column
 	};
 }
 
+struct BenchSpeedResult {
+	double compression_speed;
+	double decompression_speed;
+};
+
 class ALPBench : public ::testing::Test {
 public:
 	uint64_t* sample_buf {};
+	uint64_t* data_buf {};
 	uint64_t* exc_buf {};
 	uint16_t* rd_exc_buf {};
 	uint16_t* pos_buf {};
@@ -187,23 +193,24 @@ public:
 	~ALPBench() override = default;
 
 	void SetUp() override {
-		exc_buf          = new uint64_t[VECTOR_SIZE];
-		rd_exc_buf       = new uint16_t[VECTOR_SIZE];
-		pos_buf          = new uint16_t[VECTOR_SIZE];
-		encoded_buf      = new uint64_t[VECTOR_SIZE];
-		decoded_buf      = new uint64_t[VECTOR_SIZE];
-		exc_c_buf        = new uint16_t[VECTOR_SIZE];
-		ffor_buf         = new uint64_t[VECTOR_SIZE];
-		unffor_buf       = new uint64_t[VECTOR_SIZE];
-		base_buf         = new uint64_t[VECTOR_SIZE];
-		sample_buf       = new uint64_t[VECTOR_SIZE];
-		right_buf        = new uint64_t[VECTOR_SIZE];
-		left_buf         = new uint16_t[VECTOR_SIZE];
-		ffor_right_buf   = new uint64_t[VECTOR_SIZE];
-		ffor_left_buf    = new uint16_t[VECTOR_SIZE];
-		unffor_right_buf = new uint64_t[VECTOR_SIZE];
-		unffor_left_buf  = new uint16_t[VECTOR_SIZE];
-		glue_buf         = new uint64_t[VECTOR_SIZE];
+		data_buf         = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		exc_buf          = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		pos_buf          = new (std::align_val_t {64}) uint16_t[VECTOR_SIZE];
+		encoded_buf      = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		exc_c_buf        = new (std::align_val_t {64}) uint16_t[VECTOR_SIZE];
+		ffor_buf         = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		base_buf         = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		right_buf        = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		left_buf         = new (std::align_val_t {64}) uint16_t[VECTOR_SIZE];
+		ffor_right_buf   = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		ffor_left_buf    = new (std::align_val_t {64}) uint16_t[VECTOR_SIZE];
+		unffor_right_buf = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		unffor_left_buf  = new (std::align_val_t {64}) uint16_t[VECTOR_SIZE];
+		glue_buf         = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		sample_buf       = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		rd_exc_buf       = new (std::align_val_t {64}) uint16_t[VECTOR_SIZE];
+		unffor_buf       = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
+		decoded_buf      = new (std::align_val_t {64}) uint64_t[VECTOR_SIZE];
 	}
 
 	void TearDown() override {
@@ -224,152 +231,10 @@ public:
 	}
 
 	template <typename PT>
-	void typed_bench_column(const ColumnDescriptor& column, std::ofstream& ofile) {
-		// Internal Type
-		using UT = typename alp::inner_t<PT>::ut;
-		using ST = typename alp::inner_t<PT>::st;
-
-		PT*       sample_arr       = reinterpret_cast<PT*>(sample_buf);
-		PT*       exc_arr          = reinterpret_cast<PT*>(exc_buf);
-		uint16_t* rd_exc_arr       = reinterpret_cast<uint16_t*>(rd_exc_buf);
-		uint16_t* pos_arr          = reinterpret_cast<uint16_t*>(pos_buf);
-		uint16_t* exc_c_arr        = reinterpret_cast<uint16_t*>(exc_c_buf);
-		ST*       ffor_arr         = reinterpret_cast<ST*>(ffor_buf);
-		ST*       unffor_arr       = reinterpret_cast<ST*>(unffor_buf);
-		ST*       base_arr         = reinterpret_cast<ST*>(base_buf);
-		ST*       encoded_arr      = reinterpret_cast<ST*>(encoded_buf);
-		PT*       decoded_arr      = reinterpret_cast<PT*>(decoded_buf);
-		UT*       ffor_right_arr   = reinterpret_cast<UT*>(ffor_right_buf);
-		uint16_t* ffor_left_arr    = reinterpret_cast<uint16_t*>(ffor_left_buf);
-		UT*       right_arr        = reinterpret_cast<UT*>(right_buf);
-		uint16_t* left_arr         = reinterpret_cast<uint16_t*>(left_buf);
-		UT*       unffor_right_arr = reinterpret_cast<UT*>(unffor_right_buf);
-		uint16_t* unffor_left_arr  = reinterpret_cast<uint16_t*>(unffor_left_buf);
-		PT*       glue_arr         = reinterpret_cast<PT*>(glue_buf);
-
-		std::cout << column.name << std::endl;
-
-		// read data
-		std::vector<PT> data;
-		alp_data::read_data(data, column);
-		PT*    data_column = data.data();
-		size_t n_tuples    = data.size();
-
-		size_t n_vecs      = n_tuples / VECTOR_SIZE;
-		auto   n_rowgroups = static_cast<size_t>(std::ceil(static_cast<double>(n_tuples) / ROWGROUP_SIZE));
-		std::vector<VectorMetadata> compression_metadata;
-		PT                          value_to_encode {0.0};
-		size_t                      rowgroup_counter {0};
-		alp::state<PT>              stt;
-
-		/* Encode - Decode - Validate. */
-		double compression_ratio {0};
-		for (size_t rg_idx = 0; rg_idx < n_rowgroups; rg_idx++) {
-			/* Init */
-			PT* cur_rg_p = get_data(rg_idx, data_column);
-
-			size_t n_vec_per_current_rg;
-
-			if (n_rowgroups == 1) {
-				// Single row group: all vectors belong to it
-				n_vec_per_current_rg = n_vecs;
-			} else if (rg_idx == n_rowgroups - 1) {
-				// Last row group: remainder vectors
-				n_vec_per_current_rg = n_vecs % N_VECTORS_PER_ROWGROUP;
-			} else {
-				// Regular row groups
-				n_vec_per_current_rg = N_VECTORS_PER_ROWGROUP;
-			}
-
-			auto n_values_per_current_rg = n_vec_per_current_rg * VECTOR_SIZE;
-			alp::encoder<PT>::init(cur_rg_p, rg_idx, n_values_per_current_rg, sample_arr, stt);
-
-			switch (stt.scheme) {
-			case alp::Scheme::ALP_RD: {
-				alp::rd_encoder<PT>::init(cur_rg_p, 0, n_values_per_current_rg, sample_arr, stt);
-				for (size_t vector_idx {0}; vector_idx < n_vec_per_current_rg; vector_idx++) {
-					PT* cur_vec_p = get_data(rg_idx, data_column, vector_idx);
-
-					// Encode
-					alp::rd_encoder<PT>::encode(cur_vec_p, rd_exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
-					ffor::ffor(right_arr, ffor_right_arr, stt.right_bit_width, &stt.right_for_base);
-					ffor::ffor(left_arr, ffor_left_arr, stt.left_bit_width, &stt.left_for_base);
-
-					// Decode
-					unffor::unffor(ffor_right_arr, unffor_right_arr, stt.right_bit_width, &stt.right_for_base);
-					unffor::unffor(ffor_left_arr, unffor_left_arr, stt.left_bit_width, &stt.left_for_base);
-					alp::rd_encoder<PT>::decode(
-					    glue_arr, unffor_right_arr, unffor_left_arr, rd_exc_arr, pos_arr, exc_c_arr, stt);
-
-					auto* dbl_glue_arr = reinterpret_cast<PT*>(glue_arr);
-					for (size_t j = 0; j < VECTOR_SIZE; ++j) {
-						auto l = cur_vec_p[j];
-						auto r = dbl_glue_arr[j];
-						if (l != r) { std::cerr << j << ", " << column.name << "\n"; }
-
-						ASSERT_EQ(cur_vec_p[j], dbl_glue_arr[j]);
-					}
-
-					VectorMetadata vector_metadata;
-					vector_metadata.right_bit_width  = stt.right_bit_width;
-					vector_metadata.left_bit_width   = stt.left_bit_width;
-					vector_metadata.exceptions_count = stt.exceptions_count;
-					vector_metadata.scheme           = alp::Scheme::ALP_RD;
-
-					compression_metadata.push_back(vector_metadata);
-				}
-			} break;
-			case alp::Scheme::ALP: {
-				/* Encode - Decode - Validate. */
-				for (size_t vector_idx {0}; vector_idx < n_vec_per_current_rg; vector_idx++) {
-					PT* data_p = get_data(rg_idx, data_column, vector_idx);
-
-					alp::encoder<PT>::encode(data_p, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
-					alp::encoder<PT>::analyze_ffor(encoded_arr, bit_width, base_arr);
-					ffor::ffor(encoded_arr, ffor_arr, bit_width, base_arr);
-
-					unffor::unffor(ffor_arr, unffor_arr, bit_width, base_arr);
-					alp::decoder<PT>::decode(unffor_arr, stt.fac, stt.exp, decoded_arr);
-					alp::decoder<PT>::patch_exceptions(decoded_arr, exc_arr, pos_arr, exc_c_arr);
-
-					for (size_t j = 0; j < VECTOR_SIZE; j++) {
-						auto l = data_p[j];
-						auto r = decoded_arr[j];
-						if (l != r) { std::cerr << j << ", " << rg_idx << ", " << column.name << "\n"; }
-						ASSERT_EQ(data_p[j], decoded_arr[j]);
-					}
-
-					VectorMetadata vector_metadata;
-					vector_metadata.bit_width        = bit_width;
-					vector_metadata.exceptions_count = exc_c_arr[0];
-					vector_metadata.scheme           = alp::Scheme::ALP;
-
-					compression_metadata.push_back(vector_metadata);
-					bit_width = 0;
-				}
-
-			} break;
-			default:
-				ASSERT_TRUE(false);
-			}
-		}
-
-		compression_ratio = calculate_alp_compression_size<PT>(compression_metadata);
-		ofile << std::fixed << std::setprecision(2) << column.id << "," << column.name << "," << get_type_string<PT>()
-		      << "," << compression_ratio << "," << n_rowgroups << "," << n_vecs << std::endl;
-	}
+	void typed_bench_column(const ColumnDescriptor& column, std::ofstream& ofile);
 
 	template <typename PT, size_t N_COLS>
-	void typed_bench_dataset(std::array<ALPColumnDescriptor, N_COLS> columns, const std::string& result_file_path) {
-
-		std::ofstream ofile(result_file_path, std::ios::out);
-		write_result_header(ofile);
-
-		for (auto& alp_column_descriptor : columns) {
-			auto column_descriptor = extract_column_descriptor<PT>(alp_column_descriptor);
-			typed_bench_column<PT>(column_descriptor, ofile);
-		}
-	}
+	void typed_bench_dataset(std::array<ALPColumnDescriptor, N_COLS> columns, const std::string& result_file_path);
 
 	template <typename PT>
 	double calculate_alp_compression_size(std::vector<VectorMetadata>& vector_metadatas) {
@@ -446,6 +311,9 @@ public:
 			}
 		}
 	}
+
+	template <typename PT>
+	BenchSpeedResult typed_bench_speed_column(const std::vector<PT>& data);
 };
 } // namespace alp_bench
 
