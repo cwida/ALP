@@ -105,10 +105,6 @@ fi
 
 # ELF
 green_echo "Running ELF benchmarks..."
-if ! [ -x "$(command -v mvn)" ]; then
-  echo 'Error: mvn (Maven) is not installed.' >&2
-  exit 1
-fi
 mvn -f "$CLONED_DIR/publication/source_code/extern/elf/pom.xml" clean
 mvn -f "$CLONED_DIR/publication/source_code/extern/elf/pom.xml" test
 
