@@ -19,7 +19,7 @@ inline auto get_issue_dataset() {
 	     false},
 	    {1,
 	     "issue_24_actual_data",
-	     get_paths().issue_24_dataset_dir_path + "ShapesALL_TEST.csv",
+	     get_paths().issue_24_dataset_dir_path + "ShapesAll_TEST.csv",
 	     "",
 	     0,
 	     0,

@@ -219,3 +219,9 @@ TEST_F(alp_test, alp_double_test_dataset) {
 		test_column<double>(col);
 	}
 }
+
+TEST_F(alp_test, test_alp_float_on_edge_cases) {
+	for (const auto& col : alp_bench::get_float_edge_case()) {
+		test_column<float>(col);
+	}
+}

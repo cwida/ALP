@@ -86,7 +86,7 @@ struct rd_encoder {
 		return estimated_size;
 	}
 
-	static inline void find_best_dictionary(PT* smp_arr, state<PT>& stt) {
+	static inline void find_best_dictionary(const PT* smp_arr, state<PT>& stt) {
 		bw_t   right_bit_width {0};
 		double best_dict_size = std::numeric_limits<double>::max();
 
@@ -178,7 +178,7 @@ struct rd_encoder {
 	}
 
 	static inline void
-	init(PT* data_column, size_t column_offset, size_t tuples_count, PT* sample_arr, state<PT>& stt) {
+	init(const PT* data_column, size_t column_offset, size_t tuples_count, PT* sample_arr, state<PT>& stt) {
 		stt.scheme           = Scheme::ALP_RD;
 		stt.sampled_values_n = sampler::first_level_sample<PT>(data_column, column_offset, tuples_count, sample_arr);
 		find_best_dictionary(sample_arr, stt);

@@ -311,9 +311,9 @@ struct encoder {
 	                                   ST*                  encoded_integers,
 	                                   const factor_idx_t   factor_idx,
 	                                   const exponent_idx_t exponent_idx) {
-		alignas(64) static PT       ENCODED_DBL_ARR[1024];
-		alignas(64) static PT       DBL_ARR_WITHOUT_SPECIALS[1024];
-		alignas(64) static uint64_t TMP_INDEX_ARR[1024];
+		alignas(64) static PT ENCODED_VALUE_ARR[1024];
+		alignas(64) static PT VALUE_ARR_WITHOUT_SPECIALS[1024];
+		alignas(64) static UT TMP_INDEX_ARR[1024];
 
 		exp_p_t  current_exceptions_count {0};
 		uint64_t exceptions_idx {0};
@@ -328,31 +328,43 @@ struct encoder {
 			    || tmp_input[i] == Constants<PT>::NEGATIVE_ZERO;
 
 			if (is_special) {
-				DBL_ARR_WITHOUT_SPECIALS[i] = ENCODING_UPPER_LIMIT;
+				VALUE_ARR_WITHOUT_SPECIALS[i] = ENCODING_UPPER_LIMIT;
 			} else {
-				DBL_ARR_WITHOUT_SPECIALS[i] = input_vector[i];
+				VALUE_ARR_WITHOUT_SPECIALS[i] = input_vector[i];
 			}
 		}
 
 #pragma clang loop vectorize_width(64)
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto const actual_value = DBL_ARR_WITHOUT_SPECIALS[i];
+			auto const actual_value = VALUE_ARR_WITHOUT_SPECIALS[i];
 
 			// Attempt conversion
 			const ST encoded_value = encode_value<false>(actual_value, factor_idx, exponent_idx);
 			encoded_integers[i]    = encoded_value;
 			const PT decoded_value = decoder<PT>::decode_value(encoded_value, factor_idx, exponent_idx);
-			ENCODED_DBL_ARR[i]     = decoded_value;
+			ENCODED_VALUE_ARR[i]   = decoded_value;
 		}
 
 #ifdef __AVX512F__
-		for (size_t i {0}; i < config::VECTOR_SIZE; i = i + 8) {
-			__m512d l            = _mm512_loadu_pd(ENCODED_DBL_ARR + i);
-			__m512d r            = _mm512_loadu_pd(DBL_ARR_WITHOUT_SPECIALS + i);
-			__m512i index        = _mm512_loadu_pd(INDEX_ARR + i);
-			auto    is_exception = _mm512_cmpneq_pd_mask(l, r);
-			_mm512_mask_compressstoreu_pd(TMP_INDEX_ARR + exceptions_idx, is_exception, index);
-			exceptions_idx += LOOKUP_TABLE[is_exception];
+		if constexpr (std::is_same_v<PT, double>) {
+			for (size_t i {0}; i < config::VECTOR_SIZE; i = i + 8) {
+				__m512d l            = _mm512_loadu_pd(ENCODED_VALUE_ARR + i);
+				__m512d r            = _mm512_loadu_pd(VALUE_ARR_WITHOUT_SPECIALS + i);
+				__m512i index        = _mm512_loadu_pd(DOUBLE_INDEX_ARR + i);
+				auto    is_exception = _mm512_cmpneq_pd_mask(l, r);
+				_mm512_mask_compressstoreu_pd(TMP_INDEX_ARR + exceptions_idx, is_exception, index);
+				exceptions_idx += LOOKUP_TABLE[is_exception];
+			}
+		} else {
+			for (size_t i {0}; i < config::VECTOR_SIZE; i = i + 16) {
+				__m512   l            = _mm512_loadu_ps(ENCODED_VALUE_ARR + i);
+				__m512   r            = _mm512_loadu_ps(VALUE_ARR_WITHOUT_SPECIALS + i);
+				__m512i  index        = _mm512_loadu_si512(FLOAT_INDEX_ARR + i);
+				uint16_t is_exception = _mm512_cmpneq_ps_mask(l, r);
+				_mm512_mask_compressstoreu_ps(TMP_INDEX_ARR + exceptions_idx, is_exception, index);
+				auto n_exceptions = LOOKUP_TABLE[is_exception & 0b0000000011111111] + LOOKUP_TABLE[is_exception >> 8];
+				exceptions_idx += n_exceptions; // Update index
+			}
 		}
 #else
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
