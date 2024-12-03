@@ -15,6 +15,8 @@
 - **g++** (required for PED benchmarks)
 - **pandas** (required for plots)
 - **seaborn** (required for plots)
+- **Java 8** (required for ELF)
+- **[Maven 3.9.9](https://maven.apache.org/download.cgi)** (required for ELF)
 
 **This [script](/publication/script/install_dependencies.sh) can be used to install all necessary dependencies on Ubuntu.**
 

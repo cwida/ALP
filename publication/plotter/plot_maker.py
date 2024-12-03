@@ -78,7 +78,7 @@ class PlotMaker:
         alp3 = pd.read_csv(basePath + 'alp_encode_cutter.csv')
         alp4 = pd.read_csv(basePath + 'alp_decode_cutter.csv')
         gorilla = pd.read_csv(basePath + 'gorillas.csv')
-        # elf = pd.read_csv(basePath + 'elf.csv')
+        elf = pd.read_csv(basePath + 'elf_raw.csv')
         zstd = pd.read_csv(basePath + 'zstd.csv')
 
         alp1 = alp1[(alp1['name'].str.contains('fused')) | alp1['name'].str.contains('decode')]
@@ -99,7 +99,7 @@ class PlotMaker:
         benchmarks = {
             'ALP': alp,
             'PDE': pde, 
-            # 'ELF': elf,
+            'ELF': elf,
             'Zstd': zstd,
             'Patas': patas, 
             'Chimp128': chimp128, 
@@ -109,8 +109,18 @@ class PlotMaker:
 
         for benchmarkName in benchmarks:
             benchmark = benchmarks[benchmarkName]
-            if (benchmarkName not in ['ELF']):
-                benchmark['tuples_per_cycle'] = 1 / benchmark['cycles_per_tuple']
+            if (benchmarkName == 'ELF'):
+                elf_encode = benchmark[['dataset', 'compression_tpc']]
+                elf_encode.columns = ['dataset', 'tuples_per_cycle']
+                elf_encode['algorithm'] = benchmarkName
+                elf_encode['process'] = 'Compression'
+                elf_decode = benchmark[['dataset', 'decompression_tpc']]
+                elf_decode.columns = ['dataset', 'tuples_per_cycle']
+                elf_decode['algorithm'] = benchmarkName
+                elf_decode['process'] = 'Decompression'
+                benchmarks[benchmarkName] = pd.concat([elf_encode, elf_decode])
+                continue
+            benchmark['tuples_per_cycle'] = 1 / benchmark['cycles_per_tuple']
             benchmark['dataset'] = benchmark['name'].apply(self.get_dataset_name)
             benchmark['process'] = benchmark['name'].apply(self.get_encoding_process)
             benchmark['algorithm'] = benchmarkName
@@ -211,14 +221,14 @@ class PlotMaker:
             color=ALGORITHM_COLORS['Gorilla']
         )
 
-        # ax1.text(
-        #     0.004, 0.01,
-        #     "2.8x",
-        #     fontsize=8,
-        #     horizontalalignment='right',
-        #     fontweight='bold',
-        #     color=ALGORITHM_COLORS['ELF']
-        # )
+        ax1.text(
+            0.004, 0.01,
+            "2.8x",
+            fontsize=8,
+            horizontalalignment='right',
+            fontweight='bold',
+            color=ALGORITHM_COLORS['ELF']
+        )
 
         ax1.text(
             0.011, 0.09,
