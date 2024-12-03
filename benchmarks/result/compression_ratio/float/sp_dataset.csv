@@ -1,5 +1,5 @@
-idx,column,data_type,size,rowgroups_count,vectors_count
-1,Dino-Vitb16,float,28.24,844,84364
-2,GPT2,float,27.68,1216,121523
-3,Grammarly-lg,float,27.73,7648,764739
-4,W2V Tweets,float,28.26,5,404
+idx,column,data_type,size,rowgroups_count,vectors_count,decompression_speed(cycles_per_value),compression_speed(cycles_per_value),
+1,Dino-Vitb16,float,28.24,844,84364,1.76,8.92
+2,GPT2,float,27.69,1216,121523,1.74,10.81
+3,Grammarly-lg,float,27.73,7648,764739,1.96,20.55
+4,W2V Tweets,float,28.26,5,404,1.77,11.39

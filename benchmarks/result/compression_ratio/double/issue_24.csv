@@ -1,3 +1,3 @@
-idx,column,data_type,size,rowgroups_count,vectors_count
-0,issue_24_replicated_data,double,32.20,1,100
-1,issue_24_actual_data,double,33.56,3,300
+idx,column,data_type,size,rowgroups_count,vectors_count,decompression_speed(cycles_per_value),compression_speed(cycles_per_value),
+0,issue_24_replicated_data,double,32.20,1,100,0.44,2.04
+1,issue_24_actual_data,double,33.56,3,300,0.54,2.26
