@@ -8,6 +8,7 @@
 #include "float/float_dataset.hpp"
 #include "generated_columns.hpp"
 #include <fstream>
+#include <vector>
 
 namespace alp_data {
 

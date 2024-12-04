@@ -41,5 +41,23 @@ sudo apt-get install -y python3-pip
 pip3 install --upgrade pip --break-system-packages
 pip3 install pandas seaborn --break-system-packages
 
+# Install Java version 8
+echo "Installing Java 8..."
+sudo apt-get install -y openjdk-8-jdk
+
+# Set Java 8 as default
+echo "Setting Java 8 as the default Java version..."
+sudo update-alternatives --config java <<<'1'
+
+# Verify Java installation
+java -version
+
+# Install Maven
+echo "Installing Maven..."
+sudo apt-get install -y maven
+
+# Verify Maven installation
+mvn -v
+
 # Final check
-echo "All dependencies installed successfully! Python dependencies are installed system-wide."
+echo "All dependencies installed successfully: Clang++, CMake, Boost, BZIP2, OpenSSL, libcurl, g++, Python (pip, pandas, seaborn), Java 8, and Maven."
