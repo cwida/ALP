@@ -12,14 +12,14 @@ void importTPCH(std::string dir, Database& db);
 void importSSB(std::string dir, Database& db);
 
 /// imports alp benchmark from CSVs in dir into db
-double import_alp(alp_bench::Column& col, Database& db, encoding::scheme& encoding);
+double import_alp(alp_bench::ALPColumnDescriptor& col, Database& db, encoding::scheme& encoding);
 } // namespace runtime
 
 namespace experiment {
-void   remove_binary_file(alp_bench::Column& col);
-void   expand_binary_x_times(alp_bench::Column& col, size_t x);
-bool   is_expanded(alp_bench::Column& col);
-void   clean_compressed_data(alp_bench::Column& col, encoding::scheme& scheme);
+void   remove_binary_file(alp_bench::ALPColumnDescriptor& col);
+void   expand_binary_x_times(alp_bench::ALPColumnDescriptor& col, size_t x);
+bool   is_expanded(alp_bench::ALPColumnDescriptor& col);
+void   clean_compressed_data(alp_bench::ALPColumnDescriptor& col, encoding::scheme& scheme);
 double sum(double* in, size_t c);
 
 } // namespace experiment

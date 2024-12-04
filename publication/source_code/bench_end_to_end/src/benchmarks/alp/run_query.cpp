@@ -209,8 +209,8 @@ double alp_profile(std::function<void()> fn, uint64_t rep_c, uint64_t warmup_rep
 	return end - start;
 }
 
-alp_bench::Column& get_dataset(const std::string& col_name) {
-	static std::unordered_map<std::string, alp_bench::Column> ALP_END_TO_END_DATASET = {
+alp_bench::ALPColumnDescriptor& get_dataset(const std::string& col_name) {
+	static std::unordered_map<std::string, alp_bench::ALPColumnDescriptor> ALP_END_TO_END_DATASET = {
 	    {"food_prices", {0, "food_prices_tw", "", "", 16, 12, 46, 20}},
 	    {"city_temperature_f", {1, "city_temperature_f_tw", "", "", 14, 13, 0, 11}},
 	    {"bitcoin_transactions_f", {2, "bitcoin_transactions_f_tw", "", "", 14, 10, 10, 25}},
@@ -273,7 +273,7 @@ int main(int argc, char* argv[]) {
 		throw std::runtime_error("Wrong Scheme Type.");
 	}
 
-	alp_bench::Column& col = get_dataset(dataset_string);
+	alp_bench::ALPColumnDescriptor& col = get_dataset(dataset_string);
 
 	runtime::cur_q_mtd.repetition         = cfg::rep_c;
 	runtime::cur_q_mtd.warm_up_repetition = cfg::warmup_rep_c;

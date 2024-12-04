@@ -4,7 +4,7 @@
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
 bench_decode_chimp128(const double*                                        dbl_arr,
-                      alp_bench::ALPColumnDescriptor&                                   dataset,
+                      alp_bench::ALPColumnDescriptor&                      dataset,
                       uint8_t                                              leading_zero_block_count,
                       alp_bench::Chimp128CompressionState<uint64_t, false> com_stt,
                       idx_t                                                leading_zero_block_size,
@@ -93,7 +93,7 @@ bench_decode_chimp128(const double*                                        dbl_a
 }
 
 static __attribute__((noinline)) benchmark::BenchmarkReporter::Run
-bench_encode_chimp128(alp_bench::ALPColumnDescriptor&                                   dataset,
+bench_encode_chimp128(alp_bench::ALPColumnDescriptor&                      dataset,
                       alp_bench::Chimp128CompressionState<uint64_t, false> com_stt,
                       uint8_t                                              leading_zero_block_count,
                       idx_t                                                leading_zero_block_size,

@@ -7,23 +7,23 @@
 using namespace alp::config;
 
 /* Bench ALP encode. */
-static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const double*       dbl_arr,
-                                                                         uint16_t*           exc_arr,
-                                                                         uint16_t*           pos_arr,
-                                                                         uint16_t*           exc_c_arr,
-                                                                         int64_t*            encoded_arr,
-                                                                         uint8_t&            bw,
-                                                                         int64_t*            ffor_arr,
-                                                                         int64_t*            base_arr,
-                                                                         alp::state<double>& stt,
-                                                                         alp_bench::ALPColumnDescriptor&  dataset,
-                                                                         uint64_t*           ffor_right_arr,
-                                                                         uint16_t*           ffor_left_arr,
-                                                                         uint64_t*           right_arr,
-                                                                         uint16_t*           left_arr,
-                                                                         uint64_t*           unffor_right_arr,
-                                                                         uint16_t*           unffor_left_arr,
-                                                                         double*             glue_arr) {
+static __attribute__((noinline)) benchmark::BenchmarkReporter::Run b_a_e(const double*                   dbl_arr,
+                                                                         uint16_t*                       exc_arr,
+                                                                         uint16_t*                       pos_arr,
+                                                                         uint16_t*                       exc_c_arr,
+                                                                         int64_t*                        encoded_arr,
+                                                                         uint8_t&                        bw,
+                                                                         int64_t*                        ffor_arr,
+                                                                         int64_t*                        base_arr,
+                                                                         alp::state<double>&             stt,
+                                                                         alp_bench::ALPColumnDescriptor& dataset,
+                                                                         uint64_t*                       ffor_right_arr,
+                                                                         uint16_t*                       ffor_left_arr,
+                                                                         uint64_t*                       right_arr,
+                                                                         uint16_t*                       left_arr,
+                                                                         uint64_t* unffor_right_arr,
+                                                                         uint16_t* unffor_left_arr,
+                                                                         double*   glue_arr) {
 
 	int benchmark_number = dataset.id;
 

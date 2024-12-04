@@ -1094,7 +1094,7 @@ void importSSB(std::string dir, Database& db) {
 	// NO SUPPORT FOR SSB
 }
 
-double import_alp(alp_bench::Column& col, Database& db, encoding::scheme& scheme) {
+double import_alp(alp_bench::ALPColumnDescriptor& col, Database& db, encoding::scheme& scheme) {
 	auto& rel    = db[cfg::tbl_name];
 	rel.name     = col.name;
 	auto columns = configX({{cfg::schema, col.name, make_unique<algebra::Double>(), scheme}});
@@ -1116,7 +1116,7 @@ double sum(double* in, size_t c) {
 	return result;
 }
 
-void expand_binary_x_times(alp_bench::Column& col, size_t x) {
+void expand_binary_x_times(alp_bench::ALPColumnDescriptor& col, size_t x) {
 	/**/
 
 	std::string              col_file_path          = cfg::data_dir + col.name + ".bin";
@@ -1136,7 +1136,7 @@ void expand_binary_x_times(alp_bench::Column& col, size_t x) {
 	//	std::cout << __FUNCTION__ << " : " << col_file_path << " has been extended " << x << " times." << std::endl;
 }
 
-bool is_expanded(alp_bench::Column& col) {
+bool is_expanded(alp_bench::ALPColumnDescriptor& col) {
 	/**/
 	bool file_exist;
 	bool has_correct_size;
@@ -1165,13 +1165,13 @@ static void remove_file(std::string_view file_path) {
 	//	std::cout << __FUNCTION__ << " : " << file_path << " has been removed successfully." << std::endl;
 }
 
-void remove_binary_file(alp_bench::Column& col) {
+void remove_binary_file(alp_bench::ALPColumnDescriptor& col) {
 	/**/
 	std::string col_extended_file_path = cfg::data_ext_dir + col.name + +".bin";
 	remove_file(col_extended_file_path);
 }
 
-void clean_compressed_data(alp_bench::Column& col, encoding::scheme& scheme) {
+void clean_compressed_data(alp_bench::ALPColumnDescriptor& col, encoding::scheme& scheme) {
 	/**/
 	std::vector<std::string> path_vec = ff::file::get_col_paths(col.name, scheme);
 	for (auto& file_path : path_vec) {
