@@ -368,8 +368,8 @@ struct encoder {
 		}
 #else
 		for (size_t i {0}; i < config::VECTOR_SIZE; i++) {
-			auto l                        = ENCODED_DBL_ARR[i];
-			auto r                        = DBL_ARR_WITHOUT_SPECIALS[i];
+			auto l                        = ENCODED_VALUE_ARR[i];
+			auto r                        = VALUE_ARR_WITHOUT_SPECIALS[i];
 			auto is_exception             = (l != r);
 			TMP_INDEX_ARR[exceptions_idx] = i;
 			exceptions_idx += is_exception;
