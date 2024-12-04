@@ -55,7 +55,7 @@ jobs:
         run: mkdir ${{github.workspace}}/build
 
       - name: Configure CMake
-        run: cmake  -DALP_BUILD_TESTING=ON -S ${{github.workspace}} -B ${{github.workspace}}/build
+        run: cmake  -DALP_BUILD_TESTING=ON -DALP_ENABLE_VERBOSE_OUTPUT=ON -S ${{github.workspace}} -B ${{github.workspace}}/build
         env:
           CXX: ${{ matrix.cxx }}
 
