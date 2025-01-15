@@ -17,13 +17,17 @@ if (EXISTS "/proc/cpuinfo")
 endif ()
 
 if (COMPILER_SUPPORTS_AVX512DQ AND HAS_HW_AVX512DQ AND NOT IS_GITHUB_ACTIONS)
-    message(STATUS "Compiler and hardware both support AVX-512DQ. Adding flag.")
-    set(AVX512DQ_FLAG "-mavx512dq")
+    message(STATUS "Compiler and hardware both support AVX-512DQ. Adding flag '-mavx512dq'.")
+    set(FLAGS "-mavx512dq")
 elseif (COMPILER_SUPPORTS_AVX512DQ AND HAS_HW_AVX512DQ AND IS_GITHUB_ACTIONS)
     message(WARNING "Hardware supports AVX-512DQ, but not adding on GitHub Actions runner.")
+elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|i[3-6]86")
+    message(STATUS "Setting '-march=native' for x86 processors without AVX-512DQ.")
+    set(FLAGS "-march=native")
 else ()
-    message(STATUS "AVX-512DQ is not fully supported (either by compiler or hardware).")
+    message(STATUS "No instruction set flags applied.")
 endif ()
+
 
 # Define the library
 add_library(ALP
@@ -33,9 +37,9 @@ add_library(ALP
         fastlanes_generated_ffor.cpp
         fastlanes_ffor.cpp
         fastlanes_unffor.cpp
-        )
+)
 
 # Add AVX-512DQ flag if supported and not on GitHub Actions
-if (AVX512DQ_FLAG)
-    target_compile_options(ALP PUBLIC ${AVX512DQ_FLAG})
+if (FLAGS)
+    target_compile_options(ALP PUBLIC ${FLAGS})
 endif ()
