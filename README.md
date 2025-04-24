@@ -41,8 +41,24 @@ For more information on reproducing our benchmarks, refer to our guide [here](av
 or read the official ACM reproducibility report:  
 [https://dl.acm.org/doi/10.1145/3687998.3717057](https://dl.acm.org/doi/10.1145/3687998.3717057)
 
-🎉 We're proud to share that ALP won the **Best Artifact Award** from [SIGMOD](https://sigmod.org/sigmod-awards/sigmod-best-artifact-award/)!
 
+---
+
+### 🏅 ACM Artifacts & Awards
+
+We are happy to share that we participated in the [SIGMOD Availability & Reproducibility Initiative](https://reproducibility.sigmod.org/), and our paper earned **all three badges**:
+
+<p align="center">
+  <img src="assets/artifacts_available_v1_1.png" alt="ACM Artifacts Available" height="100"/>
+  <img src="assets/artifacts_evaluated_reusable_v1_1.png" alt="ACM Artifacts Evaluated" height="100"/>
+  <img src="assets/results_reproduced_v1_1.png" alt="ACM Results Reproduced" height="100"/>
+</p>
+
+🎉 We're also proud to share that **ALP won the [SIGMOD Best Artifact Award](https://sigmod.org/sigmod-awards/sigmod-best-artifact-award/)!**
+
+<p align="center">
+  <img src="assets/trophy.png" alt="Trophy" height="100"/>
+</p>
 ---
 
 ## ⏱️ Want to Benchmark Your Dataset?
