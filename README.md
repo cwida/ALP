@@ -1,7 +1,7 @@
 # ALP: Adaptive Lossless Floating-Point Compression
 
 **Authors**: Azim Afroozeh, Leonardo Kuffó, Peter Boncz  
-**Conference**: ACM SIGMOD 2024  
+**Conference**: ACM SIGMOD 2024
 
 ---
 
@@ -9,12 +9,14 @@
 
 This repository contains the source code and benchmarks for the paper [_ALP: Adaptive Lossless Floating-Point Compression_](https://dl.acm.org/doi/abs/10.1145/3626717), published at ACM SIGMOD 2024.
 
-**ALP** is a state-of-the-art lossless compression algorithm tailored for IEEE 754 floating-point data. It adaptively selects between two schemes:
+**ALP** is a state-of-the-art lossless compression algorithm designed for IEEE 754 floating-point data. It encodes data by exploiting two common patterns found in real-world floating-point values:
 
-- **ALP**: Converts floats/doubles that originate from decimal values into integers using enhanced PseudoDecimals, then applies Frame-of-Reference (FOR) and Bit-Packing.
-- **ALP_RD**: For general floats/doubles, it splits the bitwise representation into left and right parts, compressing them using Dictionary encoding and Bit-Packing, respectively.
+- **Decimal Floating-Point Numbers**:  
+  A large portion of floats/doubles in real-world datasets are decimals. ALP maps these floats/doubles into integers by multiplying the number by a power of 10 and then compressing the mapped integers using a FastLanes variant of Frame-of-Reference encoding[^1], which is SIMD-friendly.  
+  _Example_: the number `10.12` becomes `1012` and is then fed to the FastLanes encoder.
 
-This adaptive approach enables ALP to outperform existing methods like Gorilla, Chimp128, and Zstd in both compression efficiency and speed.
+- **High-Precision Floating-Point Numbers**:  
+  The remaining values are usually high-precision floats/doubles. ALP targets compression opportunities in only the left part of these values, which it compresses using FastLanes dictionary encoding. The right part is left uncompressed, as it is necessary to preserve high precision and is often highly random and incompressible.
 
 ---
 
@@ -22,8 +24,8 @@ This adaptive approach enables ALP to outperform existing methods like Gorilla, 
 
 ![ALP Results](alp_results.png)
 
-This is the highlight of how ALP performs, These results shows ALP’s superiority across all three key metrics of a compression algorithm:  
-**Decoding Speed**, **Compression Ratio**, and **Compression Speed** above other schems.
+These results highlight ALP’s **superior** performance across all three key metrics of a compression algorithm:  
+**Decoding Speed**, **Compression Ratio**, and **Compression Speed**—surpassing other schemes in all categories.
 
 ---
 
@@ -33,16 +35,18 @@ This is the highlight of how ALP performs, These results shows ALP’s superiori
 ./publication/script/master_script.sh
 ```
 
-For more information about reproducing our benchmarks, read our guide [here](availability_reproducibility_initiative_report.md),  
-or see the official ACM reproducibility report:  
+For more information on reproducing our benchmarks, refer to our guide [here](availability_reproducibility_initiative_report.md),  
+or read the official ACM reproducibility report:  
 [https://dl.acm.org/doi/10.1145/3687998.3717057](https://dl.acm.org/doi/10.1145/3687998.3717057)
+
+🎉 We're proud to share that ALP won the **Best Artifact Award** from [SIGMOD](https://sigmod.org/sigmod-awards/sigmod-best-artifact-award/)!
 
 ---
 
 ## 📦 Want to Benchmark Your Dataset?
 
 Check out our guide: [How to Benchmark Your Dataset](how_to_benchmark_your_dataset.md)  
-It explains how to benchmarko ALP on your dataset.
+It explains how to run ALP on your own data.
 
 ---
 
@@ -52,8 +56,8 @@ It explains how to benchmarko ALP on your dataset.
 - `benchmarks/`: Benchmarking tools and datasets
 - `include/`: Header files for integration
 - `scripts/`: Utility scripts for data processing
-- `test/`: Unit tests for validation
-- `publication/`: Related publications and supplementary materials
+- `test/`: Unit tests
+- `publication/`: Publications and supplementary materials
 
 ---
 
@@ -77,42 +81,22 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 📬 Contact
 
-For questions, announcements, or collaborations, please join our Discord channel:  
+For questions, announcements, or collaborations, join our Discord channel:  
 [https://discord.gg/2ngmRaRW](https://discord.gg/2ngmRaRW)
-```
-
 
 ---
 
 ## 🧩 Used By
 
-ALP is integrated into the following systems:
+ALP has been integrated into the following systems:
 
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/duckdb/duckdb/pull/8217">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/DuckDB_Logo.png" width="80"/><br/>
-        <strong>DuckDB</strong>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/cwida/FastLanes">
-        <img src="https://raw.githubusercontent.com/cwida/FastLanes/main/assets/logo.svg" width="80"/><br/>
-        <strong>FastLanes</strong>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/kuzudb/kuzu/pull/XXX">
-        <img src="https://raw.githubusercontent.com/kuzudb/kuzu/main/docs/logo.svg" width="80"/><br/>
-        <strong>KuzuDB</strong>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/ClickHouse/ClickHouse/pull/XXXX">
-        <img src="https://avatars.githubusercontent.com/u/30824861?s=200&v=4" width="80"/><br/>
-        <strong>ClickHouse</strong>
-      </a>
-    </td>
-  </tr>
-</table>
+- [**DuckDB**](https://duckdb.org/2024/02/13/announcing-duckdb-0100.html)
+- [**FastLanes**](https://github.com/cwida/FastLanes)
+- [**KuzuDB**](https://github.com/kuzudb/kuzu/pull/3994)
+- [**liquid-cache**](https://github.com/XiangpengHao/liquid-cache/pull/133)
+
+---
+
+[^1]: Learn more about FastLanes here: [https://github.com/cwida/fastlanes](https://github.com/cwida/fastlanes)
+
+
