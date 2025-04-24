@@ -83,8 +83,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 📬 Contact
 
-For questions, announcements, or collaborations, join our Discord channel:  
-[https://discord.gg/2ngmRaRW](https://discord.gg/2ngmRaRW)
+If you have questions, want to contribute, or just want to stay up to date with ALP and related projects, join our community on Discord:  
+[![Join us on Discord](https://img.shields.io/badge/Join%20Us%20on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/2ngmRaRW)  [![Community Status](https://img.shields.io/discord/1282716959099588651?label=Members%20Online&logo=discord&logoColor=white&color=5865F2&style=for-the-badge)](https://discord.gg/2ngmRaRW)
 
 ---
 
