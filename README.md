@@ -5,7 +5,7 @@
 
 ---
 
-## 📄 What is this repo?
+## <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="32" style="vertical-align:middle;"> What is this repo?
 
 This repository contains the source code and benchmarks for the paper [_ALP: Adaptive Lossless Floating-Point Compression_](https://dl.acm.org/doi/abs/10.1145/3626717), published at ACM SIGMOD 2024.
 
@@ -29,7 +29,7 @@ These results highlight ALP’s **superior** performance across all three key me
 
 ---
 
-## 🚀 How to Reproduce Results
+## 🧪 How to Reproduce Results
 
 Just run the following script:
 
@@ -45,14 +45,14 @@ or read the official ACM reproducibility report:
 
 ---
 
-## 📦 Want to Benchmark Your Dataset?
+## ⏱️ Want to Benchmark Your Dataset?
 
 Check out our guide: [How to Benchmark Your Dataset](how_to_benchmark_your_dataset.md)  
 It explains how to run ALP on your own data.
 
 ---
 
-## 🧰 Repository Structure
+## 🗂️ Repository Structure
 
 - `src/`: Core implementation of ALP and ALP_RD
 - `benchmarks/`: Benchmarking tools and datasets
