@@ -12,24 +12,26 @@ This repository contains the source code and benchmarks for the paper [_ALP: Ada
 **ALP** is a state-of-the-art lossless compression algorithm designed for IEEE 754 floating-point data. It encodes data by exploiting two common patterns found in real-world floating-point values:
 
 - **Decimal Floating-Point Numbers**:  
-  A large portion of floats/doubles in real-world datasets are decimals. ALP maps these floats/doubles into integers by multiplying the number by a power of 10 and then compressing the mapped integers using a FastLanes variant of Frame-of-Reference encoding[^1], which is SIMD-friendly.  
+  A large portion of floats/doubles in real-world datasets are decimals. ALP maps these values into integers by multiplying the number by a power of 10 and then compressing the result using a FastLanes variant of Frame-of-Reference encoding[^1], which is SIMD-friendly.  
   _Example_: the number `10.12` becomes `1012` and is then fed to the FastLanes encoder.
 
 - **High-Precision Floating-Point Numbers**:  
-  The remaining values are usually high-precision floats/doubles. ALP targets compression opportunities in only the left part of these values, which it compresses using FastLanes dictionary encoding. The right part is left uncompressed, as it is necessary to preserve high precision and is often highly random and incompressible.
+  The remaining values are typically high-precision floats/doubles. ALP targets compression opportunities in only the left part of these values, which it compresses using FastLanes dictionary encoding. The right part is left uncompressed, as it is required to preserve high precision and is often highly random and incompressible.
 
 ---
 
-## 📊 Results Highlights
+## 📊 How does ALP perform?
 
 ![ALP Results](alp_results.png)
 
 These results highlight ALP’s **superior** performance across all three key metrics of a compression algorithm:  
-**Decoding Speed**, **Compression Ratio**, and **Compression Speed**—surpassing other schemes in all categories.
+**Decoding Speed**, **Compression Ratio**, and **Compression Speed**—outperforming other schemes in every category.
 
 ---
 
 ## 🚀 How to Reproduce Results
+
+Just run the following script:
 
 ```bash
 ./publication/script/master_script.sh
@@ -98,5 +100,3 @@ ALP has been integrated into the following systems:
 ---
 
 [^1]: Learn more about FastLanes here: [https://github.com/cwida/fastlanes](https://github.com/cwida/fastlanes)
-
-
