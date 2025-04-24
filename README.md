@@ -59,6 +59,7 @@ We are happy to share that we participated in the [SIGMOD Availability & Reprodu
 <p align="center">
   <img src="assets/trophy.png" alt="Trophy" height="100"/>
 </p>
+
 ---
 
 ## ⏱️ Want to Benchmark Your Dataset?
