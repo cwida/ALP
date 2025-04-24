@@ -1,119 +1,119 @@
 # ALP: Adaptive Lossless Floating-Point Compression
 
-Lossless floating-point compression algorithm for `double`/`float` data type. ALP significantly improves over all
-previous floating-point encodings in both speed and compression ratio (figure below; each dot represents a dataset).
+**Authors**: Azim Afroozeh, Leonardo Kuffó, Peter Boncz  
+**Conference**: ACM SIGMOD 2024
+
+---
+
+## <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="32" style="vertical-align:middle;"> What is this repo?
+
+This repository contains the source code and benchmarks for the paper [_ALP: Adaptive Lossless Floating-Point Compression_](https://dl.acm.org/doi/abs/10.1145/3626717), published at ACM SIGMOD 2024.
+
+**ALP** is a state-of-the-art lossless compression algorithm designed for IEEE 754 floating-point data. It encodes data by exploiting two common patterns found in real-world floating-point values:
+
+- **Decimal Floating-Point Numbers**:  
+  A large portion of floats/doubles in real-world datasets are decimals. ALP maps these values into integers by multiplying the number by a power of 10 and then compressing the result using a FastLanes variant of Frame-of-Reference encoding[^1], which is SIMD-friendly.  
+  _Example_: the number `10.12` becomes `1012` and is then fed to the FastLanes encoder.
+
+- **High-Precision Floating-Point Numbers**:  
+  The remaining values are typically high-precision floats/doubles. ALP targets compression opportunities in only the left part of these values, which it compresses using FastLanes dictionary encoding. The right part is left uncompressed, as it is required to preserve high precision and is often highly random and incompressible.
+
+---
+
+## 📊 How does ALP perform?
+
+![ALP Results](alp_results.png)
+
+These results highlight ALP’s **superior** performance across all three key metrics of a compression algorithm:  
+**Decoding Speed**, **Compression Ratio**, and **Compression Speed**—outperforming other schemes in every category.
+
+---
+
+## 🧪 How to Reproduce Results
+
+Just run the following script:
+
+```bash
+./publication/script/master_script.sh
+```
+
+For more information on reproducing our benchmarks, refer to our guide [here](availability_reproducibility_initiative_report.md),  
+or read the official ACM reproducibility report:  
+[https://dl.acm.org/doi/10.1145/3687998.3717057](https://dl.acm.org/doi/10.1145/3687998.3717057)
+
+
+---
+
+### 🏅 ACM Artifacts & Awards
+
+We are happy to share that we participated in the [SIGMOD Availability & Reproducibility Initiative](https://reproducibility.sigmod.org/), and our paper earned **all three badges**:
 
 <p align="center">
-        <img src="/publication/alp_results.png" alt="ALP Benchmarks" height="350">
+  <img src="assets/artifacts_available_v1_1.png" alt="ACM Artifacts Available" height="100"/>
+  <img src="assets/artifacts_evaluated_reusable_v1_1.png" alt="ACM Artifacts Evaluated" height="100"/>
+  <img src="assets/results_reproduced_v1_1.png" alt="ACM Results Reproduced" height="100"/>
 </p>
 
-- ⚡ **High Speed**: Scans 44x faster than Gorilla, 64x faster than Chimp, 31x faster than Zstd. Compresses 11x faster
-  than Zstd, 138x faster than PDE and x10 faster than Chimp.
-- ✅ **High Compression**: 50% more compression than Gorillas. 24% more than Chimp128. On par with Zstd level 3.
-- ✅ **Adaps to data**: By using a two-stage algorithm that first samples row-groups and then vectors.
-- ✅ **Scalar code**: Auto-vectorizes thanks to [FastLanes](https://github.com/cwida/FastLanes).
-- ✅ **Lightweight Encoding**: Compression and decompression occurs in blocks of 1024 values. Ideal for columnar
-  databases.
-- ✅ **Proven Effectiveness**: Effectiveness and speed led to deprecating Chimp128 and Patas in DuckDB.
-- ✅ **Works on difficult floats**: Can losslessly compress even floats present as ML models parameters better than Zstd
-  and all other encodings.
+🎉 We're also proud to share that **ALP won the [SIGMOD Best Artifact Award](https://sigmod.org/sigmod-awards/sigmod-best-artifact-award/)!**
 
-To *rigorously* benchmark ALP with your own data we provide our [ALP primitives](#alp-primitives) as a single C++ header
-file.
+<p align="center">
+  <img src="assets/trophy.png" alt="Trophy" height="100"/>
+</p>
 
-ALP details can be found in the [publication](https://dl.acm.org/doi/pdf/10.1145/3626717).
+---
 
-## Availability & Reproducibility Initiative (ARI) Report
+## ⏱️ Want to Benchmark Your Dataset?
 
-In [this report](availability_reproducibility_initiative_report.md), we explain how to replicate the experiments and
-benchmarks according to the format requested
-in [SIGMOD ARΙ Package Requirements and Guidelines](https://reproducibility.sigmod.org/2024/).
+Check out our guide: [How to Benchmark Your Dataset](how_to_benchmark_your_dataset.md)  
+It explains how to run ALP on your own data.
 
-On the benchmarked datasets from our publication:
+---
 
-- ALP achieves on average **x3 compression ratios** (sometimes much, much higher).
-- ALP encodes on average 0.5 doubles per CPU cycle.
-- ALP decodes on average 2.6 doubles per CPU cycle.
+## 🗂️ Repository Structure
 
-### Used By
+- `src/`: Core implementation of ALP and ALP_RD
+- `benchmarks/`: Benchmarking tools and datasets
+- `include/`: Header files for integration
+- `scripts/`: Utility scripts for data processing
+- `test/`: Unit tests
+- `publication/`: Publications and supplementary materials
 
-<table>
-  <tr>
-    <td>
-      <p align="left">
-        <img src="https://raw.githubusercontent.com/duckdb/duckdb/main/logo/DuckDB_Logo-horizontal.png" alt="DuckDB" height="50">
-      </p>
-    </td>
-    <td>
-      <p align="left">
-        <a href="https://github.com/cwida/FastLanes">FastLanes</a>
-      </p>
-    </td>
-  </tr>
-</table>
+---
 
-### Contents
+## 📚 Publications
 
-- [ALP in a Nutshell](#alp-in-a-nutshell)
-- [Quickstart](#quickstart)
-- [Building and Running](#building-and-running)
-- [ALP Primitives](#alp-primitives)
-- [ALP in DuckDB](#alp-in-duckdb)
-- [Benchmarking (Replicating Paper Experiments)](#benchmarking-replicating-paper-experiments)
+- **Conference Paper**:  
+  _ALP: Adaptive Lossless Floating-Point Compression_, ACM SIGMOD 2024  
+  [https://dl.acm.org/doi/10.1145/3626717](https://dl.acm.org/doi/10.1145/3626717)
 
-## ALP in a Nutshell
+- **Reproducibility Report**:  
+  _Reproducibility Report for ACM SIGMOD 2024 Paper: 'ALP: Adaptive Lossless Floating-Point Compression'_  
+  [https://dl.acm.org/doi/10.1145/3687998.3717057](https://dl.acm.org/doi/10.1145/3687998.3717057)
 
-ALP has two compression schemes: `ALP` for doubles/floats which were once decimals, and `ALP_RD` for true
-double/floats (e.g. the ones which stem from many calculations, scientific data, ML weights).
+---
 
-`ALP` losslessly transforms doubles/floats to integer values with two multiplications to FOR+BitPack them into only the
-necessary bits. This is a strongly enhanced version of [PseudoDecimals](https://dl.acm.org/doi/abs/10.1145/3589263).
+## 📄 License
 
-`ALP_RD` splits the doubles/floats bitwise representations into two parts (left and right). The left part is encoded
-with a Dictionary compression and the right part is Bitpacked to just the necessary bits.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-Both encodings operate in vectors of 1024 values at a time (fit *vectorized execution*) and leverage in-vector
-commonalities to achieve higher compression ratios and be faster (by avoiding per-value adaptivity) than other methods.
+---
 
-Both encodings encode outliers as *exceptions* to achieve higher compression ratios.
+## 📬 Contact
 
-## Building and Running
+If you have questions, want to contribute, or just want to stay up to date with ALP and related projects, join our community on Discord:  
+[![Join us on Discord](https://img.shields.io/badge/Join%20Us%20on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/2ngmRaRW)  [![Community Status](https://img.shields.io/discord/1282716959099588651?label=Members%20Online&logo=discord&logoColor=white&color=5865F2&style=for-the-badge)](https://discord.gg/2ngmRaRW)
 
-Requirements:
+---
 
-1) __Clang++__
-2) __CMake__ 3.20 or higher
+## 🧩 Used By
 
-## ALP Primitives
+ALP has been integrated into the following systems:
 
-You can make your own [de]compression API by using ALP primitives. An example of the usage of these can be found in our
-simple [compression](/include/alp/compressor.hpp) and [decompression](/include/alp/decompressor.hpp) API. The decoding
-primitives of ALP are auto-vectorized thanks to [FastLanes](https://github.com/cwida/FastLanes). For **benchmarking**
-purposes, we recommend you use these primitives.
+- [**DuckDB**](https://duckdb.org/2024/02/13/announcing-duckdb-0100.html)
+- [**FastLanes**](https://github.com/cwida/FastLanes)
+- [**KuzuDB**](https://github.com/kuzudb/kuzu/pull/3994)
+- [**liquid-cache**](https://github.com/XiangpengHao/liquid-cache/pull/133)
 
-You can use these by including our library in your code: `#include "alp.hpp"`.
+---
 
-Check the full documentation of these on the [PRIMITIVES.MD](/PRIMITIVES.md) readme.
-
-## ALP in DuckDB
-
-ALP replaced Chimp128 and Patas in [DuckDB](https://github.com/duckdb/duckdb/pull/9635). In DuckDB, ALP is **x2-4 times
-faster** than Patas (at decompression) achieving **twice as high compression ratios** (sometimes even much more). DuckDB
-can be used to quickly test ALP on custom data, however, we advise against doing so if your purpose is to rigorously
-benchmark ALP against other algorithms.
-
-[Here](https://github.com/duckdb/duckdb/blob/main/benchmark/micro/compression/alp/alp_read.benchmark) you can find a
-basic example on how to load data in DuckDB forcing ALP to be used as compression method. These statements can be called
-using the Python API.
-
-**Please note**: ALP inside DuckDB: i) Is slower than using our primitives presented here, and ii) compression ratios
-can be slightly worse due to the metadata needed to skip vectors and DuckDB storage layout.
-
-## FCBench
-
-We have benchmarked ALP compression ratios on the datasets presented
-on [FCBench](https://www.vldb.org/pvldb/vol17/p1418-tao.pdf). ALP comes on top with an average **compression ratio of
-2.08** compared to the best compressor in the benchmark (Bitshuffle + Zstd with 1.47). ALP is superior even despite the
-benchmark doing horizontal compression instead of columnar compression (i.e. values from multiple columns in a table are
-compressed together).
-
+[^1]: Learn more about FastLanes here: [https://github.com/cwida/fastlanes](https://github.com/cwida/fastlanes)
