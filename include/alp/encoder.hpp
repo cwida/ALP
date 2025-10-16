@@ -311,9 +311,12 @@ struct encoder {
 	                                   ST*                  encoded_integers,
 	                                   const factor_idx_t   factor_idx,
 	                                   const exponent_idx_t exponent_idx) {
-		alignas(64) static PT ENCODED_VALUE_ARR[1024];
-		alignas(64) static PT VALUE_ARR_WITHOUT_SPECIALS[1024];
-		alignas(64) static UT TMP_INDEX_ARR[1024];
+		// These arrays are thread_local static to ensure thread safety during multithreaded compression.
+		// See: https://github.com/cwida/ALP/issues/41 for discussion.
+		// Without thread_local, static arrays would be shared between threads, causing data races.
+		alignas(64) thread_local static PT ENCODED_VALUE_ARR[1024];
+		alignas(64) thread_local static PT VALUE_ARR_WITHOUT_SPECIALS[1024];
+		alignas(64) thread_local static UT TMP_INDEX_ARR[1024];
 
 		exp_p_t  current_exceptions_count {0};
 		uint64_t exceptions_idx {0};
