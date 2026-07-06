@@ -109,6 +109,7 @@ If you have questions, want to contribute, or just want to stay up to date with 
 
 ALP has been integrated into the following systems:
 
+- [**ClickHouse**](https://clickhouse.com/docs/sql-reference/statements/create/table#alp)
 - [**DuckDB**](https://duckdb.org/2024/02/13/announcing-duckdb-0100.html)
 - [**FastLanes**](https://github.com/cwida/FastLanes)
 - [**KuzuDB**](https://github.com/kuzudb/kuzu/pull/3994)
