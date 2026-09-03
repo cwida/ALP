@@ -113,6 +113,7 @@ ALP has been integrated into the following systems:
 - [**FastLanes**](https://github.com/cwida/FastLanes)
 - [**KuzuDB**](https://github.com/kuzudb/kuzu/pull/3994)
 - [**liquid-cache**](https://github.com/XiangpengHao/liquid-cache/pull/133)
+- [**fastalp**](https://github.com/webc-site/wedb_embed/tree/main/fastalp) - High-throughput Rust implementation with SIMD register unpacking and zero-copy APIs
 
 ---
 

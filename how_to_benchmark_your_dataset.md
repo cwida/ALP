@@ -83,6 +83,18 @@ cd build
 ./benchmarks/bench_your_dataset
 ```
 
+### Benchmark with Rust (fastalp) Implementation
+
+To benchmark the independent Rust implementation ([fastalp](https://github.com/webc-site/wedb_embed/tree/main/fastalp)) on the same dataset configuration:
+
+```bash
+# Using CMake target:
+cmake --build build --target bench_rust
+
+# Or using Cargo directly:
+cargo run --release --manifest-path benchmarks/rust/Cargo.toml -- benchmarks/your_own_dataset.csv
+```
+
 ---
 
 ## Step 5: Analyze the Results

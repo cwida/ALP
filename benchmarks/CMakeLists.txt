@@ -19,3 +19,12 @@ target_link_libraries(bench_your_dataset PUBLIC ALP::BENCHMARKER)
 gtest_discover_tests(bench_your_dataset)
 
 
+
+find_program(CARGO_BIN cargo)
+if (CARGO_BIN)
+    add_custom_target(bench_rust
+        COMMAND ${CARGO_BIN} run --release
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/rust
+        COMMENT "Running fastalp (Rust implementation of ALP) benchmark comparison..."
+    )
+endif ()

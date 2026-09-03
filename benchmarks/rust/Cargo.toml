@@ -1,0 +1,8 @@
+[package]
+name = "bench_fastalp"
+version = "0.1.0"
+edition = "2021"
+description = "Benchmark comparison runner for fastalp (Rust implementation of ALP)"
+
+[dependencies]
+fastalp = "0.1.30"
