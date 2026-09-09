@@ -1,4 +1,5 @@
 #include "alp.hpp"
+#include "fastalp.h"
 #include "data.hpp"
 #include "gtest/gtest.h"
 #include <unordered_map>
@@ -106,6 +107,9 @@ inline std::vector<ColumnDescriptor> parse_column_records(const std::string& fil
 		    file_type_map.count(to_lower(file_type)) ? file_type_map[to_lower(file_type)] : FileType::INVALID;
 
 		// Add to records
+		if (!path.empty() && path[0] != '/') {
+			path = std::string(ALP_CMAKE_SOURCE_DIR) + "/" + path;
+		}
 		records.push_back({
 		    std::stoi(id),  // Convert ID to integer
 		    data_type_enum, // Data type enum
@@ -163,8 +167,15 @@ ColumnDescriptor extract_column_descriptor(const ALPColumnDescriptor& alp_column
 }
 
 struct BenchSpeedResult {
-	double compression_speed;
-	double decompression_speed;
+	double cpp_enc_sampled {0.0};
+	double cpp_enc_kernel {0.0};
+	double cpp_dec {0.0};
+	double cpp_size {0.0};
+
+	double fastalp_enc_sampled {0.0};
+	double fastalp_enc_kernel {0.0};
+	double fastalp_dec {0.0};
+	double fastalp_size {0.0};
 };
 
 class ALPBench : public ::testing::Test {

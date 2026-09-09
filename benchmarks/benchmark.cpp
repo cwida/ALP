@@ -1,10 +1,15 @@
 #include "benchmark.hpp"
 #include "bench_alp.hpp"
-
-namespace alp_bench {
+#include "fastalp.h"
 
 #include <cmath>
-#include <gtest/gtest.h> // Assuming Google Test is being used
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <vector>
+#include <gtest/gtest.h>
+
+namespace alp_bench {
 
 template <typename T>
 void ALP_ASSERT(T original_val, T decoded_val, size_t idx) {
@@ -12,7 +17,7 @@ void ALP_ASSERT(T original_val, T decoded_val, size_t idx) {
 		if (!(decoded_val == 0.0 && std::signbit(decoded_val))) {
 			std::cerr << "Assertion failed: decoded_val is not -0.0 as expected.\n";
 			std::cerr << idx << " | original_val: " << original_val << ", decoded_val: " << decoded_val << "\n";
-			std::terminate(); // Immediately stop the program
+			std::terminate();
 		}
 	} else if (std::isnan(original_val)) {
 		if (!std::isnan(decoded_val)) {
@@ -30,20 +35,19 @@ void ALP_ASSERT(T original_val, T decoded_val, size_t idx) {
 }
 
 void write_result_header(std::ofstream& ofile) {
-	//
-	ofile << "idx,column,data_type,size,rowgroups_count,vectors_count,decompression_speed(cycles_per_value),"
-	         "compression_speed(cycles_per_value),\n";
+	ofile << "idx,column,data_type,"
+	         "cpp_size(bits/val),fastalp_size(bits/val),"
+	         "cpp_enc_sampled(GB/s),fastalp_enc_sampled(GB/s),"
+	         "cpp_enc_kernel(GB/s),fastalp_enc_kernel(GB/s),"
+	         "cpp_dec(GB/s),fastalp_dec(GB/s)\n";
 }
-
-#include <cstdint> // For fixed-width integer types
 
 template <typename PT>
 BenchSpeedResult ALPBench::typed_bench_speed_column(const std::vector<PT>& data) {
-	// Internal Type
 	using UT = typename alp::inner_t<PT>::ut;
 	using ST = typename alp::inner_t<PT>::st;
 
-	BenchSpeedResult result {0, 0};
+	BenchSpeedResult result {};
 
 	PT*   sample_arr       = reinterpret_cast<PT*>(sample_buf);
 	PT*   exc_arr          = reinterpret_cast<PT*>(exc_buf);
@@ -61,87 +65,165 @@ BenchSpeedResult ALPBench::typed_bench_speed_column(const std::vector<PT>& data)
 	auto* left_arr         = reinterpret_cast<uint16_t*>(left_buf);
 	UT*   unffor_right_arr = reinterpret_cast<UT*>(unffor_right_buf);
 	auto* unffor_left_arr  = reinterpret_cast<uint16_t*>(unffor_left_buf);
-	PT*   glue_arr         = reinterpret_cast<PT*>(glue_buf);
-	PT*   data_arr         = reinterpret_cast<PT*>(data_buf);
+	auto* glue_arr         = reinterpret_cast<PT*>(glue_buf);
+	const PT* data_arr     = data.data();
 
-	for (size_t idx {0}; idx < VECTOR_SIZE; idx++) {
-		data_arr[idx] = data[idx];
-	}
-
-// benchmark alp encode
 #ifdef NDEBUG
-	uint64_t iterations = 30000;
+	uint64_t iterations = 1000;
 #else
-	uint64_t iterations = 1;
+	uint64_t iterations = 10;
 #endif
 
-	// init
+	// -------------------------------------------------------------
+	// 1. C++ ALP Benchmark
+	// -------------------------------------------------------------
 	alp::state<PT> stt;
 	alp::encoder<PT>::init(data.data(), 0, 1024, sample_arr, stt);
 
 	switch (stt.scheme) {
 	case alp::Scheme::ALP_RD: {
-		alp::rd_encoder<PT>::init(data_arr, 0, 1024, sample_arr, stt);
+		// C++ Sampled (includes init / dictionary selection)
+		auto t0_enc_samp = std::chrono::high_resolution_clock::now();
+		for (uint64_t i = 0; i < iterations; ++i) {
+			alp::rd_encoder<PT>::init(data_arr, 0, 1024, sample_arr, stt);
+			alp::rd_encoder<PT>::encode(data_arr, rd_exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
+			ffor::ffor(right_arr, ffor_right_arr, stt.right_bit_width, &stt.right_for_base);
+			ffor::ffor(left_arr, ffor_left_arr, stt.left_bit_width, &stt.left_for_base);
+		}
+		auto t1_enc_samp = std::chrono::high_resolution_clock::now();
+		double dt_enc_samp = std::chrono::duration<double, std::nano>(t1_enc_samp - t0_enc_samp).count();
+		result.cpp_enc_sampled = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_enc_samp;
 
-		uint64_t cycles = benchmark::cycleclock::Now();
+		// C++ Kernel (pure encoding without sampling)
+		auto t0_enc_kern = std::chrono::high_resolution_clock::now();
 		for (uint64_t i = 0; i < iterations; ++i) {
 			alp::rd_encoder<PT>::encode(data_arr, rd_exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
 			ffor::ffor(right_arr, ffor_right_arr, stt.right_bit_width, &stt.right_for_base);
 			ffor::ffor(left_arr, ffor_left_arr, stt.left_bit_width, &stt.left_for_base);
 		}
-		cycles                   = benchmark::cycleclock::Now() - cycles;
-		result.compression_speed = double(cycles) / (double(iterations) * VECTOR_SIZE);
+		auto t1_enc_kern = std::chrono::high_resolution_clock::now();
+		double dt_enc_kern = std::chrono::duration<double, std::nano>(t1_enc_kern - t0_enc_kern).count();
+		result.cpp_enc_kernel = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_enc_kern;
 
-		// Decode
-		cycles = benchmark::cycleclock::Now();
+		// C++ Decompression
+		auto t0_dec = std::chrono::high_resolution_clock::now();
 		for (uint64_t i = 0; i < iterations; ++i) {
 			unffor::unffor(ffor_right_arr, unffor_right_arr, stt.right_bit_width, &stt.right_for_base);
 			unffor::unffor(ffor_left_arr, unffor_left_arr, stt.left_bit_width, &stt.left_for_base);
 			alp::rd_encoder<PT>::decode(
 			    glue_arr, unffor_right_arr, unffor_left_arr, rd_exc_arr, pos_arr, exc_c_arr, stt);
 		}
-		cycles                     = benchmark::cycleclock::Now() - cycles;
-		result.decompression_speed = double(cycles) / (double(iterations) * VECTOR_SIZE);
+		auto t1_dec = std::chrono::high_resolution_clock::now();
+		double dt_dec = std::chrono::duration<double, std::nano>(t1_dec - t0_dec).count();
+		result.cpp_dec = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_dec;
 
 		for (size_t j = 0; j < VECTOR_SIZE; ++j) {
-			auto l = data_arr[j];
-			auto r = glue_arr[j];
-			ALP_ASSERT<PT>(l, r, j);
+			ALP_ASSERT<PT>(data_arr[j], glue_arr[j], j);
 		}
-	} break;
-	case alp::Scheme::ALP: {
-
+		break;
+	}
+	case alp::Scheme::ALP:
+	default: {
 		stt.bit_width = 10;
 
-		uint64_t cycles = benchmark::cycleclock::Now();
+		// C++ Sampled (includes init / parameter search)
+		auto t0_enc_samp = std::chrono::high_resolution_clock::now();
+		for (uint64_t i = 0; i < iterations; ++i) {
+			alp::encoder<PT>::init(data.data(), 0, 1024, sample_arr, stt);
+			alp::encoder<PT>::encode(data_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
+			alp::encoder<PT>::analyze_ffor(encoded_arr, stt.bit_width, base_arr);
+			ffor::ffor(encoded_arr, ffor_arr, stt.bit_width, base_arr);
+		}
+		auto t1_enc_samp = std::chrono::high_resolution_clock::now();
+		double dt_enc_samp = std::chrono::duration<double, std::nano>(t1_enc_samp - t0_enc_samp).count();
+		result.cpp_enc_sampled = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_enc_samp;
+
+		// C++ Kernel (pure encoding without sampling)
+		auto t0_enc_kern = std::chrono::high_resolution_clock::now();
 		for (uint64_t i = 0; i < iterations; ++i) {
 			alp::encoder<PT>::encode(data_arr, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
 			alp::encoder<PT>::analyze_ffor(encoded_arr, stt.bit_width, base_arr);
 			ffor::ffor(encoded_arr, ffor_arr, stt.bit_width, base_arr);
 		}
+		auto t1_enc_kern = std::chrono::high_resolution_clock::now();
+		double dt_enc_kern = std::chrono::duration<double, std::nano>(t1_enc_kern - t0_enc_kern).count();
+		result.cpp_enc_kernel = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_enc_kern;
 
-		cycles                   = benchmark::cycleclock::Now() - cycles;
-		result.compression_speed = double(cycles) / (double(iterations) * VECTOR_SIZE);
-
-		cycles = benchmark::cycleclock::Now();
-
+		// C++ Decompression
+		auto t0_dec = std::chrono::high_resolution_clock::now();
 		for (uint64_t i = 0; i < iterations; ++i) {
 			unffor::unffor(ffor_arr, unffor_arr, stt.bit_width, base_arr);
 			alp::decoder<PT>::decode(unffor_arr, stt.fac, stt.exp, decoded_arr);
 			alp::decoder<PT>::patch_exceptions(decoded_arr, exc_arr, pos_arr, exc_c_arr);
 		}
-
-		cycles                     = benchmark::cycleclock::Now() - cycles;
-		result.decompression_speed = double(cycles) / (double(iterations) * VECTOR_SIZE);
+		auto t1_dec = std::chrono::high_resolution_clock::now();
+		double dt_dec = std::chrono::duration<double, std::nano>(t1_dec - t0_dec).count();
+		result.cpp_dec = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_dec;
 
 		for (size_t idx = 0; idx < VECTOR_SIZE; idx++) {
-			auto original_value = data.data()[idx];
-			auto decoded_val    = decoded_arr[idx];
-			ALP_ASSERT<PT>(original_value, decoded_val, idx);
+			ALP_ASSERT<PT>(data.data()[idx], decoded_arr[idx], idx);
 		}
-	} break;
-	default:
-		std::cerr << "validity test failed.";
+		break;
+	}
+	}
+
+	// -------------------------------------------------------------
+	// 2. fastalp (Rust) Benchmark
+	// -------------------------------------------------------------
+	std::vector<uint8_t> fastalp_comp_buf(65536);
+	size_t fa_written = 0;
+
+	// fastalp Sampled (end-to-end with dynamic sampling)
+	auto t0_fa_samp = std::chrono::high_resolution_clock::now();
+	for (uint64_t i = 0; i < iterations; ++i) {
+		if constexpr (std::is_same_v<PT, double>) {
+			fa_written = fastalp_compress_f64(data.data(), data.size(), fastalp_comp_buf.data(), fastalp_comp_buf.size());
+		} else {
+			fa_written = fastalp_compress_f32(data.data(), data.size(), fastalp_comp_buf.data(), fastalp_comp_buf.size());
+		}
+	}
+	auto t1_fa_samp = std::chrono::high_resolution_clock::now();
+	double dt_fa_samp = std::chrono::duration<double, std::nano>(t1_fa_samp - t0_fa_samp).count();
+	result.fastalp_enc_sampled = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_fa_samp;
+	result.fastalp_size = (fa_written * 8.0) / data.size();
+
+	// fastalp Kernel (pure encoding without sampling - reusing cached model)
+	if constexpr (std::is_same_v<PT, double>) {
+		fastalp_reset_encoder_f64();
+		fastalp_compress_cached_f64(data.data(), data.size(), fastalp_comp_buf.data(), fastalp_comp_buf.size());
+	} else {
+		fastalp_reset_encoder_f32();
+		fastalp_compress_cached_f32(data.data(), data.size(), fastalp_comp_buf.data(), fastalp_comp_buf.size());
+	}
+	auto t0_fa_kern = std::chrono::high_resolution_clock::now();
+	for (uint64_t i = 0; i < iterations; ++i) {
+		if constexpr (std::is_same_v<PT, double>) {
+			fastalp_compress_cached_f64(data.data(), data.size(), fastalp_comp_buf.data(), fastalp_comp_buf.size());
+		} else {
+			fastalp_compress_cached_f32(data.data(), data.size(), fastalp_comp_buf.data(), fastalp_comp_buf.size());
+		}
+	}
+	auto t1_fa_kern = std::chrono::high_resolution_clock::now();
+	double dt_fa_kern = std::chrono::duration<double, std::nano>(t1_fa_kern - t0_fa_kern).count();
+	result.fastalp_enc_kernel = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_fa_kern;
+
+	// fastalp Decompression
+	std::vector<PT> fastalp_dec_buf(data.size());
+	auto t0_fa_dec = std::chrono::high_resolution_clock::now();
+	for (uint64_t i = 0; i < iterations; ++i) {
+		if constexpr (std::is_same_v<PT, double>) {
+			fastalp_decompress_f64(fastalp_comp_buf.data(), fa_written, fastalp_dec_buf.data(), fastalp_dec_buf.size());
+		} else {
+			fastalp_decompress_f32(fastalp_comp_buf.data(), fa_written, fastalp_dec_buf.data(), fastalp_dec_buf.size());
+		}
+	}
+	auto t1_fa_dec = std::chrono::high_resolution_clock::now();
+	double dt_fa_dec = std::chrono::duration<double, std::nano>(t1_fa_dec - t0_fa_dec).count();
+	result.fastalp_dec = (double(iterations) * VECTOR_SIZE * sizeof(PT)) / dt_fa_dec;
+
+	// Lossless verification for fastalp
+	for (size_t idx = 0; idx < data.size(); ++idx) {
+		ALP_ASSERT<PT>(data[idx], fastalp_dec_buf[idx], idx);
 	}
 
 	return result;
@@ -149,11 +231,9 @@ BenchSpeedResult ALPBench::typed_bench_speed_column(const std::vector<PT>& data)
 
 template <typename PT>
 void ALPBench::typed_bench_column(const ColumnDescriptor& column, std::ofstream& ofile) {
-	// Internal Type
 	using UT = typename alp::inner_t<PT>::ut;
 	using ST = typename alp::inner_t<PT>::st;
 
-	// init
 	BenchSpeedResult bench_speed_result;
 
 	PT*   sample_arr       = reinterpret_cast<PT*>(sample_buf);
@@ -172,48 +252,26 @@ void ALPBench::typed_bench_column(const ColumnDescriptor& column, std::ofstream&
 	auto* left_arr         = reinterpret_cast<uint16_t*>(left_buf);
 	UT*   unffor_right_arr = reinterpret_cast<UT*>(unffor_right_buf);
 	auto* unffor_left_arr  = reinterpret_cast<uint16_t*>(unffor_left_buf);
-	PT*   glue_arr         = reinterpret_cast<PT*>(glue_buf);
+	auto* glue_arr         = reinterpret_cast<PT*>(glue_buf);
 
-	std::fill_n(sample_arr, VECTOR_SIZE, 0);
-	std::fill_n(glue_arr, VECTOR_SIZE, 1);
-
-	std::cout << column.name << std::endl;
-
-	// read data
+	auto  data_column = reinterpret_cast<PT*>(data_buf);
 	std::vector<PT> data;
-	alp_data::read_data(data, column);
-	PT*    data_column = data.data();
-	size_t n_tuples    = data.size();
+	alp_data::read_data<PT>(data, column);
 
-	benchmark::cycleclock::Init();
+	size_t n_tuples = data.size();
+	std::copy(data.begin(), data.end(), data_column);
+
 	bench_speed_result = typed_bench_speed_column<PT>(data);
 
 	size_t n_vecs      = n_tuples / VECTOR_SIZE;
 	auto   n_rowgroups = static_cast<size_t>(std::ceil(static_cast<double>(n_tuples) / ROWGROUP_SIZE));
 	std::vector<VectorMetadata> compression_metadata;
-	PT                          value_to_encode {0.0};
-	size_t                      rowgroup_counter {0};
 	alp::state<PT>              stt;
 
-	/* Encode - Decode - Validate. */
 	double compression_ratio {0};
 	for (size_t rg_idx = 0; rg_idx < n_rowgroups; rg_idx++) {
-		/* Init */
 		PT* cur_rg_p = get_data(rg_idx, data_column);
-
-		size_t n_vec_per_current_rg;
-
-		if (n_rowgroups == 1) {
-			// Single row group: all vectors belong to it
-			n_vec_per_current_rg = n_vecs;
-		} else if (rg_idx == n_rowgroups - 1) {
-			// Last row group: remainder vectors
-			n_vec_per_current_rg = n_vecs % N_VECTORS_PER_ROWGROUP;
-		} else {
-			// Regular row groups
-			n_vec_per_current_rg = N_VECTORS_PER_ROWGROUP;
-		}
-
+		size_t n_vec_per_current_rg = (n_rowgroups == 1) ? n_vecs : ((rg_idx == n_rowgroups - 1) ? n_vecs % N_VECTORS_PER_ROWGROUP : N_VECTORS_PER_ROWGROUP);
 		auto n_values_per_current_rg = n_vec_per_current_rg * VECTOR_SIZE;
 		alp::encoder<PT>::init(cur_rg_p, rg_idx, n_values_per_current_rg, sample_arr, stt);
 
@@ -222,39 +280,26 @@ void ALPBench::typed_bench_column(const ColumnDescriptor& column, std::ofstream&
 			alp::rd_encoder<PT>::init(cur_rg_p, 0, n_values_per_current_rg, sample_arr, stt);
 			for (size_t vector_idx {0}; vector_idx < n_vec_per_current_rg; vector_idx++) {
 				const PT* cur_vec_p = get_data(rg_idx, data_column, vector_idx);
-
-				// Encode
 				alp::rd_encoder<PT>::encode(cur_vec_p, rd_exc_arr, pos_arr, exc_c_arr, right_arr, left_arr, stt);
 				ffor::ffor(right_arr, ffor_right_arr, stt.right_bit_width, &stt.right_for_base);
 				ffor::ffor(left_arr, ffor_left_arr, stt.left_bit_width, &stt.left_for_base);
 
-				// Decode
 				unffor::unffor(ffor_right_arr, unffor_right_arr, stt.right_bit_width, &stt.right_for_base);
 				unffor::unffor(ffor_left_arr, unffor_left_arr, stt.left_bit_width, &stt.left_for_base);
 				alp::rd_encoder<PT>::decode(
 				    glue_arr, unffor_right_arr, unffor_left_arr, rd_exc_arr, pos_arr, exc_c_arr, stt);
-
-				auto* dbl_glue_arr = reinterpret_cast<PT*>(glue_arr);
-				for (size_t j = 0; j < VECTOR_SIZE; ++j) {
-					auto l = cur_vec_p[j];
-					auto r = dbl_glue_arr[j];
-					ALP_ASSERT<PT>(cur_vec_p[j], dbl_glue_arr[j], j);
-				}
 
 				VectorMetadata vector_metadata;
 				vector_metadata.right_bit_width  = stt.right_bit_width;
 				vector_metadata.left_bit_width   = stt.left_bit_width;
 				vector_metadata.exceptions_count = stt.exceptions_count;
 				vector_metadata.scheme           = alp::Scheme::ALP_RD;
-
 				compression_metadata.push_back(vector_metadata);
 			}
 		} break;
 		case alp::Scheme::ALP: {
-			/* Encode - Decode - Validate. */
 			for (size_t vector_idx {0}; vector_idx < n_vec_per_current_rg; vector_idx++) {
 				const PT* data_p = get_data(rg_idx, data_column, vector_idx);
-
 				alp::encoder<PT>::encode(data_p, exc_arr, pos_arr, exc_c_arr, encoded_arr, stt);
 				alp::encoder<PT>::analyze_ffor(encoded_arr, stt.bit_width, base_arr);
 				ffor::ffor(encoded_arr, ffor_arr, stt.bit_width, base_arr);
@@ -263,21 +308,12 @@ void ALPBench::typed_bench_column(const ColumnDescriptor& column, std::ofstream&
 				alp::decoder<PT>::decode(unffor_arr, stt.fac, stt.exp, decoded_arr);
 				alp::decoder<PT>::patch_exceptions(decoded_arr, exc_arr, pos_arr, exc_c_arr);
 
-				for (size_t j = 0; j < VECTOR_SIZE; j++) {
-					auto l = data_p[j];
-					auto r = decoded_arr[j];
-					//					ALP_ASSERT<PT>(data_p[j], decoded_arr[j]);
-				}
-
 				VectorMetadata vector_metadata;
 				vector_metadata.bit_width        = stt.bit_width;
 				vector_metadata.exceptions_count = exc_c_arr[0];
 				vector_metadata.scheme           = alp::Scheme::ALP;
-
 				compression_metadata.push_back(vector_metadata);
-				bit_width = 0;
 			}
-
 		} break;
 		default:
 			ASSERT_TRUE(false);
@@ -285,15 +321,26 @@ void ALPBench::typed_bench_column(const ColumnDescriptor& column, std::ofstream&
 	}
 
 	compression_ratio = calculate_alp_compression_size<PT>(compression_metadata);
-	ofile << std::fixed << std::setprecision(2)            //
-	      << column.id << ","                              //
-	      << column.name << ","                            //
-	      << get_type_string<PT>() << ","                  //
-	      << compression_ratio << ","                      //
-	      << n_rowgroups << ","                            //
-	      << n_vecs << ","                                 //
-	      << bench_speed_result.decompression_speed << "," //
-	      << bench_speed_result.compression_speed << std::endl;
+	bench_speed_result.cpp_size = compression_ratio;
+
+	ofile << std::fixed << std::setprecision(2)
+	      << column.id << ","
+	      << column.name << ","
+	      << get_type_string<PT>() << ","
+	      << bench_speed_result.cpp_size << ","
+	      << bench_speed_result.fastalp_size << ","
+	      << bench_speed_result.cpp_enc_sampled << ","
+	      << bench_speed_result.fastalp_enc_sampled << ","
+	      << bench_speed_result.cpp_enc_kernel << ","
+	      << bench_speed_result.fastalp_enc_kernel << ","
+	      << bench_speed_result.cpp_dec << ","
+	      << bench_speed_result.fastalp_dec << std::endl;
+
+	std::cout << std::left << std::setw(23) << column.name << " | "
+	          << "Size: C++ " << std::setw(5) << bench_speed_result.cpp_size << " / fa " << std::setw(5) << bench_speed_result.fastalp_size << " b/v | "
+	          << "Enc(samp): " << std::setw(5) << bench_speed_result.cpp_enc_sampled << " / " << std::setw(5) << bench_speed_result.fastalp_enc_sampled << " GB/s | "
+	          << "Enc(kern): " << std::setw(5) << bench_speed_result.cpp_enc_kernel << " / " << std::setw(5) << bench_speed_result.fastalp_enc_kernel << " GB/s | "
+	          << "Dec: " << std::setw(5) << bench_speed_result.cpp_dec << " / " << std::setw(5) << bench_speed_result.fastalp_dec << " GB/s" << std::endl;
 }
 
 template void ALPBench::typed_bench_column<double>(const ColumnDescriptor& column, std::ofstream& ofile);
@@ -302,7 +349,6 @@ template void ALPBench::typed_bench_column<float>(const ColumnDescriptor& column
 template <typename PT, size_t N_COLS>
 void ALPBench::typed_bench_dataset(std::array<ALPColumnDescriptor, N_COLS> columns,
                                    const std::string&                      result_file_path) {
-
 	std::ofstream ofile(result_file_path, std::ios::out);
 	write_result_header(ofile);
 
@@ -316,7 +362,6 @@ template void ALPBench::typed_bench_dataset<double, 2ul>(std::array<ALPColumnDes
                                                          const std::string&                 result_file_path);
 template void ALPBench::typed_bench_dataset<double, 30ul>(std::array<ALPColumnDescriptor, 30> columns,
                                                           const std::string&                  result_file_path);
-
 template void ALPBench::typed_bench_dataset<float, 4ul>(std::array<ALPColumnDescriptor, 4> columns,
                                                         const std::string&                 result_file_path);
 template void ALPBench::typed_bench_dataset<float, 20ul>(std::array<ALPColumnDescriptor, 20> columns,
